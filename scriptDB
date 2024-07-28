@@ -1,0 +1,10 @@
+CREATE TABLE bet_user(  
+    user_id SERIAL NOT NULL,
+    name VARCHAR(50),
+    age int,
+    email VARCHAR(50),
+    password VARCHAR(50),
+    permission VARCHAR(20),
+    balance FLOAT,
+    CONSTRAINT pk_user PRIMARY KEY (user_id)
+);
