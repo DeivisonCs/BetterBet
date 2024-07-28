@@ -4,14 +4,12 @@ public class AdminUser extends User {
 
 	
 
-	public AdminUser(Integer id, String name, String email, String password, float balance) {
-		super(id, name, email, password, balance);
-		// TODO Auto-generated constructor stub
+	public AdminUser(Integer id, String name, int age, String email, String password, String permission, float balance) {
+		super(id, name, age, email, password, permission, balance);
 	}
 
-	public AdminUser(String name, String email, String password, float balance) {
-		super(name, email, password, balance);
-		// TODO Auto-generated constructor stub
+	public AdminUser(String name, int age, String email, String password, String permission, float balance) {
+		super(name, age, email, password, permission, balance);
 	}
 
 	public Event createEvent() {
