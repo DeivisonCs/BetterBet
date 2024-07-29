@@ -17,7 +17,7 @@ public class UserPostgresDAO implements UserDAO {
 	@Override
 	public User createUser(User newUser) throws SQLException {
 		String query = "INSERT INTO users (name, age, email, password, permission) VALUES (?, ?, ?, ?, ?)";
-		String betUserQuery = "INSERT INTO bet_user (user_id, balance) VALUES (?, ?)";
+		String betUserQuery = "INSERT INTO bet_users (user_id, balance) VALUES (?, ?)";
 
 		Connection connection = null;
         try {
