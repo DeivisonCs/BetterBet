@@ -1,8 +1,10 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,30 +16,86 @@ public class UserPostgresDAO implements UserDAO {
 
 	@Override
 	public User createUser(User newUser) throws SQLException {
-		String query = "INSERT INTO bet_user (name, age, email, balance, password, permission) VALUES (?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO users (name, age, email, password, permission) VALUES (?, ?, ?, ?, ?)";
+		String betUserQuery = "INSERT INTO bet_user (user_id, balance) VALUES (?, ?)";
 
-        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query))
-        {
-            ps.setString(1, newUser.getName());
-            ps.setInt(2, newUser.getAge());
-            ps.setString(3, newUser.getEmail());
-            ps.setFloat(4, newUser.getBalance());
-            ps.setString(5, newUser.getPassword());
-            ps.setString(6, newUser.getPermission());
-            ps.executeUpdate();
+		Connection connection = null;
+        try {
+        	connection = ConnectionDB.getInstance().getConnection();
+        	
+        	// Desativar o auto-commit para gerenciar a inserção no banco manualmente
+        	// Em caso de erro, reverte as operações feitas para evitar inconsistencia no banco
+            connection.setAutoCommit(false);
+        	
+        	try(
+            	PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            	PreparedStatement betUserPs = connection.prepareStatement(betUserQuery)
+            )
+            {	
+                ps.setString(1, newUser.getName());
+                ps.setInt(2, newUser.getAge());
+                ps.setString(3, newUser.getEmail());
+                ps.setString(4, newUser.getPassword());
+                ps.setString(5, newUser.getPermission());
+                ps.executeUpdate();
+                
+                ResultSet userKey = ps.getGeneratedKeys();
+                
+                if(userKey.next()) {
+                	int userId = userKey.getInt(1);
+                	
+                	if("user".equals(newUser.getPermission())) {
+                		betUserPs.setInt(1, userId);
+                		betUserPs.setFloat(2, (float)0.0);
+                		betUserPs.executeUpdate();
+                	}
+                	
+                	// Confirmar a transação
+                    connection.commit();
+                }
+                else {
+                	// Se a pk não for obtida e reverte a transação
+                    connection.rollback();
+                    throw new SQLException("Falha ao obter o ID do novo usuário.");
+                }
 
-            return newUser;
+                return newUser;
+            }
         }
-        catch(Exception e){
+        catch(SQLException e){
             e.printStackTrace();
-
+            
+            if(connection != null) {
+         	   try {
+                	// Tenta reverter a inserção caso dê algum erro
+                	connection.rollback();
+                	throw new SQLException("Failed to get user id!");
+                }
+                catch(SQLException ex){
+                	ex.printStackTrace();
+                }
+            }
+            
             throw e;
-        }
+         }
+         finally {
+         	if(connection != null) {
+         		try {
+             		// Ativa o auto-commit da transição novamente
+             		connection.setAutoCommit(true);
+             		// Fecha conexão depois do uso
+             		connection.close();
+             	}
+             	catch(SQLException ex) {
+             		ex.printStackTrace();
+             	}
+         	}
+         }
 	}
 
 	@Override
 	public List<User> getAllUser() throws SQLException {
-		String query = "SELECT * FROM bet_user";
+		String query = "SELECT * FROM users";
         List<User> users = new ArrayList<User>();
 
         try(
@@ -68,7 +126,7 @@ public class UserPostgresDAO implements UserDAO {
 
 	@Override
 	public User getUserById(int id) throws SQLException {
-		String query = "SELECT * FROM bet_user WHERE user_id=?";
+		String query = "SELECT * FROM users WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query))
         {
@@ -86,7 +144,7 @@ public class UserPostgresDAO implements UserDAO {
                 user.setEmail(response.getString("email")); 
                 user.setPassword(response.getString("password"));
                 user.setPermission(response.getString("permission"));
-                user.setBalance(response.getFloat("balance"));
+//                user.setBalance(response.getFloat("balance"));
                 
             }
             
@@ -101,7 +159,7 @@ public class UserPostgresDAO implements UserDAO {
 
 	@Override
 	public boolean deleteUserById(int id) throws SQLException {
-		String query = "DELETE FROM bet_user WHERE user_id=?";
+		String query = "DELETE FROM users WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){    
 
@@ -118,7 +176,7 @@ public class UserPostgresDAO implements UserDAO {
 
 	@Override
 	public boolean editUser(User user, int id) throws SQLException {
-		String query = "UPDATE bet_user SET name=? age=? email=? password=? WHERE user_id=?";
+		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
 
@@ -140,7 +198,7 @@ public class UserPostgresDAO implements UserDAO {
 
 	@Override
 	public boolean addDepositUser(int id, float amount) throws SQLException {
-		String query = "UPDATE bet_user SET deposit=? WHERE user_id=?";
+		String query = "UPDATE users SET deposit=? WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
             ps.setFloat(1, amount);

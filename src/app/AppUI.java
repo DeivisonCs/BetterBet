@@ -103,8 +103,7 @@ public class AppUI {
 						(int) signInAgeField.getValue(),
 						signInEmailField.getText(),
 						signInFieldPassword.getText(),
-						"user",
-						(float) signInBalanceField.getValue()
+						"user"
 					);
 					
 					userDB.createUser(newUser);
