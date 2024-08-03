@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import java.awt.Panel;
 import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
@@ -19,13 +21,20 @@ import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import com.toedter.calendar.JCalendar;
 
+import components.RoundedTextField;
+import components.RoundedButton;
+import components.RoundedPasswordField;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class SignUpView {
 
 	private JFrame frame;
-	private JTextField nameField;
-	private JTextField emailField;
-	private JTextField addressField;
-	private JTextField cpfField;
+	private RoundedTextField nameField;
+	private RoundedTextField emailField;
+	private RoundedTextField addressField;
+	private RoundedTextField cpfField;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
 	private JTextPane txtpnBemVindoAo;
@@ -65,30 +74,34 @@ public class SignUpView {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.setBounds(100, 100, 1170, 699);
+		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		
 		// ------------------------- Welcome Section ------------------------- 
 		
 		Panel WelcomeSection = new Panel();
-		WelcomeSection.setBackground(new Color(192, 192, 192));
+		WelcomeSection.setBackground(new Color(0, 0, 0));
 		WelcomeSection.setBounds(0, 0, 341, 660);
 		frame.getContentPane().add(WelcomeSection);
 		WelcomeSection.setLayout(null);
 		
 		txtpnBemVindoAo  = new JTextPane();
+		txtpnBemVindoAo.setForeground(new Color(255, 215, 0));
 		txtpnBemVindoAo.setEditable(false);
-		txtpnBemVindoAo.setBackground(new Color(192, 192, 192));
+		txtpnBemVindoAo.setBackground(new Color(0, 0, 0));
 		txtpnBemVindoAo.setFont(new Font("Tahoma", Font.PLAIN, 31));
 		txtpnBemVindoAo.setText("Bem Vindo\r\n      Ao\r\n BetterBet");
 		txtpnBemVindoAo.setBounds(84, 202, 204, 134);
 		WelcomeSection.add(txtpnBemVindoAo);
 		
 		JTextPane txtpnOSiteCom = new JTextPane();
+		txtpnOSiteCom.setForeground(new Color(255, 255, 255));
 		txtpnOSiteCom.setEditable(false);
 		txtpnOSiteCom.setText("O site com as apostas seguras, lucrativas e com melhor conversão em ganhos do mercado!");
 		txtpnOSiteCom.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtpnOSiteCom.setBackground(Color.LIGHT_GRAY);
+		txtpnOSiteCom.setBackground(new Color(0, 0, 0));
 		txtpnOSiteCom.setBounds(44, 347, 262, 134);
 		WelcomeSection.add(txtpnOSiteCom);
 		
@@ -96,18 +109,20 @@ public class SignUpView {
 		// ------------------------- SignUp Section ------------------------- 
 		
 		JLabel PageTitle = new JLabel("Criar Conta");
+		PageTitle.setForeground(new Color(255, 215, 0));
 		PageTitle.setFont(new Font("Tahoma", Font.PLAIN, 30));
 		PageTitle.setBounds(637, 78, 191, 31);
 		frame.getContentPane().add(PageTitle);
 		
-		// Name Field
+		// ------------------------- Name Field -------------------------
 		namePlaceholder = new JLabel("Nome");
+		namePlaceholder.setForeground(new Color(156, 156, 156));
 		namePlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		namePlaceholder.setBounds(519, 173, 426, 14);
 		frame.getContentPane().add(namePlaceholder);
 		
 		
-		nameField = new JTextField();
+		nameField = new RoundedTextField();
 		namePlaceholder.setLabelFor(nameField);
 		nameField.addFocusListener(new FocusAdapter() {
 			
@@ -129,13 +144,14 @@ public class SignUpView {
 		nameField.setColumns(10);
 		
 		
-		// Email Field
+		// ------------------------- Email Field -------------------------
 		emailPlaceholder = new JLabel("Email");
+		emailPlaceholder.setForeground(new Color(156, 156, 156));
 		emailPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		emailPlaceholder.setBounds(519, 229, 426, 14);
 		frame.getContentPane().add(emailPlaceholder);
 		
-		emailField = new JTextField();
+		emailField = new RoundedTextField();
 		emailPlaceholder.setLabelFor(emailField);
 		emailField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -153,13 +169,14 @@ public class SignUpView {
 		emailField.setBounds(505, 221, 440, 31);
 		frame.getContentPane().add(emailField);
 		
-		// Password Field 
+		// ------------------------- Password Field -------------------------
 		passwordPlaceholder = new JLabel("Senha");
+		passwordPlaceholder.setForeground(new Color(156, 156, 156));
 		passwordPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		passwordPlaceholder.setBounds(519, 332, 209, 14);
 		frame.getContentPane().add(passwordPlaceholder);
 		
-		passwordField = new JPasswordField();
+		passwordField = new RoundedPasswordField();
 		passwordPlaceholder.setLabelFor(passwordField);
 		passwordField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -177,13 +194,14 @@ public class SignUpView {
 		frame.getContentPane().add(passwordField);
 		
 		
-		// Confirm Password Field
+		// ------------------------- Confirm Password Field -------------------------
 		confirmPasswordPlaceholder = new JLabel("Confirme sua senha");
+		confirmPasswordPlaceholder.setForeground(new Color(156, 156, 156));
 		confirmPasswordPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		confirmPasswordPlaceholder.setBounds(519, 391, 209, 14);
 		frame.getContentPane().add(confirmPasswordPlaceholder);
 		
-		confirmPasswordField = new JPasswordField();
+		confirmPasswordField = new RoundedPasswordField();
 		confirmPasswordPlaceholder.setLabelFor(confirmPasswordField);
 		confirmPasswordField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -201,13 +219,14 @@ public class SignUpView {
 		frame.getContentPane().add(confirmPasswordField);
 	
 		
-		// Address Field
+		// ------------------------- Address Field -------------------------
 		addressPlaceholder = new JLabel("Endereço");
+		addressPlaceholder.setForeground(new Color(156, 156, 156));
 		addressPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		addressPlaceholder.setBounds(519, 284, 426, 14);
 		frame.getContentPane().add(addressPlaceholder);
 		
-		addressField = new JTextField();
+		addressField = new RoundedTextField();
 		addressPlaceholder.setLabelFor(addressField);
 		addressField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -226,13 +245,14 @@ public class SignUpView {
 		frame.getContentPane().add(addressField);
 		
 		
-		// CPF Field
+		// ------------------------- CPF Field -------------------------
 		cpfPlaceholder = new JLabel("CPF");
+		cpfPlaceholder.setForeground(new Color(156, 156, 156));
 		cpfPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
 		cpfPlaceholder.setBounds(519, 448, 61, 14);
 		frame.getContentPane().add(cpfPlaceholder);
 		
-		cpfField = new JTextField();
+		cpfField = new RoundedTextField();
 		cpfPlaceholder.setLabelFor(cpfField);
 		cpfField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -251,24 +271,27 @@ public class SignUpView {
 		frame.getContentPane().add(cpfField);
 		
 		
-		// BirthDate Field
+		// ------------------------- BirthDate Field -------------------------
 		JCalendar calendar = new JCalendar();
 		frame.getContentPane().add(calendar);
-		calendar.setBounds(745, 324, 200, 180);
+		calendar.setBounds(745, 324, 200, 145);
 //		lblDataDeNascimento = new JLabel("Data de Nascimento");
 //		lblDataDeNascimento.setFont(new Font("Arial", Font.PLAIN, 12));
 //		lblDataDeNascimento.setBounds(750, 442, 140, 14);
 //		frame.getContentPane().add(lblDataDeNascimento);
 		
 		
-		JButton btnNewButton = new JButton("Cadastrar");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setBounds(637, 549, 179, 59);
-		frame.getContentPane().add(btnNewButton);
+		// ------------------------- SignUp Button -------------------------
+		RoundedButton button = new RoundedButton("Cadastrar");
+        button.setBounds(637, 522, 179, 59);
+        button.setBackground(new Color(102, 203, 102)); // Example color
+        button.setForeground(Color.WHITE);
+        frame.getContentPane().add(button);
 		
 		// ------------------------- SignIn Link ------------------------- 
-		JLabel lblNewLabel = new JLabel("<html><a href=''>Já Possui Conta?</a></html>");
-		lblNewLabel.setBounds(690, 618, 117, 14);
+		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF;'>Já Possui Conta?</a></html>");
+		lblNewLabel.setForeground(new Color(255, 2, 255));
+		lblNewLabel.setBounds(685, 592, 117, 14);
 		frame.getContentPane().add(lblNewLabel);
 			
 	}
