@@ -1,8 +1,10 @@
 CREATE TABLE users(  
     user_id SERIAL NOT NULL,
+    cpf VARCHAR(14),
     name VARCHAR(50),
-    age int,
     email VARCHAR(50),
+    birthDate DATE,
+    address VARCHAR(100),
     password VARCHAR(50),
     permission VARCHAR(20),
     CONSTRAINT pk_user PRIMARY KEY (user_id)
@@ -16,4 +18,3 @@ CREATE TABLE bet_users(
     CONSTRAINT pk_user PRIMARY KEY (bet_user_id),
     CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users
 );
-

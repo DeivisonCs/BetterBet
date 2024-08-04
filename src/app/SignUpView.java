@@ -27,6 +27,8 @@ import components.RoundedPasswordField;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SignUpView {
 
@@ -78,6 +80,7 @@ public class SignUpView {
 		frame.setBounds(100, 100, 1170, 699);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
+		frame.setVisible(true);
 		
 		// ------------------------- Welcome Section ------------------------- 
 		
@@ -283,6 +286,7 @@ public class SignUpView {
 		
 		// ------------------------- SignUp Button -------------------------
 		RoundedButton button = new RoundedButton("Cadastrar");
+		button.setFont(new Font("Tahoma", Font.PLAIN, 22));
         button.setBounds(637, 522, 179, 59);
         button.setBackground(new Color(102, 203, 102)); // Example color
         button.setForeground(Color.WHITE);
@@ -290,6 +294,13 @@ public class SignUpView {
 		
 		// ------------------------- SignIn Link ------------------------- 
 		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF;'>Já Possui Conta?</a></html>");
+		lblNewLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame.dispose();
+				new SignInView();
+			}
+		});
 		lblNewLabel.setForeground(new Color(255, 2, 255));
 		lblNewLabel.setBounds(685, 592, 117, 14);
 		frame.getContentPane().add(lblNewLabel);

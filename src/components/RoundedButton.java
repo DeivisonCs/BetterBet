@@ -18,22 +18,22 @@ public class RoundedButton extends JButton {
 
     @Override
     protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        Graphics2D graphics = (Graphics2D) g.create();
         // Melhora qualidade da borda
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Background
-        g2d.setColor(getBackground());
-        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), ARC_WIDTH, ARC_HEIGHT);
+        graphics.setColor(getBackground());
+        graphics.fillRoundRect(0, 0, getWidth(), getHeight(), ARC_WIDTH, ARC_HEIGHT);
 
         // Borda
-        g2d.setColor(Color.GRAY); // Border color
-        g2d.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC_WIDTH, ARC_HEIGHT);
+        graphics.setColor(Color.GRAY); // Border color
+        graphics.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC_WIDTH, ARC_HEIGHT);
 
         // Texto do botão
         super.paintComponent(g);
 
         // Libera os recursos gráficos
-        g2d.dispose();
+        graphics.dispose();
     }
 }
