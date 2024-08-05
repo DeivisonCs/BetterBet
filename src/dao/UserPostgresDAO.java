@@ -15,9 +15,9 @@ import models.User;
 public class UserPostgresDAO implements UserDAO {
 
 	@Override
-	public User createUser(User newUser) throws SQLException {
-		String query = "INSERT INTO users (name, age, email, password, permission) VALUES (?, ?, ?, ?, ?)";
-		String betUserQuery = "INSERT INTO bet_users (user_id, balance) VALUES (?, ?)";
+	public CommonUser createCommonUser(CommonUser newUser) throws SQLException {
+		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
+		String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?)";
 
 		Connection connection = null;
         try {
@@ -33,7 +33,7 @@ public class UserPostgresDAO implements UserDAO {
             )
             {	
                 ps.setString(1, newUser.getName());
-                ps.setInt(2, newUser.getAge());
+                ps.setString(2, newUser.getCpf());
                 ps.setString(3, newUser.getEmail());
                 ps.setString(4, newUser.getPassword());
                 ps.setString(5, newUser.getPermission());

@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
@@ -22,6 +24,10 @@ import java.text.DateFormat;
 import com.toedter.calendar.JCalendar;
 
 import components.RoundedTextField;
+import dao.UserDAO;
+import dao.UserPostgresDAO;
+import models.CommonUser;
+import security.PasswordHandler;
 import components.RoundedButton;
 import components.RoundedPasswordField;
 
@@ -29,9 +35,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+
+import middleware.UserMiddleware; 
 
 public class SignUpView {
-
+	private UserDAO userDb = new UserPostgresDAO();
+	private UserMiddleware userMiddleware = new UserMiddleware();
+	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
+	
+	
 	private JFrame frame;
 	private RoundedTextField nameField;
 	private RoundedTextField emailField;
@@ -47,6 +60,7 @@ public class SignUpView {
 	private JLabel addressPlaceholder;
 	private JLabel cpfPlaceholder;
 	private JLabel lblDataDeNascimento;
+	
 
 	/**
 	 * Launch the application.
@@ -188,14 +202,13 @@ public class SignUpView {
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				if(passwordField.getText().length() == 0) {
+				if(passwordField.getPassword().length == 0) {
 					passwordPlaceholder.setVisible(true);
 				}
 			}
 		});
 		passwordField.setBounds(505, 324, 223, 31);
 		frame.getContentPane().add(passwordField);
-		
 		
 		// ------------------------- Confirm Password Field -------------------------
 		confirmPasswordPlaceholder = new JLabel("Confirme sua senha");
@@ -213,7 +226,7 @@ public class SignUpView {
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				if(confirmPasswordField.getText().length() == 0) {
+				if(confirmPasswordField.getPassword().length == 0) {
 					confirmPasswordPlaceholder.setVisible(true);
 				}
 			}
@@ -275,9 +288,9 @@ public class SignUpView {
 		
 		
 		// ------------------------- BirthDate Field -------------------------
-		JCalendar calendar = new JCalendar();
-		frame.getContentPane().add(calendar);
-		calendar.setBounds(745, 324, 200, 145);
+		JCalendar birthDateField = new JCalendar();
+		frame.getContentPane().add(birthDateField);
+		birthDateField.setBounds(745, 324, 200, 145);
 //		lblDataDeNascimento = new JLabel("Data de Nascimento");
 //		lblDataDeNascimento.setFont(new Font("Arial", Font.PLAIN, 12));
 //		lblDataDeNascimento.setBounds(750, 442, 140, 14);
@@ -286,6 +299,38 @@ public class SignUpView {
 		
 		// ------------------------- SignUp Button -------------------------
 		RoundedButton button = new RoundedButton("Cadastrar");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				CommonUser newUser = new CommonUser(
+						nameField.getText(),
+						cpfField.getText(),
+						formatedDate.format(birthDateField.getDate()),
+						emailField.getText(),
+						addressField.getText(),
+						passwordField.getPassword().toString(),
+						"User",
+						(float) 0.0);
+				
+				// Verifica se tem campos nulos
+				String validField = userMiddleware.verifyNewUser(newUser);
+				
+				if(validField != "200") {
+					JOptionPane.showMessageDialog(null, validField);
+				}
+				else {
+					try{
+						newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
+						userDb.createUser(newUser);
+					}
+					catch(SQLException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}
+				
+			}
+		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 22));
         button.setBounds(637, 522, 179, 59);
         button.setBackground(new Color(102, 203, 102)); // Example color
@@ -298,7 +343,7 @@ public class SignUpView {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				frame.dispose();
-				new SignInView();
+				new LogInView();
 			}
 		});
 		lblNewLabel.setForeground(new Color(255, 2, 255));

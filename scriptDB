@@ -3,8 +3,6 @@ CREATE TABLE users(
     cpf VARCHAR(14),
     name VARCHAR(50),
     email VARCHAR(50),
-    birthDate DATE,
-    address VARCHAR(100),
     password VARCHAR(50),
     permission VARCHAR(20),
     CONSTRAINT pk_user PRIMARY KEY (user_id)
@@ -13,6 +11,8 @@ CREATE TABLE users(
 CREATE TABLE bet_users(  
     bet_user_id SERIAL NOT NULL,
     user_id int,
+    birthDate DATE,
+    address VARCHAR(100),
     balance FLOAT,
     
     CONSTRAINT pk_user PRIMARY KEY (bet_user_id),

@@ -17,7 +17,7 @@ import components.RoundedButton;
 import components.RoundedPasswordField;
 import components.RoundedTextField;
 
-public class SignInView {
+public class LogInView {
 	private JFrame frame;
 	private JTextPane txtpnBemVindoAo;
 	private JLabel emailPlaceholder;
@@ -25,7 +25,7 @@ public class SignInView {
 	private RoundedTextField emailField;
 	private JPasswordField passwordField;
 	
-	public SignInView() {
+	public LogInView() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.setBounds(100, 100, 1170, 699);

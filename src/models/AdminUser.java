@@ -1,15 +1,16 @@
 package models;
 
+
 public class AdminUser extends User {
 
 	
 
-	public AdminUser(Integer id, String name, int age, String email, String password, String permission) {
-		super(id, name, age, email, password, permission);
+	public AdminUser(Integer id, String name, String cpf, String email, String password,  String permission, float balance) {
+		super(id, name, cpf, email, password, permission);
 	}
 
-	public AdminUser(String name, int age, String email, String password, String permission) {
-		super(name, age, email, password, permission);
+	public AdminUser(String name, String cpf, String email, String password,  String permission, float balance) {
+		super(name, cpf, email, password, permission);
 	}
 
 	public Event createEvent() {
