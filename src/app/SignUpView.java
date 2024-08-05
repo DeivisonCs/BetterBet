@@ -24,7 +24,7 @@ import java.text.DateFormat;
 import com.toedter.calendar.JCalendar;
 
 import components.RoundedTextField;
-import dao.UserDAO;
+import dao.CommonUserDAO;
 import dao.UserPostgresDAO;
 import models.CommonUser;
 import security.PasswordHandler;
@@ -40,7 +40,7 @@ import java.sql.SQLException;
 import middleware.UserMiddleware; 
 
 public class SignUpView {
-	private UserDAO userDb = new UserPostgresDAO();
+	private CommonUserDAO userDb = new UserPostgresDAO();
 	private UserMiddleware userMiddleware = new UserMiddleware();
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
 	

@@ -12,12 +12,12 @@ import database.ConnectionDB;
 import models.CommonUser;
 import models.User;
 
-public class UserPostgresDAO implements UserDAO {
+public class UserPostgresDAO implements CommonUserDAO {
 
 	@Override
-	public CommonUser createCommonUser(CommonUser newUser) throws SQLException {
+	public CommonUser createUser(CommonUser newUser) throws SQLException {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
-		String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?)";
+		String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
 
 		Connection connection = null;
         try {
@@ -39,14 +39,19 @@ public class UserPostgresDAO implements UserDAO {
                 ps.setString(5, newUser.getPermission());
                 ps.executeUpdate();
                 
+                // Recupera id gerado na query
                 ResultSet userKey = ps.getGeneratedKeys();
                 
+                // Verifica se o id realmente existe
                 if(userKey.next()) {
                 	int userId = userKey.getInt(1);
                 	
+                	// Verifica se o tipo de permissão é realmente de usuário
                 	if("user".equals(newUser.getPermission())) {
                 		betUserPs.setInt(1, userId);
-                		betUserPs.setFloat(2, (float)0.0);
+                		betUserPs.setString(2, newUser.getBirthDate());
+                		betUserPs.setString(3, newUser.getAddress());
+                		betUserPs.setFloat(4, (float)0.0);
                 		betUserPs.executeUpdate();
                 	}
                 	
@@ -94,9 +99,9 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAllUser() throws SQLException {
+	public List<CommonUser> getAllUser() throws SQLException {
 		String query = "SELECT * FROM users";
-        List<User> users = new ArrayList<User>();
+        List<CommonUser> users = new ArrayList<CommonUser>();
 
         try(
             PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
@@ -107,8 +112,10 @@ public class UserPostgresDAO implements UserDAO {
             		new CommonUser(
                             response.getInt("user_id"),
                             response.getString("name"), 
-                            response.getInt("age"),
-                            response.getString("email"), 
+                            response.getString("cpf"), 
+                            response.getString("birthDate"),
+                            response.getString("email"),
+                            response.getString("address"), 
                             response.getString("password"), 
                             response.getString("permission"), 
                             response.getFloat("balance")
@@ -125,7 +132,7 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public User getUserById(int id) throws SQLException {
+	public CommonUser getUserById(int id) throws SQLException {
 		String query = "SELECT * FROM users WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query))
@@ -134,14 +141,16 @@ public class UserPostgresDAO implements UserDAO {
             
             ResultSet response = ps.executeQuery();
             
-            User user = new CommonUser();
+            CommonUser user = new CommonUser();
 
             if(response.next()){
                 
                 user.setId(response.getInt("user_id"));
                 user.setName(response.getString("name"));
-                user.setAge(response.getInt("age"));
-                user.setEmail(response.getString("email")); 
+                user.setCpf(response.getString("cpf"));
+                user.setBirthDate(response.getString("birthDate"));
+                user.setEmail(response.getString("email"));
+                user.setAddress(response.getString("address"));
                 user.setPassword(response.getString("password"));
                 user.setPermission(response.getString("permission"));
 //                user.setBalance(response.getFloat("balance"));
@@ -175,25 +184,26 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public boolean editUser(User user, int id) throws SQLException {
-		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
-
-        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
-
-            ps.setString(1, user.getName());
-            ps.setInt(2, user.getAge());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassword());
-            ps.setInt(5, id);
-
-            int rowsAffected = ps.executeUpdate();
-
-            return rowsAffected>0;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+	public boolean editUser(CommonUser user, int id) throws SQLException {
+//		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
+//
+//        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
+//
+//            ps.setString(1, user.getName());
+//            ps.setInt(2, user.getAge());
+//            ps.setString(3, user.getEmail());
+//            ps.setString(4, user.getPassword());
+//            ps.setInt(5, id);
+//
+//            int rowsAffected = ps.executeUpdate();
+//
+//            return rowsAffected>0;
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//            throw e;
+//        }
+		return false;
 	}
 
 	@Override
