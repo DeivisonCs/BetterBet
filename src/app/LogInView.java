@@ -123,7 +123,7 @@ public class LogInView {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				String email = emailField.getText();
-				String password = passwordField.getPassword().toString();
+				String password = new String(passwordField.getPassword());
 				
 				try {
 					CommonUser user = userDB.loginUser(email, password);

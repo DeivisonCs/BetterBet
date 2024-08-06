@@ -22,7 +22,7 @@ public class UserPostgresDAO implements CommonUserDAO {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
 	    String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
 
-	    Connection connection = null;
+	    Connection connection = ConnectionDB.getInstance().getConnection();
 	    PreparedStatement ps = null;
 	    PreparedStatement betUserPs = null;
 	    ResultSet userKey = null;
@@ -100,7 +100,6 @@ public class UserPostgresDAO implements CommonUserDAO {
 	        if (connection != null) {
 	            try {
 	                connection.setAutoCommit(true); // Ativa o auto-commit de volta
-	                connection.close();
 	            } catch (SQLException ex) {
 	                ex.printStackTrace();
 	            }
@@ -115,11 +114,11 @@ public class UserPostgresDAO implements CommonUserDAO {
 		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
 		
 		CommonUser user = new CommonUser();
-		
+		Connection connection = ConnectionDB.getInstance().getConnection();
 		try(
 //			PreparedStatement psGetPassword = ConnectionDB.getInstance().getConnection().prepareStatement(getPasswordQuery);
-			PreparedStatement psUser = ConnectionDB.getInstance().getConnection().prepareStatement(query1);
-			PreparedStatement psBetUser = ConnectionDB.getInstance().getConnection().prepareStatement(query2)){
+			PreparedStatement psUser = connection.prepareStatement(query1);
+			PreparedStatement psBetUser = connection.prepareStatement(query2)){
 			
 			// --------------------- Informações Gerais do Usuário ---------------------
 			psUser.setString(1, email);
