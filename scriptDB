@@ -15,6 +15,6 @@ CREATE TABLE bet_users(
     address VARCHAR(100),
     balance FLOAT,
     
-    CONSTRAINT pk_user PRIMARY KEY (bet_user_id),
+    CONSTRAINT pk_bet_user PRIMARY KEY (bet_user_id),
     CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users
 );

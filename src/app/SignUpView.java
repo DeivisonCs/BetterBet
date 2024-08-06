@@ -26,6 +26,7 @@ import com.toedter.calendar.JCalendar;
 import components.RoundedTextField;
 import dao.CommonUserDAO;
 import dao.UserPostgresDAO;
+import database.InitDatabase;
 import models.CommonUser;
 import security.PasswordHandler;
 import components.RoundedButton;
@@ -69,6 +70,7 @@ public class SignUpView {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					InitDatabase.initializeDatabase();
 					SignUpView window = new SignUpView();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
