@@ -28,7 +28,7 @@ public class UserMiddleware {
 		}
 		
 		// Valida Email
-		String validEmail = validEmail(validCpf);
+		String validEmail = validEmail(user.getEmail());
 		if(!validEmail.equals(VALIDATED)) {
 			return validEmail;
 		}

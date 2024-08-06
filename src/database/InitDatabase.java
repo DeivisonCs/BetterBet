@@ -14,11 +14,11 @@ public class InitDatabase {
 		String createTableUsers = 
 				"CREATE TABLE users("
 				+ "    user_id SERIAL NOT NULL,"
-				+ "    cpf VARCHAR(14),"
-				+ "    name VARCHAR(50),"
-				+ "    email VARCHAR(50),"
-				+ "    password VARCHAR(70),"
-				+ "    permission VARCHAR(20),"
+				+ "    cpf VARCHAR(14) NOT NULL UNIQUE,"
+				+ "    name VARCHAR(50) NOT NULL,"
+				+ "    email VARCHAR(50) NOT NULL UNIQUE,"
+				+ "    password VARCHAR(70) NOT NULL,"
+				+ "    permission VARCHAR(20) NOT NULL,"
 				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
 				+ ");";
 		

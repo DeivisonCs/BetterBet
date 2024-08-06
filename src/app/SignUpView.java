@@ -318,7 +318,7 @@ public class SignUpView {
 					try{
 						newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
 						userDb.createUser(newUser);
-						JOptionPane.showMessageDialog(null, "Usuário cadasrtado!\nBem vindo " + newUser.getName());
+						JOptionPane.showMessageDialog(null, "Usuário cadastrado!\nBem vindo " + newUser.getName());
 					}
 					catch(SQLException ex) {
 						JOptionPane.showMessageDialog(null, ex);

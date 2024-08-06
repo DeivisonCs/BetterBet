@@ -23,16 +23,20 @@ public class UserPostgresDAO implements CommonUserDAO {
 	    String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
 
 	    Connection connection = ConnectionDB.getInstance().getConnection();
-	    PreparedStatement ps = null;
-	    PreparedStatement betUserPs = null;
-	    ResultSet userKey = null;
 
-	    try {
-	        connection = ConnectionDB.getInstance().getConnection();
+	    try (
+	    	PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement betUserPs = connection.prepareStatement(betUserQuery);
+	    ){
 	        connection.setAutoCommit(false);
 
-	        ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-	        betUserPs = connection.prepareStatement(betUserQuery);
+	        if(isEmailRegistered(newUser.getEmail())) {
+	        	throw new SQLException("Email já cadastrado.");
+	        }
+	        
+	        if(isCpfRegistered(newUser.getCpf())) {
+	        	throw new SQLException("CPF já cadastrado.");
+	        }
 
 	        ps.setString(1, newUser.getName());
 	        ps.setString(2, newUser.getCpf());
@@ -42,7 +46,7 @@ public class UserPostgresDAO implements CommonUserDAO {
 	        ps.executeUpdate();
 
 	        // Recupera id gerado na query
-	        userKey = ps.getGeneratedKeys();
+	        ResultSet userKey = ps.getGeneratedKeys();
 	        
 	        if (userKey.next()) {
 	            int userId = userKey.getInt(1);
@@ -76,27 +80,6 @@ public class UserPostgresDAO implements CommonUserDAO {
 	        }
 	        throw e;
 	    } finally {
-	        if (userKey != null) {
-	            try {
-	                userKey.close();
-	            } catch (SQLException ex) {
-	                ex.printStackTrace();
-	            }
-	        }
-	        if (betUserPs != null) {
-	            try {
-	                betUserPs.close();
-	            } catch (SQLException ex) {
-	                ex.printStackTrace();
-	            }
-	        }
-	        if (ps != null) {
-	            try {
-	                ps.close();
-	            } catch (SQLException ex) {
-	                ex.printStackTrace();
-	            }
-	        }
 	        if (connection != null) {
 	            try {
 	                connection.setAutoCommit(true); // Ativa o auto-commit de volta
@@ -282,5 +265,60 @@ public class UserPostgresDAO implements CommonUserDAO {
         }
 	}
 
-    
+	@Override
+	public boolean isEmailRegistered(String email) throws SQLException{
+		String query = "SELECT COUNT(*) FROM users WHERE email=?";
+		int count = 0;
+		
+		try(
+			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
+		){
+			ps.setString(1, email);
+			
+			ResultSet response = ps.executeQuery();
+			
+			if(response.next()) {
+				count = response.getInt(1);
+			}
+			
+			return count >= 1;
+		}
+		catch (SQLException ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
+	}
+	
+	@Override
+	public boolean isCpfRegistered(String cpf) throws SQLException{
+		String query = "SELECT COUNT(*) FROM users WHERE cpf=?";
+		int count = 0;
+		
+		try(
+			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
+		){
+			ps.setString(1, cpf);
+			
+			ResultSet response = ps.executeQuery();
+			
+			if(response.next()) {
+				count = response.getInt(1);
+			}
+			
+			return count >= 1;
+		}
+		catch (SQLException ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
+	}
 }
+
+
+
+
+
+
+
+
+

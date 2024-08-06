@@ -10,6 +10,8 @@ public interface CommonUserDAO {
 
 	public CommonUser loginUser(String email, String password) throws SQLException;
 	public CommonUser createUser(CommonUser newUser) throws SQLException;
+	public boolean isEmailRegistered(String email) throws SQLException;
+	public boolean isCpfRegistered(String cpf) throws SQLException;
     public List <CommonUser> getAllUser() throws SQLException;
     public CommonUser getUserById(int id) throws SQLException;
     public boolean deleteUserById(int id) throws SQLException;
