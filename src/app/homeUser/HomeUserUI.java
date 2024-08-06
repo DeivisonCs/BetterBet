@@ -21,6 +21,7 @@ import java.awt.event.MouseWheelListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -102,10 +103,11 @@ public class HomeUserUI {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
+		frame.setResizable(false);
 		
 		JPanel navBarPanel = new JPanel();
 		navBarPanel.setBackground(new Color(0, 0, 0));
-		navBarPanel.setBounds(0, 0, 1015, 70);
+		navBarPanel.setBounds(0, 0, 1184, 70);
 		frame.getContentPane().add(navBarPanel);
 		navBarPanel.setLayout(null);
 		
@@ -129,7 +131,7 @@ public class HomeUserUI {
 
         
         roundedTextField.setBackground(Color.WHITE);
-        roundedTextField.setBounds(327, 15, 390, 35);
+        roundedTextField.setBounds(389, 15, 390, 35);
         navBarPanel.add(roundedTextField);
 		
 		JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", user.getBalance()));
@@ -141,7 +143,7 @@ public class HomeUserUI {
 		JLabel accountLabel = new JLabel("Conta");
 		accountLabel.setForeground(new Color(255, 255, 255));
 		accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-		accountLabel.setBounds(886, 23, 59, 14);
+		accountLabel.setBounds(1009, 23, 59, 14);
 		navBarPanel.add(accountLabel);
 		
 		JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
@@ -155,7 +157,7 @@ public class HomeUserUI {
 				}
 			}
 		});
-		makeBetButton.setBounds(737, 15, 128, 29);
+		makeBetButton.setBounds(846, 18, 128, 29);
 		navBarPanel.add(makeBetButton);
 		
 		/*
@@ -172,7 +174,7 @@ public class HomeUserUI {
 		JScrollPane gameScrollPane = new JScrollPane(gamesPanel);
 		gameScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		gameScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		gameScrollPane.setBounds(211, 162, 804, 399);
+		gameScrollPane.setBounds(211, 162, 973, 499);
 		gameScrollPane.setBorder(null);
         gameScrollPane.addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -189,7 +191,7 @@ public class HomeUserUI {
 		JPanel gamesDescriptionPanel = new JPanel();
 		gamesDescriptionPanel.setForeground(new Color(40, 40, 40));
 		gamesDescriptionPanel.setBackground(new Color(30, 30, 30));
-		gamesDescriptionPanel.setBounds(211, 69, 804, 103);
+		gamesDescriptionPanel.setBounds(211, 69, 973, 103);
 		frame.getContentPane().add(gamesDescriptionPanel);
 		gamesDescriptionPanel.setLayout(null);
 		
@@ -213,11 +215,11 @@ public class HomeUserUI {
             }
         });
 		
-		eventScrollPane.setBounds(0, 134, 213, 427);
+		eventScrollPane.setBounds(0, 134, 213, 527);
 		frame.getContentPane().add(eventScrollPane);
 		
 		eventsPanel = new JPanel();
-		eventsPanel.setBackground(new Color(234, 199, 0));
+		eventsPanel.setBackground(new Color(30, 30, 30));
 		eventsPanel.setBorder(null);
 		eventScrollPane.setViewportView(eventsPanel);
 		GridBagLayout gbl_eventsPanel = new GridBagLayout();
@@ -239,7 +241,7 @@ public class HomeUserUI {
 		eventsDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
 		eventsDescriptionPanel.add(eventsDescriptionLabel);
 		
-		frame.setBounds(100, 100, 1030, 600);
+		frame.setBounds(100, 100, 1200, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	}
@@ -250,6 +252,7 @@ public class HomeUserUI {
 		gamesPanel.removeAll();
 		
 
+		
 		GridBagConstraints gbc = new GridBagConstraints();
 	        gbc.gridx = 0;
 	        gbc.gridy = GridBagConstraints.RELATIVE;
@@ -260,20 +263,32 @@ public class HomeUserUI {
         
         for (Match match : matches) {
         	
-        	MatchComponent matchComponent = new MatchComponent(match);
-        	matchComponent.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB()) && !selectedMatches.contains(matchComponent)) {
-                    	selectedMatches.add(matchComponent);
-                    } 
-                    
-                    if(!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB()) {
-                        selectedMatches.remove(matchComponent);
-                    }
-                }
-            });
-            gamesPanel.add(matchComponent, gbc);
+        	MatchComponent matchComponent;
+        	Optional<Integer> positionIfExists = positionIfExistsSelectedMatchComponent(match.getIdEvent(), match.getTeamA().getName(), match.getTeamB().getName());
+        	
+        	
+        	
+        	if (positionIfExists.isEmpty()) {
+				matchComponent = new MatchComponent(match);
+				matchComponent.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB())
+								&& !selectedMatches.contains(matchComponent)) {
+							selectedMatches.add(matchComponent);
+						}
+
+						if (!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB()) {
+							selectedMatches.remove(matchComponent);
+						}
+					}
+				});
+			}else {
+				matchComponent = selectedMatches.get(positionIfExists.get());
+			}
+        	
+        	
+			gamesPanel.add(matchComponent, gbc);
             gbc.gridy++;
         }
 	    gbc.weighty = 1.0;
@@ -326,10 +341,26 @@ public class HomeUserUI {
 
 	    gbc.weighty = 1.0;
 	    JPanel filler = new JPanel();
-	    filler.setBackground(new Color(234, 199, 0)); 
+	    filler.setBackground(new Color(30, 30, 30)); 
 	    eventsPanel.add(filler, gbc);
 
 	    eventsPanel.revalidate();
 	    eventsPanel.repaint();
 	}
+	
+	private Optional<Integer> positionIfExistsSelectedMatchComponent(Integer event_id, String team_a, String team_b) {
+		if(!selectedMatches.isEmpty()) {
+			for (MatchComponent component : selectedMatches) {
+				if(component.getMatch().getIdEvent() == event_id 
+						&& component.getMatch().getTeamA().getName().equals(team_a)
+						&& component.getMatch().getTeamB().getName().equals(team_b)) {
+					return Optional.of(selectedMatches.indexOf(component));
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
+	
+	
 }
