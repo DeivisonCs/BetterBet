@@ -7,7 +7,8 @@ import java.time.format.DateTimeFormatter;
 import models.CommonUser;
 
 public class UserMiddleware {
-	public String verifyNewUser(CommonUser user) {
+	public String verifyNewUser(CommonUser user, String confirmPassword) {
+		System.out.println(user.toString());
 		
 		String nullFields = checkCommonUserFields(user);
 		if(nullFields != "200") {
@@ -16,6 +17,11 @@ public class UserMiddleware {
 		
 		if(!isOlderThan18(user.getBirthDate())) {
 			return "É necessário mais de 18 anos para criar conta na BetterBet!";
+		}
+		
+		if(!user.getPassword().equals(confirmPassword)) {
+//			System.out.println(user.getPassword() + " " + confirmPassword);
+			return "As senhas não coincidem!";
 		}
 		
 		return "200";
@@ -28,6 +34,9 @@ public class UserMiddleware {
 		}
 		if(user.getCpf() == null) {
 			return "CPF não pode ser nulo";
+		}
+		if(user.getCpf().length() != 14) {
+			return "CPF inválido";
 		}
 		if(user.getEmail() == null) {
 			return "Email não pode ser nulo";

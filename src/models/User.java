@@ -23,6 +23,7 @@ public class User {
 	public User(String name, String cpf, String email, String password,  String permission) {
 		this.name = name;
 		this.email = email;
+		this.cpf = cpf;
 		this.password = password;
 		this.permission = permission;
 	}

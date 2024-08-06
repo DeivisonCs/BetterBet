@@ -35,6 +35,9 @@ public class CommonUser extends User {
         return "CommonUser{\n"+ 
 				"\tName: " + this.getName() +
 				" | Email: " + this.getEmail() +
+				" | CPF: " + this.getCpf() +
+				" | BirthDate: " + this.getBirthDate() +
+				" | Address: " + this.getAddress() +
 				" | Password: " + this.getPassword() +
 				" | Balance: " + this.getBalance() +
 				" | Permission: " + this.getPermission() +

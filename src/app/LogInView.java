@@ -7,17 +7,23 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 
 import components.RoundedButton;
 import components.RoundedPasswordField;
 import components.RoundedTextField;
+import dao.CommonUserDAO;
+import dao.UserPostgresDAO;
+import models.CommonUser;
 
 public class LogInView {
+	private CommonUserDAO userDB = new UserPostgresDAO();
 	private JFrame frame;
 	private JTextPane txtpnBemVindoAo;
 	private JLabel emailPlaceholder;
@@ -101,7 +107,7 @@ public class LogInView {
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
-				if(passwordField.getText().length() == 0) {
+				if(passwordField.getPassword().length == 0) {
 					passwordPlaceholder.setVisible(true);
 				}
 			}
@@ -113,6 +119,21 @@ public class LogInView {
 		
 		// ------------------------- SignIp Button -------------------------
 		RoundedButton button = new RoundedButton("Logar");
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String email = emailField.getText();
+				String password = passwordField.getPassword().toString();
+				
+				try {
+					CommonUser user = userDB.loginUser(email, password);
+					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
+				}
+				catch(SQLException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				}
+			}
+		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 24));
         button.setBounds(641, 472, 179, 59);
         button.setBackground(new Color(102, 203, 102)); // Example color

@@ -4,23 +4,17 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
-import javax.swing.JTextField;
 import java.awt.Panel;
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import javax.swing.JFormattedTextField;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 import com.toedter.calendar.JCalendar;
 
 import components.RoundedTextField;
@@ -32,11 +26,10 @@ import security.PasswordHandler;
 import components.RoundedButton;
 import components.RoundedPasswordField;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import middleware.UserMiddleware; 
 
@@ -44,7 +37,6 @@ public class SignUpView {
 	private CommonUserDAO userDb = new UserPostgresDAO();
 	private UserMiddleware userMiddleware = new UserMiddleware();
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
-	
 	
 	private JFrame frame;
 	private RoundedTextField nameField;
@@ -311,12 +303,12 @@ public class SignUpView {
 						formatedDate.format(birthDateField.getDate()),
 						emailField.getText(),
 						addressField.getText(),
-						passwordField.getPassword().toString(),
-						"User",
+						new String(passwordField.getPassword()),
+						"user",
 						(float) 0.0);
 				
-				// Verifica se tem campos nulos
-				String validField = userMiddleware.verifyNewUser(newUser);
+				// Faz as validações necessárias no banco
+				String validField = userMiddleware.verifyNewUser(newUser, new String(confirmPasswordField.getPassword()));
 				
 				if(validField != "200") {
 					JOptionPane.showMessageDialog(null, validField);
@@ -325,6 +317,7 @@ public class SignUpView {
 					try{
 						newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
 						userDb.createUser(newUser);
+						JOptionPane.showMessageDialog(null, "Usuário cadasrtado!\nBem vindo " + newUser.getName());
 					}
 					catch(SQLException ex) {
 						JOptionPane.showMessageDialog(null, ex);

@@ -8,6 +8,7 @@ import models.User;
 
 public interface CommonUserDAO {
 
+	public CommonUser loginUser(String email, String password) throws SQLException;
 	public CommonUser createUser(CommonUser newUser) throws SQLException;
     public List <CommonUser> getAllUser() throws SQLException;
     public CommonUser getUserById(int id) throws SQLException;

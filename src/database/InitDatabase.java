@@ -17,7 +17,7 @@ public class InitDatabase {
 				+ "    cpf VARCHAR(14),"
 				+ "    name VARCHAR(50),"
 				+ "    email VARCHAR(50),"
-				+ "    password VARCHAR(50),"
+				+ "    password VARCHAR(70),"
 				+ "    permission VARCHAR(20),"
 				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
 				+ ");";
@@ -26,7 +26,7 @@ public class InitDatabase {
 				"CREATE TABLE bet_users("
 				+ "    bet_user_id SERIAL NOT NULL,"
 				+ "    user_id int,"
-				+ "    birthDate DATE,"
+				+ "    birthDate VARCHAR(10),"
 				+ "    address VARCHAR(100),"
 				+ "    balance FLOAT,"
 				+ "    CONSTRAINT pk_bet_user PRIMARY KEY (bet_user_id),"

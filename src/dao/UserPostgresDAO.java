@@ -3,99 +3,153 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import database.ConnectionDB;
 import models.CommonUser;
 import models.User;
+import security.PasswordHandler;
 
 public class UserPostgresDAO implements CommonUserDAO {
 
 	@Override
 	public CommonUser createUser(CommonUser newUser) throws SQLException {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
-		String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
+	    String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
 
-		Connection connection = null;
-        try {
-        	connection = ConnectionDB.getInstance().getConnection();
-        	
-        	// Desativar o auto-commit para gerenciar a inserção no banco manualmente
-        	// Em caso de erro, reverte as operações feitas para evitar inconsistencia no banco
-            connection.setAutoCommit(false);
-        	
-        	try(
-            	PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            	PreparedStatement betUserPs = connection.prepareStatement(betUserQuery)
-            )
-            {	
-                ps.setString(1, newUser.getName());
-                ps.setString(2, newUser.getCpf());
-                ps.setString(3, newUser.getEmail());
-                ps.setString(4, newUser.getPassword());
-                ps.setString(5, newUser.getPermission());
-                ps.executeUpdate();
-                
-                // Recupera id gerado na query
-                ResultSet userKey = ps.getGeneratedKeys();
-                
-                // Verifica se o id realmente existe
-                if(userKey.next()) {
-                	int userId = userKey.getInt(1);
-                	
-                	// Verifica se o tipo de permissão é realmente de usuário
-                	if("user".equals(newUser.getPermission())) {
-                		betUserPs.setInt(1, userId);
-                		betUserPs.setString(2, newUser.getBirthDate());
-                		betUserPs.setString(3, newUser.getAddress());
-                		betUserPs.setFloat(4, (float)0.0);
-                		betUserPs.executeUpdate();
-                	}
-                	
-                	// Confirmar a transação
-                    connection.commit();
-                }
-                else {
-                	// Se a pk não for obtida e reverte a transação
-                    connection.rollback();
-                    throw new SQLException("Falha ao obter o ID do novo usuário.");
-                }
+	    Connection connection = null;
+	    PreparedStatement ps = null;
+	    PreparedStatement betUserPs = null;
+	    ResultSet userKey = null;
 
-                return newUser;
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-            
-            if(connection != null) {
-         	   try {
-                	// Tenta reverter a inserção caso dê algum erro
-                	connection.rollback();
-                	throw new SQLException("Failed to get user id!");
-                }
-                catch(SQLException ex){
-                	ex.printStackTrace();
-                }
-            }
-            
-            throw e;
-         }
-         finally {
-         	if(connection != null) {
-         		try {
-             		// Ativa o auto-commit da transição novamente
-             		connection.setAutoCommit(true);
-             		// Fecha conexão depois do uso
-             		connection.close();
-             	}
-             	catch(SQLException ex) {
-             		ex.printStackTrace();
-             	}
-         	}
-         }
+	    try {
+	        connection = ConnectionDB.getInstance().getConnection();
+	        connection.setAutoCommit(false);
+
+	        ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+	        betUserPs = connection.prepareStatement(betUserQuery);
+
+	        ps.setString(1, newUser.getName());
+	        ps.setString(2, newUser.getCpf());
+	        ps.setString(3, newUser.getEmail());
+	        ps.setString(4, newUser.getPassword());
+	        ps.setString(5, newUser.getPermission());
+	        ps.executeUpdate();
+
+	        // Recupera id gerado na query
+	        userKey = ps.getGeneratedKeys();
+	        
+	        if (userKey.next()) {
+	            int userId = userKey.getInt(1);
+
+	            // Verifica se o tipo de permissão é realmente de usuário
+	            if ("user".equals(newUser.getPermission())) {
+	                betUserPs.setInt(1, userId);
+	                betUserPs.setString(2, newUser.getBirthDate());
+	                betUserPs.setString(3, newUser.getAddress());
+	                betUserPs.setFloat(4, 0.0f);
+	                betUserPs.executeUpdate();
+	            }
+
+	            // Confirmar a transação
+	            connection.commit();
+	        } else {
+	            // Se a pk não for obtida e reverte a transação
+	            connection.rollback();
+	            throw new SQLException("Falha ao obter o ID do novo usuário.");
+	        }
+
+	        return newUser;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        if (connection != null) {
+	            try {
+	                connection.rollback(); // Reverte a transação em caso de erro
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        throw e;
+	    } finally {
+	        if (userKey != null) {
+	            try {
+	                userKey.close();
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        if (betUserPs != null) {
+	            try {
+	                betUserPs.close();
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        if (ps != null) {
+	            try {
+	                ps.close();
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        if (connection != null) {
+	            try {
+	                connection.setAutoCommit(true); // Ativa o auto-commit de volta
+	                connection.close();
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	    }
+	}
+	
+	@Override
+	public CommonUser loginUser(String email, String password) throws SQLException{
+//		String getPasswordQuery = "SELECT password FROM users WHERE email = ?";
+		String query1 = "SELECT * FROM users WHERE email = ?";
+		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
+		
+		CommonUser user = new CommonUser();
+		
+		try(
+//			PreparedStatement psGetPassword = ConnectionDB.getInstance().getConnection().prepareStatement(getPasswordQuery);
+			PreparedStatement psUser = ConnectionDB.getInstance().getConnection().prepareStatement(query1);
+			PreparedStatement psBetUser = ConnectionDB.getInstance().getConnection().prepareStatement(query2)){
+			
+			// --------------------- Informações Gerais do Usuário ---------------------
+			psUser.setString(1, email);
+			ResultSet response = psUser.executeQuery();
+			
+			if(response.next() && PasswordHandler.validPassword(password, response.getString("password"))) {
+				user.setId(response.getInt("user_id"));
+				user.setName(response.getString("name"));
+				user.setEmail(response.getString("email"));
+				user.setCpf(response.getString("cpf"));
+				user.setPassword(password);
+				user.setPermission(response.getString("permission"));
+			}
+			
+			// --------------------- Informações do Usuário de Apostas ---------------------
+			psBetUser.setInt(1, user.getId());
+			ResultSet responseBetUser = psBetUser.executeQuery();
+			
+			if(responseBetUser.next()) {
+				user.setBalance(responseBetUser.getFloat("balance"));
+				user.setAddress(responseBetUser.getString("address"));
+				user.setBirthDate(responseBetUser.getString("birthDate"));
+			}
+			
+			return user;
+		}
+		catch(SQLException ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
 	}
 
 	@Override
