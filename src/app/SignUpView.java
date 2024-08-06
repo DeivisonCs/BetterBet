@@ -22,7 +22,7 @@ import dao.CommonUserDAO;
 import dao.UserPostgresDAO;
 import database.InitDatabase;
 import models.CommonUser;
-import security.PasswordHandler;
+
 import components.RoundedButton;
 import components.RoundedPasswordField;
 
@@ -30,6 +30,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import security.*;
 
 import middleware.UserMiddleware; 
 

@@ -134,13 +134,18 @@ public class UserPostgresDAO implements CommonUserDAO {
 			}
 			
 			// --------------------- Informações do Usuário de Apostas ---------------------
-			psBetUser.setInt(1, user.getId());
-			ResultSet responseBetUser = psBetUser.executeQuery();
-			
-			if(responseBetUser.next()) {
-				user.setBalance(responseBetUser.getFloat("balance"));
-				user.setAddress(responseBetUser.getString("address"));
-				user.setBirthDate(responseBetUser.getString("birthDate"));
+			if(user.getId() != null) {
+				psBetUser.setInt(1, user.getId());
+				ResultSet responseBetUser = psBetUser.executeQuery();
+				
+				if(responseBetUser.next()) {
+					user.setBalance(responseBetUser.getFloat("balance"));
+					user.setAddress(responseBetUser.getString("address"));
+					user.setBirthDate(responseBetUser.getString("birthDate"));
+				}
+			}
+			else {
+				throw new SQLException("Email ou senha inválidos!");
 			}
 			
 			return user;
