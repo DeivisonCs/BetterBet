@@ -230,7 +230,7 @@ public class HomeUserUI {
 		eventsPanel.setLayout(gbl_eventsPanel);
 		
 		JPanel eventsDescriptionPanel = new JPanel();
-		eventsDescriptionPanel.setBackground(new Color(234, 199, 0));
+		eventsDescriptionPanel.setBackground(new Color(30, 30, 30));
 		eventsDescriptionPanel.setBounds(0, 69, 213, 70);
 		frame.getContentPane().add(eventsDescriptionPanel);
 		eventsDescriptionPanel.setLayout(null);
