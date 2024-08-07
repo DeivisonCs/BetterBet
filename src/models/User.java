@@ -4,31 +4,28 @@ public class User {
 	
 	private Integer id;
 	private String name;
-	private int age;
+	private String cpf;
 	private String email;
 	private String password;
 	private String permission;
-	private float balance;
-
+	
 	public User(){}
 	
-	public User(Integer id, String name, int age, String email, String password,  String permission, float balance) {
+	public User(Integer id, String name, String cpf, String email, String password,  String permission) {
 		this.id = id;
 		this.name = name;
-		this.age = age;
+		this.cpf = cpf;
 		this.email = email;
 		this.password = password;
 		this.permission = permission;
-		this.balance = balance;
 	}
 	
-	public User(String name, int age, String email, String password,  String permission, float balance) {
+	public User(String name, String cpf, String email, String password,  String permission) {
 		this.name = name;
-		this.age = age;
 		this.email = email;
+		this.cpf = cpf;
 		this.password = password;
 		this.permission = permission;
-		this.balance = balance;
 	}
 
 
@@ -41,18 +38,16 @@ public class User {
 	public void setEmail(String email) {this.email = email;}
 	public String getPassword() {return password;}
 	public void setPassword(String password) {this.password = password;}
-	public float getBalance() {return balance;}
-	public void setBalance(float balance) {this.balance = balance;}
-	public int getAge() {return age;}
-	public void setAge(int age) {this.age = age;}
 	public String getPermission() {return permission;}
 	public void setPermission(String permission) {this.permission = permission;}
+	public String getCpf() {return cpf;}
+	public void setCpf(String cpf) {this.cpf = cpf;}
+	
 
     public String toString() {
         return "Name: " + this.name +
             " | Email: " + this.email +
             " | Password: " + this.password +
-            " | Balance: " + this.balance +
             " | Permission: " + this.permission;
     }
 }
