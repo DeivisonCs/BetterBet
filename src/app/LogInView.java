@@ -130,7 +130,7 @@ public class LogInView {
 					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
 				}
 				catch(SQLException ex) {
-					JOptionPane.showMessageDialog(null, ex);
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
 		});
