@@ -133,6 +133,17 @@ public class LogInView {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setBackground(new Color(255, 215, 0));
+				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setBackground(new Color(102, 203, 102));
+				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+			}
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 24));
         button.setBounds(641, 472, 179, 59);
@@ -141,12 +152,21 @@ public class LogInView {
         frame.getContentPane().add(button);
 		
 		// ------------------------- SignUn Link ------------------------- 
-		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF;'>Não Possui Conta?</a></html>");
+		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF; text-decoration: none;'>Não Possui Conta?</a></html>");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				frame.dispose();
 				new SignUpView();
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblNewLabel.setText("<html><a href='' style='color: #A3C2FF; text-decoration: underline;'>Não Possui Conta?</a></html>");
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblNewLabel.setText("<html><a href='' style='color: #A3C2FF; text-decoration: none;'>Não Possui Conta?</a></html>");
 			}
 		});
 		lblNewLabel.setForeground(new Color(255, 2, 255));
