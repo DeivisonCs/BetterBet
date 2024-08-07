@@ -9,12 +9,13 @@ public class Match {
 	
 	private Integer idEvent;
 	
-	
-	private Integer idTeamA;
+	private Team teamA;
 	private Integer scoreTeamA;
 	private float oddTeamA;
 	
-	private Integer idTeamB;
+	private float oddDraw;
+	
+	private Team teamB;
 	private Integer scoreTeamB;
 	private float oddTeamB;
 	
@@ -22,36 +23,37 @@ public class Match {
 	
 		
 	
-	
-	
-	public Match(Integer id, Integer idEvent, Integer idTeamA, Integer scoreTeamA, float oddTeamA, Integer idTeamB,
+	public Match(Integer id, Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
 			Integer scoreTeamB, float oddTeamB, LocalDateTime date) {
 		super();
 		this.id = id;
 		this.idEvent = idEvent;
-		this.idTeamA = idTeamA;
+		this.teamA = teamA;
 		this.scoreTeamA = scoreTeamA;
 		this.oddTeamA = oddTeamA;
-		this.idTeamB = idTeamB;
+		this.oddDraw = oddDraw;
+		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
 		this.date = date;
 	}
 	
 	
-	//Sem Id
-	public Match(Integer idEvent, Integer idTeamA, Integer scoreTeamA, float oddTeamA, Integer idTeamB,
+	public Match(Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
 			Integer scoreTeamB, float oddTeamB, LocalDateTime date) {
 		super();
 		this.idEvent = idEvent;
-		this.idTeamA = idTeamA;
+		this.teamA = teamA;
 		this.scoreTeamA = scoreTeamA;
 		this.oddTeamA = oddTeamA;
-		this.idTeamB = idTeamB;
+		this.oddDraw = oddDraw;
+		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
 		this.date = date;
 	}
+
+
 
 
 	public Integer getId() {
@@ -70,13 +72,6 @@ public class Match {
 		this.idEvent = idEvent;
 	}
 
-	public Integer getIdTeamA() {
-		return idTeamA;
-	}
-
-	public void setIdTeamA(Integer idTeamA) {
-		this.idTeamA = idTeamA;
-	}
 
 	public Integer getScoreTeamA() {
 		return scoreTeamA;
@@ -86,13 +81,6 @@ public class Match {
 		this.scoreTeamA = scoreTeamA;
 	}
 
-	public Integer getIdTeamB() {
-		return idTeamB;
-	}
-
-	public void setIdTeamB(Integer idTeamB) {
-		this.idTeamB = idTeamB;
-	}
 
 	public Integer getScoreTeamB() {
 		return scoreTeamB;
@@ -125,5 +113,38 @@ public class Match {
 	public void setOddTeamB(float oddTeamB) {
 		this.oddTeamB = oddTeamB;
 	}
+
+
+	public float getOddDraw() {
+		return oddDraw;
+	}
+
+
+	public void setOddDraw(float oddDraw) {
+		this.oddDraw = oddDraw;
+	}
+
+
+	public Team getTeamA() {
+		return teamA;
+	}
+
+
+	public void setTeamA(Team teamA) {
+		this.teamA = teamA;
+	}
+
+
+	public Team getTeamB() {
+		return teamB;
+	}
+
+
+	public void setTeamB(Team teamB) {
+		this.teamB = teamB;
+	}
+	
+	
+	
 	
 }

@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 
 public class Event {
 	
-	private String id;
+	private Integer id;
 	private LocalDateTime date;
 	private String modality;
 	private String name;
 	
 	
-	public Event(String id, LocalDateTime date, String modality, String name) {
+	public Event(Integer id, LocalDateTime date, String modality, String name) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -26,11 +26,11 @@ public class Event {
 		this.name = name;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	

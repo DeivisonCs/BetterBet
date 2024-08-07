@@ -10,6 +10,7 @@
 	<classpathentry kind="lib" path="com.jgoodies.common_1.8.1.v20240327-0800.jar"/>
 	<classpathentry kind="lib" path="com.jgoodies.forms_1.9.0.v20240327-0800.jar"/>
 	<classpathentry kind="lib" path="C:/Users/deivi/Downloads/jcalendar-1.4.jar">
+  <classpathentry kind="lib" path="C:/Users/Gustavo/Downloads/postgresql-42.7.3.jar"/>
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -19,5 +20,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>

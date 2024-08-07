@@ -2,6 +2,7 @@ CREATE TABLE users(
     user_id SERIAL NOT NULL,
     cpf VARCHAR(14),
     name VARCHAR(50),
+    age INT,
     email VARCHAR(50),
     password VARCHAR(70),
     permission VARCHAR(20),
@@ -17,4 +18,50 @@ CREATE TABLE bet_users(
     
     CONSTRAINT pk_bet_user PRIMARY KEY (bet_user_id),
     CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users
+);
+
+CREATE TABLE event(
+	event_id SERIAL NOT NULL,
+	sport VARCHAR(30),
+	date_time TIMESTAMP,
+	description VARCHAR(100),
+	status VARCHAR(20),
+	
+	CONSTRAINT pk_event PRIMARY KEY (event_id)
+);
+
+
+CREATE TABLE team(
+	team_id SERIAL NOT NULL,
+	name VARCHAR(50),
+	sport VARCHAR(30),
+
+	CONSTRAINT pk_team PRIMARY KEY (team_id)
+);
+
+
+CREATE TABLE match(
+	match_id SERIAL NOT NULL,
+	event_id INT NULL,
+	a_team INT NOT NULL,
+  	b_team INT NOT NULL,
+  	date_time TIMESTAMP,
+  	a_team_score INT,
+  	b_team_score INT,
+  	a_team_odd FLOAT,
+  	b_team_odd FLOAT,
+  	status VARCHAR(20),
+  	draw_odd FLOAT,
+  	
+  	CONSTRAINT pk_match PRIMARY KEY (match_id),
+  	
+  	CONSTRAINT fk_match_event FOREIGN KEY 
+		(event_id) REFERENCES event (event_id),
+		
+  	CONSTRAINT fk_match_team_a FOREIGN KEY 
+		(a_team) REFERENCES team (team_id),
+		
+	  CONSTRAINT fk_match_team_b FOREIGN KEY 
+		(b_team) REFERENCES team (team_id)
+  	
 );
