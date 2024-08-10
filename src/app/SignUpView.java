@@ -306,7 +306,7 @@ public class SignUpView {
 						addressField.getText(),
 						new String(passwordField.getPassword()),
 						"user",
-						(float) 0.0);
+						(float) 1000.0);
 				
 				// Faz as validações necessárias no banco
 				String validField = userMiddleware.verifyNewUser(newUser, new String(confirmPasswordField.getPassword()));

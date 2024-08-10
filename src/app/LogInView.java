@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 
+import app.homeUser.HomeUserUI;
 import components.RoundedButton;
 import components.RoundedPasswordField;
 import components.RoundedTextField;
@@ -128,6 +129,9 @@ public class LogInView {
 				try {
 					CommonUser user = userDB.loginUser(email, password);
 					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
+					
+					frame.dispose();
+					new HomeUserUI(user);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());

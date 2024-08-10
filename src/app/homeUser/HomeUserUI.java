@@ -52,7 +52,7 @@ public class HomeUserUI {
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
 	
-	private User user;
+	private CommonUser user;
 	private  String textFieldValue;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
@@ -60,27 +60,34 @@ public class HomeUserUI {
 	/**
 	 * Launch the application.
 	 */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    SwingUtilities.invokeLater(() -> {
-                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
-                        HomeUserUI window = new HomeUserUI(commonUser);
-                        window.frame.setVisible(true);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    SwingUtilities.invokeLater(() -> {
+//                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
+//                        HomeUserUI window = new HomeUserUI(commonUser);
+//                        window.frame.setVisible(true);
+//                    });
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
 	/**
 	 * Create the application.
 	 */
-	public HomeUserUI(User user) {
-		this.user = user;
+	public HomeUserUI(User loggedUser) {
+		
+		if(loggedUser instanceof CommonUser) {
+			this.user = (CommonUser) loggedUser;
+			
+			System.out.println("Home user: " + user.toString());
+		}
+		
+		
 		
 		try {
 			this.matches = matchDao.getAllMatches();
@@ -101,6 +108,7 @@ public class HomeUserUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setVisible(true);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
