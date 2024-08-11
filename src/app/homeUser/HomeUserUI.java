@@ -52,7 +52,7 @@ public class HomeUserUI {
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
 	
-	private CommonUser user;
+	private User user;
 	private  String textFieldValue;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
@@ -83,10 +83,12 @@ public class HomeUserUI {
 		
 		if(loggedUser instanceof CommonUser) {
 			this.user = (CommonUser) loggedUser;
-			
 			System.out.println("Home user: " + user.toString());
 		}
-		
+//		else {			
+//			this.user = (AdminUser) loggedUser;
+//			System.out.println("Home admin user: " + user.toString());
+//		}
 		
 		
 		try {
@@ -142,11 +144,14 @@ public class HomeUserUI {
         roundedTextField.setBounds(389, 15, 390, 35);
         navBarPanel.add(roundedTextField);
 		
-		JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", user.getBalance()));
-		balanceLabel.setForeground(new Color(255, 255, 255));
-		balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-		balanceLabel.setBounds(25, 30, 164, 14);
-		navBarPanel.add(balanceLabel);
+		
+		if(this.user instanceof CommonUser) {
+			JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
+			balanceLabel.setForeground(new Color(255, 255, 255));
+			balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
+			balanceLabel.setBounds(25, 30, 164, 14);
+			navBarPanel.add(balanceLabel);
+		}
 		
 		JLabel accountLabel = new JLabel("Conta");
 		accountLabel.setForeground(new Color(255, 255, 255));
