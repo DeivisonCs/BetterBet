@@ -17,9 +17,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import com.toedter.calendar.JCalendar;
 
+import app.homeUser.HomeUserUI;
 import components.RoundedTextField;
-import dao.CommonUserDAO;
-import dao.UserPostgresDAO;
 import database.InitDatabase;
 import models.CommonUser;
 
@@ -30,13 +29,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import security.*;
-
-import middleware.UserMiddleware; 
+import service.users.CommonUserService;
 
 public class SignUpView {
-	private CommonUserDAO userDb = new UserPostgresDAO();
-	private UserMiddleware userMiddleware = new UserMiddleware();
+	private CommonUserService userService = new CommonUserService();
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
 	
 	private JFrame frame;
@@ -53,7 +49,6 @@ public class SignUpView {
 	private JLabel confirmPasswordPlaceholder;
 	private JLabel addressPlaceholder;
 	private JLabel cpfPlaceholder;
-	private JLabel lblDataDeNascimento;
 	
 
 	/**
@@ -286,10 +281,6 @@ public class SignUpView {
 		JCalendar birthDateField = new JCalendar();
 		frame.getContentPane().add(birthDateField);
 		birthDateField.setBounds(745, 324, 200, 145);
-//		lblDataDeNascimento = new JLabel("Data de Nascimento");
-//		lblDataDeNascimento.setFont(new Font("Arial", Font.PLAIN, 12));
-//		lblDataDeNascimento.setBounds(750, 442, 140, 14);
-//		frame.getContentPane().add(lblDataDeNascimento);
 		
 		
 		// ------------------------- SignUp Button -------------------------
@@ -306,23 +297,24 @@ public class SignUpView {
 						addressField.getText(),
 						new String(passwordField.getPassword()),
 						"user",
-						(float) 1000.0);
+						(float) 0.0);
 				
-				// Faz as validações necessárias no banco
-				String validField = userMiddleware.verifyNewUser(newUser, new String(confirmPasswordField.getPassword()));
 				
-				if(validField != "200") {
-					JOptionPane.showMessageDialog(null, validField);
-				}
-				else {
-					try{
-						newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
-						userDb.createUser(newUser);
+				try {
+					String validUser = userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
+					
+					if(validUser != "200") {
+						JOptionPane.showMessageDialog(null, validUser);
+					}
+					else {
 						JOptionPane.showMessageDialog(null, "Usuário cadastrado!\nBem vindo " + newUser.getName());
+						
+//						frame.dispose();
+//						new HomeUserUI(newUser);
 					}
-					catch(SQLException ex) {
-						JOptionPane.showMessageDialog(null, ex.getMessage());
-					}
+				}
+				catch(SQLException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				
 			}
@@ -343,6 +335,8 @@ public class SignUpView {
         button.setBackground(new Color(102, 203, 102));
         button.setForeground(Color.WHITE);
         frame.getContentPane().add(button);
+        
+        
 		
 		// ------------------------- SignIn Link ------------------------- 
 		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF; text-decoration: none;'>Já Possui Conta?</a></html>");

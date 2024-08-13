@@ -3,6 +3,8 @@ package database;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import security.PasswordHandler;
+
 public class InitDatabase {
 	
 	public static void initializeDatabase() {
@@ -83,6 +85,14 @@ public class InitDatabase {
 				+ "  	"
 				+ ");";
 		
+		String insertAdmUser =	
+				"INSERT INTO users (name, cpf, email, password, permission) VALUES"
+				+ "('MainAdminUser', "
+				+ "'111.111.111-11', "
+				+ "'admin@gmail.com'," 
+				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
+				+ " 'admin');";
+		
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
 			
 			statement.execute(dropTables);
@@ -91,6 +101,7 @@ public class InitDatabase {
 			statement.execute(createTableEvent);
 			statement.execute(createTableTeam);
 			statement.execute(createTableMatch);
+			statement.execute(insertAdmUser);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}

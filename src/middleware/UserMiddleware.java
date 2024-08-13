@@ -3,8 +3,6 @@ package middleware;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import models.CommonUser;
 import models.User;
@@ -13,7 +11,7 @@ public class UserMiddleware {
 	private final String VALIDATED = "200";
 	
 	public String verifyNewUser(CommonUser user, String confirmPassword) {
-		System.out.println(user.toString());
+		System.out.println("Middleware " + user.toString());
 		
 		// Validação do nome
 		String validName = validName(user.getName());

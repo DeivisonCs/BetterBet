@@ -1,4 +1,4 @@
-package dao;
+package dao.users;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,14 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import database.ConnectionDB;
+import models.AdminUser;
 import models.CommonUser;
 import models.User;
 import security.PasswordHandler;
 
-public class UserPostgresDAO implements CommonUserDAO {
+public class UserPostgresDAO implements UserDAO {
 
 	@Override
-	public CommonUser createUser(CommonUser newUser) throws SQLException {
+	public User create(User newUser) throws SQLException {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
 	    String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
 
@@ -54,8 +55,8 @@ public class UserPostgresDAO implements CommonUserDAO {
 	            // Verifica se o tipo de permissão é realmente de usuário
 	            if ("user".equals(newUser.getPermission())) {
 	                betUserPs.setInt(1, userId);
-	                betUserPs.setString(2, newUser.getBirthDate());
-	                betUserPs.setString(3, newUser.getAddress());
+	                betUserPs.setString(2, ((CommonUser) newUser).getBirthDate());
+	                betUserPs.setString(3, ((CommonUser) newUser).getAddress());
 	                betUserPs.setFloat(4, 0.0f);
 	                betUserPs.executeUpdate();
 	            }
@@ -91,47 +92,51 @@ public class UserPostgresDAO implements CommonUserDAO {
 	}
 	
 	@Override
-	public CommonUser loginUser(String email, String password) throws SQLException{
-//		String getPasswordQuery = "SELECT password FROM users WHERE email = ?";
-		String query1 = "SELECT * FROM users WHERE email = ?";
-		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
-		
-		CommonUser user = new CommonUser();
-		Connection connection = ConnectionDB.getInstance().getConnection();
-		try(
-//			PreparedStatement psGetPassword = ConnectionDB.getInstance().getConnection().prepareStatement(getPasswordQuery);
-			PreparedStatement psUser = connection.prepareStatement(query1);
-			PreparedStatement psBetUser = connection.prepareStatement(query2)){
+	public Integer login(String email, String password) throws SQLException{
+		String query1 = "SELECT user_id, password FROM users WHERE email = ?";
+
+		Integer id = null;
+		try(PreparedStatement psUser = ConnectionDB.getInstance().getConnection().prepareStatement(query1)){
 			
 			// --------------------- Informações Gerais do Usuário ---------------------
 			psUser.setString(1, email);
 			ResultSet response = psUser.executeQuery();
 			
 			if(response.next() && PasswordHandler.validPassword(password, response.getString("password"))) {
-				user.setId(response.getInt("user_id"));
-				user.setName(response.getString("name"));
-				user.setEmail(response.getString("email"));
-				user.setCpf(response.getString("cpf"));
-				user.setPassword(password);
-				user.setPermission(response.getString("permission"));
-			}
-			
-			// --------------------- Informações do Usuário de Apostas ---------------------
-			if(user.getId() != null) {
-				psBetUser.setInt(1, user.getId());
-				ResultSet responseBetUser = psBetUser.executeQuery();
 				
-				if(responseBetUser.next()) {
-					user.setBalance(responseBetUser.getFloat("balance"));
-					user.setAddress(responseBetUser.getString("address"));
-					user.setBirthDate(responseBetUser.getString("birthDate"));
-				}
+				id = response.getInt("user_id");
+				
+//				if(response.getString("permission").equals("user"))
+//					user = new CommonUser();
+//				else {
+//					user = new AdminUser();
+//				}
+//				
+//				user.setId(response.getInt("user_id"));
+//				user.setName(response.getString("name"));
+//				user.setEmail(response.getString("email"));
+//				user.setCpf(response.getString("cpf"));
+//				user.setPassword(password);
+//				user.setPermission(response.getString("permission"));
+//			}
+//			
+//			// --------------------- Informações do Usuário de Apostas ---------------------
+//			if(user != null && user.getPermission().equals("user")) {
+//				
+//				psBetUser.setInt(1, user.getId());
+//				ResultSet responseBetUser = psBetUser.executeQuery();
+//				 
+//				if(responseBetUser.next()) {
+//					((CommonUser) user).setBalance(responseBetUser.getFloat("balance"));
+//					((CommonUser) user).setAddress(responseBetUser.getString("address"));
+//					((CommonUser) user).setBirthDate(responseBetUser.getString("birthDate"));
+//				}
 			}
 			else {
 				throw new SQLException("Email ou senha inválidos!");
 			}
 			
-			return user;
+			return id;
 		}
 		catch(SQLException ex) {
 			ex.printStackTrace();
@@ -140,9 +145,9 @@ public class UserPostgresDAO implements CommonUserDAO {
 	}
 
 	@Override
-	public List<CommonUser> getAllUser() throws SQLException {
+	public List<User> getAll() throws SQLException {
 		String query = "SELECT * FROM users";
-        List<CommonUser> users = new ArrayList<CommonUser>();
+        List<User> users = new ArrayList<>();
 
         try(
             PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
@@ -173,42 +178,57 @@ public class UserPostgresDAO implements CommonUserDAO {
 	}
 
 	@Override
-	public CommonUser getUserById(int id) throws SQLException {
-		String query = "SELECT * FROM users WHERE user_id=?";
-
-        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query))
-        {
-            ps.setInt(1, id);
-            
-            ResultSet response = ps.executeQuery();
-            
-            CommonUser user = new CommonUser();
-
-            if(response.next()){
-                
-                user.setId(response.getInt("user_id"));
-                user.setName(response.getString("name"));
-                user.setCpf(response.getString("cpf"));
-                user.setBirthDate(response.getString("birthDate"));
-                user.setEmail(response.getString("email"));
-                user.setAddress(response.getString("address"));
-                user.setPassword(response.getString("password"));
-                user.setPermission(response.getString("permission"));
-//                user.setBalance(response.getFloat("balance"));
-                
-            }
-            
-
-            return user;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+	public User getById(Integer id) throws SQLException {
+		String query1 = "SELECT * FROM users WHERE user_id = ?";
+		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
+		
+		User user = null;
+		Connection connection = ConnectionDB.getInstance().getConnection();
+		try(
+			PreparedStatement psUser = connection.prepareStatement(query1);
+			PreparedStatement psBetUser = connection.prepareStatement(query2)){
+			
+			// --------------------- Informações Gerais do Usuário ---------------------
+			psUser.setInt(1, id);
+			ResultSet response = psUser.executeQuery();
+			
+			if(response.next()) {
+				user = response.getString("permission").equals("user")? new CommonUser() : new AdminUser(); 
+				
+				user.setId(response.getInt("user_id"));
+				user.setName(response.getString("name"));
+				user.setEmail(response.getString("email"));
+				user.setCpf(response.getString("cpf"));
+				user.setPassword(response.getString("password"));
+				user.setPermission(response.getString("permission"));
+			}
+			
+			
+			// --------------------- Informações do Usuário de Apostas ---------------------
+			if(user.getId() != null) {
+				psBetUser.setInt(1, user.getId());
+				ResultSet responseBetUser = psBetUser.executeQuery();
+				
+				if(responseBetUser.next()) {
+					((CommonUser) user).setBalance(responseBetUser.getFloat("balance"));
+					((CommonUser) user).setAddress(responseBetUser.getString("address"));
+					((CommonUser) user).setBirthDate(responseBetUser.getString("birthDate"));
+				}
+			}
+			else {
+				throw new SQLException("Erro ao logar com usuário!");
+			}
+			
+			return user;
+		}
+		catch(SQLException ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
 	}
 
 	@Override
-	public boolean deleteUserById(int id) throws SQLException {
+	public boolean deleteById(int id) throws SQLException {
 		String query = "DELETE FROM users WHERE user_id=?";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){    
@@ -225,7 +245,7 @@ public class UserPostgresDAO implements CommonUserDAO {
 	}
 
 	@Override
-	public boolean editUser(CommonUser user, int id) throws SQLException {
+	public boolean edit(User user, int id) throws SQLException {
 //		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
 //
 //        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
@@ -247,7 +267,7 @@ public class UserPostgresDAO implements CommonUserDAO {
 		return false;
 	}
 
-	@Override
+
 	public boolean addDepositUser(int id, float amount) throws SQLException {
 		String query = "UPDATE users SET deposit=? WHERE user_id=?";
 

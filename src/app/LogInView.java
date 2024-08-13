@@ -19,12 +19,12 @@ import app.homeUser.HomeUserUI;
 import components.RoundedButton;
 import components.RoundedPasswordField;
 import components.RoundedTextField;
-import dao.CommonUserDAO;
-import dao.UserPostgresDAO;
 import models.CommonUser;
+import models.User;
+import service.users.UserService;
 
 public class LogInView {
-	private CommonUserDAO userDB = new UserPostgresDAO();
+	private UserService service = new UserService();
 	private JFrame frame;
 	private JTextPane txtpnBemVindoAo;
 	private JLabel emailPlaceholder;
@@ -118,7 +118,7 @@ public class LogInView {
 		
 		
 		
-		// ------------------------- SignIp Button -------------------------
+		// ------------------------- LogIn Button -------------------------
 		RoundedButton button = new RoundedButton("Logar");
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -127,11 +127,11 @@ public class LogInView {
 				String password = new String(passwordField.getPassword());
 				
 				try {
-					CommonUser user = userDB.loginUser(email, password);
-					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
+					Integer userId = service.loginUser(email, password);
+//					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
 					
 					frame.dispose();
-					new HomeUserUI(user);
+					new HomeUserUI(userId);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
