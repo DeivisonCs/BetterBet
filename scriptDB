@@ -1,12 +1,23 @@
-CREATE TABLE bet_user(  
+CREATE TABLE users(  
     user_id SERIAL NOT NULL,
+    cpf VARCHAR(14),
     name VARCHAR(50),
     age INT,
     email VARCHAR(50),
-    password VARCHAR(50),
+    password VARCHAR(70),
     permission VARCHAR(20),
-    balance FLOAT,
     CONSTRAINT pk_user PRIMARY KEY (user_id)
+);
+
+CREATE TABLE bet_users(  
+    bet_user_id SERIAL NOT NULL,
+    user_id int,
+    birthDate DATE,
+    address VARCHAR(100),
+    balance FLOAT,
+    
+    CONSTRAINT pk_bet_user PRIMARY KEY (bet_user_id),
+    CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users
 );
 
 CREATE TABLE event(
@@ -50,7 +61,7 @@ CREATE TABLE match(
   	CONSTRAINT fk_match_team_a FOREIGN KEY 
 		(a_team) REFERENCES team (team_id),
 		
-	CONSTRAINT fk_match_team_b FOREIGN KEY 
+	  CONSTRAINT fk_match_team_b FOREIGN KEY 
 		(b_team) REFERENCES team (team_id)
   	
 );
@@ -111,3 +122,25 @@ CREATE TABLE BET_TICKET(
 		REFERENCES BET_TICKET (ticket_id)
 
 );
+
+
+
+INSERT INTO event (sport, date_time, description, status) VALUES
+('Futebol', '2024-08-10 18:00:00', 'Campeonato Brasileiro - Série A', 'Agendado'),
+('Futebol', '2024-08-15 20:30:00', 'Copa do Mundo - Quartas de Final', 'Agendado'),
+('Futebol', '2024-08-20 21:00:00', 'Amistoso Internacional', 'Concluído');
+
+INSERT INTO team (name, sport) VALUES
+('Flamengo', 'Futebol'),
+('Palmeiras', 'Futebol'),
+('Barcelona', 'Futebol'),
+('Manchester United', 'Futebol'),
+('Real Madrid', 'Futebol'),
+('Paris Saint-Germain', 'Futebol');
+-- Atualizar partidas com empate 0x0
+INSERT INTO match (event_id, a_team, b_team, date_time, a_team_score, b_team_score, a_team_odd, b_team_odd, status, draw_odd) VALUES
+(1, 1, 2, '2024-08-10 18:00:00', 0, 0, 2.50, 3.00, 'Concluído', 3.20),
+(2, 3, 4, '2024-08-15 20:30:00', 0, 0, 2.75, 2.90, 'Concluído', 3.10),
+(3, 5, 6, '2024-08-20 21:00:00', 3, 2, 1.80, 4.00, 'Concluído', 3.50);
+
+

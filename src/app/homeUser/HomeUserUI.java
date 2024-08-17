@@ -6,10 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
+import models.AdminUser;
 import models.CommonUser;
 import models.Event;
 import models.Match;
 import models.User;
+import security.Permission;
+import service.users.UserService;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,6 +43,8 @@ import java.awt.event.ActionEvent;
 
 
 public class HomeUserUI {
+	private User user;
+	private UserService userService= new UserService();
 
 	private JFrame frame;
 	
@@ -52,7 +57,6 @@ public class HomeUserUI {
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
 	
-	private User user;
 	private  String textFieldValue;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
@@ -60,31 +64,42 @@ public class HomeUserUI {
 	/**
 	 * Launch the application.
 	 */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    SwingUtilities.invokeLater(() -> {
-                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
-                        HomeUserUI window = new HomeUserUI(commonUser);
-                        window.frame.setVisible(true);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    SwingUtilities.invokeLater(() -> {
+//                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
+//                        HomeUserUI window = new HomeUserUI(commonUser);
+//                        window.frame.setVisible(true);
+//                    });
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
 	/**
 	 * Create the application.
 	 */
-	public HomeUserUI(User user) {
-		this.user = user;
+	public HomeUserUI(Integer userId) {
+		System.out.println("UserId Home " + userId);
 		
 		try {
 			this.matches = matchDao.getAllMatches();
 			this.events = eventDao.getAllEvents();
+			
+			User loggedUser = userService.getUser(userId);
+			
+			if(loggedUser.getPermission().equals("user")) {
+				this.user = (CommonUser) loggedUser;
+				System.out.println("Home user: " + user.toString());
+			}
+			else {			
+				this.user = (AdminUser) loggedUser;
+				System.out.println("Home admin user: " + user.toString());
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -101,6 +116,7 @@ public class HomeUserUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setVisible(true);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
@@ -134,31 +150,36 @@ public class HomeUserUI {
         roundedTextField.setBounds(389, 15, 390, 35);
         navBarPanel.add(roundedTextField);
 		
-		JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", user.getBalance()));
-		balanceLabel.setForeground(new Color(255, 255, 255));
-		balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-		balanceLabel.setBounds(25, 30, 164, 14);
-		navBarPanel.add(balanceLabel);
+		
+		if(this.user instanceof CommonUser) {
+			JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
+			balanceLabel.setForeground(new Color(255, 255, 255));
+			balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
+			balanceLabel.setBounds(25, 30, 164, 14);
+			navBarPanel.add(balanceLabel);
+		}
 		
 		JLabel accountLabel = new JLabel("Conta");
-		accountLabel.setForeground(new Color(255, 255, 255));
-		accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-		accountLabel.setBounds(1009, 23, 59, 14);
-		navBarPanel.add(accountLabel);
-		
-		JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
-		makeBetButton.setBackground(new Color(35, 35, 35));
-		makeBetButton.setForeground(new Color(255, 255, 255));
-		makeBetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		makeBetButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				for(MatchComponent match : selectedMatches)	{
-					System.out.println(match.getMatch().getTeamA().getName() + "x" + match.getMatch().getTeamB().getName());
+			accountLabel.setForeground(new Color(255, 255, 255));
+			accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
+			accountLabel.setBounds(1009, 23, 59, 14);
+			navBarPanel.add(accountLabel);
+			
+			if(this.user instanceof CommonUser) {
+			JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
+			makeBetButton.setBackground(new Color(35, 35, 35));
+			makeBetButton.setForeground(new Color(255, 255, 255));
+			makeBetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			makeBetButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					for(MatchComponent match : selectedMatches)	{
+						System.out.println(match.getMatch().getTeamA().getName() + "x" + match.getMatch().getTeamB().getName());
+					}
 				}
-			}
-		});
-		makeBetButton.setBounds(846, 18, 128, 29);
-		navBarPanel.add(makeBetButton);
+			});
+			makeBetButton.setBounds(846, 18, 128, 29);
+			navBarPanel.add(makeBetButton);
+		}
 		
 		/*
 		ProfileImageComponent panel = new ProfileImageComponent();
