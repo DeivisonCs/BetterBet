@@ -1,6 +1,8 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ticket {
 
@@ -10,6 +12,7 @@ public class Ticket {
 	private float odd;
 	private float expectedProfit;
 	private float amount;
+	private List<Bet> bets;
 	
 	
 	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount) {
@@ -25,6 +28,7 @@ public class Ticket {
 
 	public Ticket(float odd, Integer idUser, float expectedProfit, float amount) {
 		super();
+		this.bets = new ArrayList<Bet>();
 		this.odd = odd;
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
@@ -81,6 +85,12 @@ public class Ticket {
 		this.amount = amount;
 	}
 	
-	
+    public void setBets(List<Bet> bets) {
+        this.bets = bets;
+    }
+    
+    public List<Bet> getBets() {
+        return this.bets;
+    }
 	
 }

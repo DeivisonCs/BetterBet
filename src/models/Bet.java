@@ -3,30 +3,39 @@ package models;
 public class Bet {
 	private Integer id;
 	private String betType;
-	private float odd;
-	private Integer idMatch;
+	private float oddTeamA;
+	private float oddTeamB;
+	private float oddDraw;
+	private Match match;
 	private Integer idTicket;
 	private String status;
+	private String teamBet;
 	
 	
-	public Bet(Integer id, String betType, float odd, Integer idMatch, Integer idTicket, String status) {
+	public Bet(Integer id, String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String teamBet) {
 		super();
 		this.id = id;
 		this.betType = betType;
-		this.odd = odd;
-		this.idMatch = idMatch;
+		this.oddTeamA = oddTeamA;
+		this.oddTeamB = oddTeamB;
+		this.oddDraw = oddDraw;
+		this.match = match;
 		this.idTicket = idTicket;
 		this.status = status;
+		this.teamBet = teamBet;
 	}
 
 
-	public Bet(String betType, float odd, Integer idMatch, Integer idTicket, String status) {
+	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String teamBet) {
 		super();
 		this.betType = betType;
-		this.odd = odd;
-		this.idMatch = idMatch;
+		this.oddTeamA = oddTeamA;
+		this.oddTeamB = oddTeamB;
+		this.oddDraw = oddDraw;
+		this.match = match;
 		this.idTicket = idTicket;
 		this.status = status;
+		this.teamBet = teamBet;
 	}
 
 
@@ -49,24 +58,13 @@ public class Bet {
 		this.betType = betType;
 	}
 
-
-	public float getOdd() {
-		return odd;
+	public Match getMatch() {
+		return match;
 	}
 
 
-	public void setOdd(float odd) {
-		this.odd = odd;
-	}
-
-
-	public Integer getIdMatch() {
-		return idMatch;
-	}
-
-
-	public void setIdMatch(Integer idMatch) {
-		this.idMatch = idMatch;
+	public void setMatch(Match match) {
+		this.match = match;
 	}
 
 
@@ -87,6 +85,46 @@ public class Bet {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+
+	public float getOddTeamA() {
+		return oddTeamA;
+	}
+
+
+	public void setOddTeamA(float oddTeamA) {
+		this.oddTeamA = oddTeamA;
+	}
+
+
+	public float getOddTeamB() {
+		return oddTeamB;
+	}
+
+
+	public void setOddTeamB(float oddTeamB) {
+		this.oddTeamB = oddTeamB;
+	}
+
+
+	public float getOddDraw() {
+		return oddDraw;
+	}
+
+
+	public void setOddDraw(float oddDraw) {
+		this.oddDraw = oddDraw;
+	}
+
+
+	public String getTeamBet() {
+		return teamBet;
+	}
+
+
+	public void setTeamBet(String teamBet) {
+		this.teamBet = teamBet;
 	}
 	
 	

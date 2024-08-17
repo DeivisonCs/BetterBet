@@ -198,7 +198,7 @@ public class HomeUserUI {
 		JLabel gamesDescriptionLabel = new JLabel("Jogos em Andamento:");
 		gamesDescriptionLabel.setForeground(new Color(255, 255, 255));
 		gamesDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
-		gamesDescriptionLabel.setBounds(29, 21, 264, 43);
+		gamesDescriptionLabel.setBounds(25, 11, 264, 43);
 		gamesDescriptionPanel.add(gamesDescriptionLabel);
 		
 		JScrollPane eventScrollPane = new JScrollPane();
@@ -230,14 +230,14 @@ public class HomeUserUI {
 		eventsPanel.setLayout(gbl_eventsPanel);
 		
 		JPanel eventsDescriptionPanel = new JPanel();
-		eventsDescriptionPanel.setBackground(new Color(234, 199, 0));
+		eventsDescriptionPanel.setBackground(new Color(30, 30, 30));
 		eventsDescriptionPanel.setBounds(0, 69, 213, 70);
 		frame.getContentPane().add(eventsDescriptionPanel);
 		eventsDescriptionPanel.setLayout(null);
 		
 		JLabel eventsDescriptionLabel = new JLabel("Eventos: ");
-		eventsDescriptionLabel.setBounds(10, 11, 123, 23);
-		eventsDescriptionLabel.setForeground(new Color(0, 0, 0));
+		eventsDescriptionLabel.setBounds(10, 21, 123, 23);
+		eventsDescriptionLabel.setForeground(new Color(255, 255, 255));
 		eventsDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
 		eventsDescriptionPanel.add(eventsDescriptionLabel);
 		
@@ -251,15 +251,16 @@ public class HomeUserUI {
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
-
-		
 		GridBagConstraints gbc = new GridBagConstraints();
+		
+		
 	        gbc.gridx = 0;
 	        gbc.gridy = GridBagConstraints.RELATIVE;
 	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.anchor = GridBagConstraints.NORTH;  
 	        gbc.weightx = 1.0;
-	        gbc.insets.bottom = 0;
+	        gbc.insets.bottom = 10;
+	        gbc.insets.top = 5;
         
         for (Match match : matches) {
         	
