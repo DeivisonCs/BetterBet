@@ -15,4 +15,5 @@ public interface UserDAO {
     public User getById(Integer id) throws SQLException;
     public boolean deleteById(int id) throws SQLException;
     public boolean edit(User user, int id) throws SQLException;
+    public void updateBalance(User user, float betAmount) throws SQLException;
 }

@@ -18,7 +18,9 @@ import models.Bet;
 import models.Match;
 
 public class BetComponent extends JPanel{
+	
 	private Bet bet;
+	
 	private static final int PANEL_TEAM_WIDTH = 165;
 	private static final int PANEL_TEAM_HEIGHT = 50;
 	
@@ -38,11 +40,11 @@ public class BetComponent extends JPanel{
     private boolean isSelectedDraw = false;
 
     public BetComponent(Bet bet) {
-    	if(bet.getTeamBet().equals("TEAM_A")) {
+    	if(bet.getSelectedBet().equals("TEAM_A")) {
     		isSelectedTeamA = true;
-    	}else if(bet.getTeamBet().equals("TEAM_B")) {
+    	}else if(bet.getSelectedBet().equals("TEAM_B")) {
     		isSelectedTeamB = true;
-    	}else if(bet.getTeamBet().equals("DRAW")) {
+    	}else if(bet.getSelectedBet().equals("DRAW")) {
     		isSelectedDraw = true;
     	}
     	

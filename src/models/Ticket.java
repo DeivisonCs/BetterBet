@@ -35,7 +35,30 @@ public class Ticket {
 		this.amount = amount;
 	}
 
+	public Ticket(Integer idUser, List<Bet> bets) {
+		super();
+		this.bets = bets;
+		this.idUser = idUser;
+		this.odd = calculateOdd();
+	}
+	
+	private float calculateOdd() {
+		
+		float finalOdd = 1f;
+		
+		for (Bet bet: this.bets) {
+			if(bet.getSelectedBet().equals("TEAM_A")) {
+				finalOdd = finalOdd * bet.getOddTeamA();
+			}else if(bet.getSelectedBet().equals("TEAM_B")) {
+				finalOdd = finalOdd * bet.getOddTeamB();
+			}else  if(bet.getSelectedBet().equals("DRAW")) {
+				finalOdd = finalOdd * bet.getOddDraw();
+			}
 
+		}
+
+		return finalOdd;
+	}
 
 	public Integer getId() {
 		return id;

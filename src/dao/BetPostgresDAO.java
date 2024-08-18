@@ -18,7 +18,7 @@ public class BetPostgresDAO implements BetDAO{
 
 	@Override
 	public int createBet(Bet bet) throws SQLException {
-		String query = "INSERT INTO BET (ticket_id, bet_type, status, team_bet, match_id, odd_draw, odd_team_A, odd_team_B) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO BET (ticket_id, bet_type, status, selected_bet, match_id, odd_draw, odd_team_A, odd_team_B) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS))
         {
@@ -26,7 +26,7 @@ public class BetPostgresDAO implements BetDAO{
             ps.setInt(1, bet.getIdTicket());
             ps.setString(2, bet.getBetType());
             ps.setString(3, bet.getStatus());
-            ps.setString(4, bet.getTeamBet());
+            ps.setString(4, bet.getSelectedBet());
             ps.setInt(5, bet.getMatch().getId());
             ps.setFloat(6, bet.getOddDraw());
             ps.setFloat(7, bet.getOddTeamA());

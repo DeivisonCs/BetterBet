@@ -1,92 +1,54 @@
 package app.betView;
 
-import java.awt.EventQueue;
+
 import java.awt.GridBagConstraints;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import javax.swing.JButton;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
-import java.awt.ScrollPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import dao.BetDAO;
-import dao.BetPostgresDAO;
-import dao.TicketDAO;
-import dao.TicketPostgresDAO;
+import app.homeUser.HomeUserUI;
+import app.homeUser.RoundedButtonComponent;
+import app.homeUser.RoundedTextFieldComponent;
 import models.Bet;
-import models.Match;
-import models.Team;
+import models.CommonUser;
 import models.Ticket;
+
+import service.bets.BetService;
+import service.ticket.TicketService;
+import service.users.CommonUserService;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class BetUI {
-
+	private HomeUserUI mainFrame;
 	private JFrame frame;
 	private JTextField textField;
 	private JPanel betsPanel;
 	
-	Ticket ticket;
+	private Ticket ticket;
+	private TicketService ticketService= new TicketService();
+	private BetService betService = new BetService();
+	private CommonUserService userService = new CommonUserService();
 
-	private BetDAO betDAO = new BetPostgresDAO();
-	private TicketDAO ticketDAO = new TicketPostgresDAO();
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {/*
-					Team teamA1 = new Team(1, "Barcelona", "Football");
-			        Team teamB1 = new Team(2, "Real Madrid", "Football");
-			        Team teamA2 = new Team(3, "Manchester United", "Football");
-			        Team teamB2 = new Team(4, "Liverpool", "Football");
-
-			        // Criação dos matches
-			        Match match1 = new Match(1, 1001, teamA1, 2, 1.85f, 3.2f, teamB1, 1, 2.1f, LocalDateTime.now().plusDays(1));
-			        Match match2 = new Match(2, 1002, teamA2, 0, 2.5f, 3.5f, teamB2, 0, 2.8f, LocalDateTime.now().plusDays(2));
-
-			        // Criação das bets
-			        Bet bet1 = new Bet(1, "1x2", 1.85f, 2.1f, 3.2f, match1, 101, "Pending", "TEAM_A");
-			        Bet bet2 = new Bet(2, "1x2", 1.85f, 2.1f, 3.2f, match1, 101, "Pending", "TEAM_B");
-			        Bet bet3 = new Bet(3, "1x2", 2.5f, 2.8f, 3.5f, match2, 102, "Pending", "DRAW");
-			        Bet bet4 = new Bet(4, "1x2", 2.5f, 2.8f, 3.5f, match2, 102, "Pending", "TEAM_A");
-
-			        // Adicionando as bets em uma lista
-			        List<Bet> bets = new ArrayList<>();
-			        bets.add(bet1);
-			        bets.add(bet2);
-			        bets.add(bet3);
-			        bets.add(bet4);*/
-					//Ticket ticket = new Ticket()
-					BetUI window = new BetUI(null);
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	
 	/**
 	 * Create the application.
 	 */
-	public BetUI(Ticket ticket) {
-		
+	public BetUI(Ticket ticket, HomeUserUI mainFrame) {
+		this.ticket = ticket;
+		this.mainFrame = mainFrame;
 		initialize();
 		updatebets();
 		
@@ -107,38 +69,7 @@ public class BetUI {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JButton betButton = new JButton("Apostar");
-		betButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//fazer verificação de data
-				try {
-					/*
-					public Ticket(float odd, Integer idUser, float expectedProfit, float amount) {
-						super();
-						this.bets = new ArrayList<Bet>();
-						this.odd = odd;
-						this.idUser = idUser;
-						this.expectedProfit = expectedProfit;
-						this.amount = amount;
-					}*/
-					
-					//Ticket newTicket = new Ticket(calculateOdd(),);
-					int ticketId = ticketDAO.createTicket(null);
-					
-					
-					
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-			}
-		});
-		betButton.setBounds(68, 397, 89, 23);
-		panel.add(betButton);
-		
-		JButton cancelButton = new JButton("Cancelar");
+		JButton cancelButton = new RoundedButtonComponent("Cancelar");
 		cancelButton.setBounds(239, 397, 89, 23);
 		panel.add(cancelButton);
 		
@@ -162,12 +93,12 @@ public class BetUI {
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		String finalOddValue = String.format("(%.1f)", calculateOdd());
+		String finalOddValue = String.format("(%.1f)", ticket.getOdd());
 		JLabel lblNewLabel = new JLabel(finalOddValue);
 		lblNewLabel.setBounds(289, 11, 46, 14);
 		panel_1.add(lblNewLabel);
 		
-		textField = new JTextField();
+		textField = new RoundedTextFieldComponent(10, 20, 20, 10, 10);
 		textField.setBounds(49, 8, 155, 20);
 		panel_1.add(textField);
 		textField.setColumns(10);
@@ -175,53 +106,72 @@ public class BetUI {
 		JLabel lblNewLabel_1 = new JLabel("Valor: ");
 		lblNewLabel_1.setBounds(11, 11, 46, 14);
 		panel_1.add(lblNewLabel_1);
+		
+		JButton betButton = new RoundedButtonComponent("Apostar");
+		betButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//fazer verificação de data
+				
+				float amount = Float.parseFloat(textField.getText());					
+					
+				try {
+					userService.updateBalance(((CommonUser)mainFrame.getUser()), amount);
+					ticket.setAmount(amount);
+					Ticket updatedTicket = ticketService.createTicket(ticket);
+					updatedTicket.getBets().forEach((bet) -> bet.setIdTicket(updatedTicket.getId()));
+					betService.createBets(updatedTicket.getBets());
+					float newBalance = ((CommonUser)mainFrame.getUser()).getBalance() - amount;
+					((CommonUser)mainFrame.getUser()).setBalance(newBalance);
+					
+		            JLabel balanceLabel = mainFrame.getBalanceLabel();
+		            balanceLabel.setText("Saldo: " + newBalance);
+		            
+					mainFrame.getFrame().revalidate();
+					mainFrame.getFrame().repaint();
+					frame.dispose();
+					
+				} catch (SQLException e1) {
+					 JOptionPane.showMessageDialog(null, "O sistema enconntra-se fora do ar", "Aviso", JOptionPane.ERROR_MESSAGE);
+					 e1.printStackTrace();
+				} catch (Exception e2) {
+					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);
+					e2.printStackTrace();
+				}
+				
+				
+			}
+		});
+		betButton.setBounds(68, 397, 89, 23);
+		panel.add(betButton);
+		
+		
+		
+		frame.setVisible(true);
 	}
 	
 	public void updatebets() {
-		betsPanel.removeAll();
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		
-	        gbc.gridx = 0;
-	        gbc.gridy = GridBagConstraints.RELATIVE;
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
-	        gbc.anchor = GridBagConstraints.NORTH;  
-	        gbc.weightx = 1.0;
-	        gbc.insets.bottom = 10;
-	        gbc.insets.top = 5;
-        
-        for (Bet bet : ticket.getBets()) {
-        	
-        	BetComponent betComponent = new BetComponent(bet);
-        	betsPanel.add(betComponent, gbc);
-            gbc.gridy++;
-        }
+	    betsPanel.removeAll();
+	    
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.anchor = GridBagConstraints.NORTH;  
+	    gbc.weightx = 1.0;
+	    gbc.insets = new Insets(5, 0, 10, 0);
+	    
+	    for (Bet bet : ticket.getBets()) {
+	        BetComponent betComponent = new BetComponent(bet);
+	        betsPanel.add(betComponent, gbc);
+	    }
+	    
 	    gbc.weighty = 1.0;
 	    JPanel filler = new JPanel();
 	    filler.setBackground(new Color(40, 40, 40));
 	    betsPanel.add(filler, gbc);
+
 	    betsPanel.revalidate();
 	    betsPanel.repaint();
-	}
-	
-	//vai pra dentro do ticket
-	private float calculateOdd() {
-		
-		float finalOdd = 1f;
-		
-		for (Bet bet: ticket.getBets()) {
-			if(bet.getTeamBet().equals("TEAM_A")) {
-				finalOdd = finalOdd * bet.getOddTeamA();
-			}else if(bet.getTeamBet().equals("TEAM_B")) {
-				finalOdd = finalOdd * bet.getOddTeamB();
-			}else  if(bet.getTeamBet().equals("DRAW")) {
-				finalOdd = finalOdd * bet.getOddDraw();
-			}
-
-		}
-
-		return finalOdd;
 	}
 	
 	

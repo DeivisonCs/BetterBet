@@ -9,10 +9,10 @@ public class Bet {
 	private Match match;
 	private Integer idTicket;
 	private String status;
-	private String teamBet;
+	private String selectedBet;
 	
 	
-	public Bet(Integer id, String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String teamBet) {
+	public Bet(Integer id, String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String selectedBet) {
 		super();
 		this.id = id;
 		this.betType = betType;
@@ -22,11 +22,11 @@ public class Bet {
 		this.match = match;
 		this.idTicket = idTicket;
 		this.status = status;
-		this.teamBet = teamBet;
+		this.selectedBet = selectedBet;
 	}
 
 
-	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String teamBet) {
+	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String selectedBet) {
 		super();
 		this.betType = betType;
 		this.oddTeamA = oddTeamA;
@@ -35,10 +35,20 @@ public class Bet {
 		this.match = match;
 		this.idTicket = idTicket;
 		this.status = status;
-		this.teamBet = teamBet;
+		this.selectedBet = selectedBet;
 	}
 
-
+	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, String status, String selectedBet) {
+		super();
+		this.betType = betType;
+		this.oddTeamA = oddTeamA;
+		this.oddTeamB = oddTeamB;
+		this.oddDraw = oddDraw;
+		this.match = match;
+		this.status = status;
+		this.selectedBet = selectedBet;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -118,13 +128,13 @@ public class Bet {
 	}
 
 
-	public String getTeamBet() {
-		return teamBet;
+	public String getSelectedBet() {
+		return selectedBet;
 	}
 
 
-	public void setTeamBet(String teamBet) {
-		this.teamBet = teamBet;
+	public void setSelectedBet(String selectedBet) {
+		this.selectedBet = selectedBet;
 	}
 	
 	

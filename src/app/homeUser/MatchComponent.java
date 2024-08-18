@@ -238,6 +238,8 @@ public class MatchComponent extends JPanel {
 
     }
     
+    
+    
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(super.getPreferredSize().width, COMPONENT_HEIGHT);
@@ -255,4 +257,13 @@ public class MatchComponent extends JPanel {
 		return isSelectedTeamB;
 	}
 
+	public String getBetSelectedOption() {
+		if(this.isSelectedTeamA) {
+			return "TEAM_A";
+		}else if(this.isSelectedTeamB) {
+			return "TEAM_B";
+		}else{
+			return "DRAW";
+		}
+	}
 }
