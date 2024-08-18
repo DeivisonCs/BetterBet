@@ -1,6 +1,8 @@
 package models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ticket {
 
@@ -10,6 +12,7 @@ public class Ticket {
 	private float odd;
 	private float expectedProfit;
 	private float amount;
+	private List<Bet> bets;
 	
 	
 	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount) {
@@ -25,13 +28,37 @@ public class Ticket {
 
 	public Ticket(float odd, Integer idUser, float expectedProfit, float amount) {
 		super();
+		this.bets = new ArrayList<Bet>();
 		this.odd = odd;
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
 		this.amount = amount;
 	}
 
+	public Ticket(Integer idUser, List<Bet> bets) {
+		super();
+		this.bets = bets;
+		this.idUser = idUser;
+		this.odd = calculateOdd();
+	}
+	
+	private float calculateOdd() {
+		
+		float finalOdd = 1f;
+		
+		for (Bet bet: this.bets) {
+			if(bet.getSelectedBet().equals("TEAM_A")) {
+				finalOdd = finalOdd * bet.getOddTeamA();
+			}else if(bet.getSelectedBet().equals("TEAM_B")) {
+				finalOdd = finalOdd * bet.getOddTeamB();
+			}else  if(bet.getSelectedBet().equals("DRAW")) {
+				finalOdd = finalOdd * bet.getOddDraw();
+			}
 
+		}
+
+		return finalOdd;
+	}
 
 	public Integer getId() {
 		return id;
@@ -81,6 +108,12 @@ public class Ticket {
 		this.amount = amount;
 	}
 	
-	
+    public void setBets(List<Bet> bets) {
+        this.bets = bets;
+    }
+    
+    public List<Bet> getBets() {
+        return this.bets;
+    }
 	
 }

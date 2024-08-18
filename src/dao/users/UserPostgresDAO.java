@@ -180,7 +180,7 @@ public class UserPostgresDAO implements UserDAO {
 	@Override
 	public User getById(Integer id) throws SQLException {
 		String query1 = "SELECT * FROM users WHERE user_id = ?";
-		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
+		String query2 = "SELECT * FROM bet_users WHERE user_id=?";
 		
 		User user = null;
 		Connection connection = ConnectionDB.getInstance().getConnection();
@@ -331,6 +331,23 @@ public class UserPostgresDAO implements UserDAO {
 			ex.printStackTrace();
 			throw ex;
 		}
+	}
+
+	@Override
+	public void updateBalance(User user, float newBalance)  throws SQLException{
+		String query = "UPDATE BET_USERS SET BALANCE =? WHERE USER_ID =?";
+		
+		try(
+			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
+		){
+			ps.setFloat(1, newBalance);
+			ps.setInt(2, user.getId());
+			ps.executeUpdate();
+			
+		}catch (SQLException ex) {
+			throw ex;
+		}
+		
 	}
 }
 

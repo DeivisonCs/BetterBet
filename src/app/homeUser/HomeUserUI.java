@@ -7,9 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import models.AdminUser;
+import models.Bet;
 import models.CommonUser;
 import models.Event;
 import models.Match;
+import models.Ticket;
 import models.User;
 import security.Permission;
 import service.users.UserService;
@@ -25,12 +27,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+<<<<<<< HEAD
 import app.ImageUtils;
 import app.WindowProfile;
+=======
+import app.betView.BetUI;
+>>>>>>> c875dfff4794b1c7b7363c3551463cc1c17d9bf2
 import dao.EventDAO;
 import dao.EventPostgresDAO;
 import dao.MatchDAO;
@@ -38,6 +45,8 @@ import dao.MatchPostgresDAO;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 
 import javax.swing.ImageIcon;
@@ -51,6 +60,7 @@ public class HomeUserUI {
 	private UserService userService= new UserService();
 
 	private JFrame frame;
+	JLabel balanceLabel;
 	
 	private List<Match> matches = new ArrayList<Match>();
 	private List<MatchComponent> selectedMatches = new ArrayList<MatchComponent>();
@@ -156,7 +166,7 @@ public class HomeUserUI {
 		
 		
 		if(this.user instanceof CommonUser) {
-			JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
+			balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
 			balanceLabel.setForeground(new Color(255, 255, 255));
 			balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
 			balanceLabel.setBounds(25, 30, 164, 14);
@@ -176,9 +186,20 @@ public class HomeUserUI {
 			makeBetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 			makeBetButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for(MatchComponent match : selectedMatches)	{
-						System.out.println(match.getMatch().getTeamA().getName() + "x" + match.getMatch().getTeamB().getName());
+					
+					if(selectedMatches.isEmpty()) {
+						 JOptionPane.showMessageDialog(null, "Nenhuma partida selecionada.", "Aviso", JOptionPane.WARNING_MESSAGE);
+				         return;
 					}
+					
+					String betType = selectedMatches.size() > 1 ? "MULTIPLA" : "SIMPLES";
+					List<Bet> bets = selectedMatches.stream()
+						    .map(m -> new Bet(betType, m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), "PENDENTE", m.getBetSelectedOption()))
+						    .collect(Collectors.toList());
+
+					Ticket ticket = new Ticket(user.getId(), bets);
+					
+					new BetUI(ticket, HomeUserUI.this);
 				}
 			});
 			makeBetButton.setBounds(846, 18, 128, 29);
@@ -235,7 +256,7 @@ public class HomeUserUI {
 		JLabel gamesDescriptionLabel = new JLabel("Jogos em Andamento:");
 		gamesDescriptionLabel.setForeground(new Color(255, 255, 255));
 		gamesDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
-		gamesDescriptionLabel.setBounds(29, 21, 264, 43);
+		gamesDescriptionLabel.setBounds(25, 11, 264, 43);
 		gamesDescriptionPanel.add(gamesDescriptionLabel);
 		
 		JScrollPane eventScrollPane = new JScrollPane();
@@ -273,8 +294,8 @@ public class HomeUserUI {
 		eventsDescriptionPanel.setLayout(null);
 		
 		JLabel eventsDescriptionLabel = new JLabel("Eventos: ");
-		eventsDescriptionLabel.setBounds(10, 11, 123, 23);
-		eventsDescriptionLabel.setForeground(new Color(0, 0, 0));
+		eventsDescriptionLabel.setBounds(10, 21, 123, 23);
+		eventsDescriptionLabel.setForeground(new Color(255, 255, 255));
 		eventsDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
 		eventsDescriptionPanel.add(eventsDescriptionLabel);
 		
@@ -288,15 +309,16 @@ public class HomeUserUI {
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
-
-		
 		GridBagConstraints gbc = new GridBagConstraints();
+		
+		
 	        gbc.gridx = 0;
-	        gbc.gridy = GridBagConstraints.RELATIVE;
+	        gbc.gridy = 0;
 	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.anchor = GridBagConstraints.NORTH;  
 	        gbc.weightx = 1.0;
-	        gbc.insets.bottom = 0;
+	        gbc.insets.bottom = 10;
+	        gbc.insets.top = 5;
         
         for (Match match : matches) {
         	
@@ -398,6 +420,15 @@ public class HomeUserUI {
 		return Optional.empty();
 	}
 	
+	public User getUser() {
+		return this.user;
+	}
+
+	public JFrame getFrame() {
+		return this.frame;
+	}
 	
-	
+	public JLabel getBalanceLabel() {
+		return this.balanceLabel;
+	}
 }

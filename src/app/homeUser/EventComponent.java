@@ -37,6 +37,7 @@ public class EventComponent extends JPanel {
         setBackground(DEFAULT_COLOR_PANEL);
 
         eventLabel = new JLabel(event.getName());
+        eventLabel.setPreferredSize(new Dimension(200, 60));
         eventLabel.setForeground(DEFAULT_COLOR_LABEL);
         eventLabel.setHorizontalAlignment(SwingConstants.CENTER);
         eventLabel.setFont(new Font("Verdana", Font.PLAIN, 15));
