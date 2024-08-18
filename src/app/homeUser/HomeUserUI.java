@@ -29,6 +29,8 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import app.ImageUtils;
+import app.WindowProfile;
 import dao.EventDAO;
 import dao.EventPostgresDAO;
 import dao.MatchDAO;
@@ -37,6 +39,8 @@ import dao.MatchPostgresDAO;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -181,11 +185,23 @@ public class HomeUserUI {
 			navBarPanel.add(makeBetButton);
 		}
 		
-		/*
-		ProfileImageComponent panel = new ProfileImageComponent();
-		panel.setBounds(942, 15, 63, 44);
-		navBarPanel.add(panel);
-		*/
+		
+		ImageUtils profilePicture = new ImageUtils();
+		profilePicture.setImage(new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg")));
+		profilePicture.setBounds(1100, 13, 44, 44);
+		profilePicture.setBorder(null);
+		profilePicture.setBorderSize(0);
+		profilePicture.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				frame.dispose();
+				new WindowProfile(user);
+			}
+			
+		});
+		navBarPanel.add(profilePicture);
+		
 		
 		GridBagLayout layoutGamesPanel = new GridBagLayout();
 		gamesPanel = new JPanel(layoutGamesPanel);
