@@ -1,17 +1,19 @@
-package app.homeUser;
+package components;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
+import javax.swing.BorderFactory;
+
 @SuppressWarnings("serial")
-public class RoundedTextFieldComponent extends JTextField {
-    private int arcWidth;
+public class RoundedPasswordFieldComponent extends JPasswordField {
+	private int arcWidth;
     private int arcHeight;
     private int paddingLeft;
     private int paddingRight;
 
-    public RoundedTextFieldComponent(int columns, int arcWidth, int arcHeight, int paddingLeft, int paddingRight) {
+    public RoundedPasswordFieldComponent(int columns, int arcWidth, int arcHeight, int paddingLeft, int paddingRight) {
         super(columns);
         this.arcWidth = arcWidth;
         this.arcHeight = arcHeight;
@@ -43,19 +45,5 @@ public class RoundedTextFieldComponent extends JTextField {
     public Insets getInsets() {
         Insets insets = super.getInsets();
         return new Insets(insets.top, paddingLeft, insets.bottom, paddingRight);
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Rounded TextField Example");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new FlowLayout());
-        
-        RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 15, 15, 10, 10);
-        roundedTextField.setBackground(Color.WHITE);
-
-        frame.add(roundedTextField);
-        frame.setSize(400, 300);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }

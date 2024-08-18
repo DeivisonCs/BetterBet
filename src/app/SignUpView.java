@@ -18,12 +18,12 @@ import java.awt.event.FocusEvent;
 import com.toedter.calendar.JCalendar;
 
 import app.homeUser.HomeUserUI;
-import components.RoundedTextField;
+import components.RoundedTextFieldComponent;
 import database.InitDatabase;
 import models.CommonUser;
 
 import components.RoundedButton;
-import components.RoundedPasswordField;
+import components.RoundedPasswordFieldComponent;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -36,12 +36,12 @@ public class SignUpView {
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
 	
 	private JFrame frame;
-	private RoundedTextField nameField;
-	private RoundedTextField emailField;
-	private RoundedTextField addressField;
-	private RoundedTextField cpfField;
-	private JPasswordField passwordField;
-	private JPasswordField confirmPasswordField;
+	private RoundedTextFieldComponent nameField;
+	private RoundedTextFieldComponent emailField;
+	private RoundedTextFieldComponent addressField;
+	private RoundedTextFieldComponent cpfField;
+	private RoundedPasswordFieldComponent passwordField;
+	private RoundedPasswordFieldComponent confirmPasswordField;
 	private JTextPane txtpnBemVindoAo;
 	private JLabel namePlaceholder;
 	private JLabel emailPlaceholder;
@@ -129,7 +129,7 @@ public class SignUpView {
 		frame.getContentPane().add(namePlaceholder);
 		
 		
-		nameField = new RoundedTextField();
+		nameField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		namePlaceholder.setLabelFor(nameField);
 		nameField.addFocusListener(new FocusAdapter() {
 			
@@ -158,7 +158,7 @@ public class SignUpView {
 		emailPlaceholder.setBounds(519, 229, 426, 14);
 		frame.getContentPane().add(emailPlaceholder);
 		
-		emailField = new RoundedTextField();
+		emailField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		emailPlaceholder.setLabelFor(emailField);
 		emailField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -183,7 +183,7 @@ public class SignUpView {
 		passwordPlaceholder.setBounds(519, 332, 209, 14);
 		frame.getContentPane().add(passwordPlaceholder);
 		
-		passwordField = new RoundedPasswordField();
+		passwordField = new RoundedPasswordFieldComponent(20, 20, 20, 10, 10);
 		passwordPlaceholder.setLabelFor(passwordField);
 		passwordField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -207,7 +207,7 @@ public class SignUpView {
 		confirmPasswordPlaceholder.setBounds(519, 391, 209, 14);
 		frame.getContentPane().add(confirmPasswordPlaceholder);
 		
-		confirmPasswordField = new RoundedPasswordField();
+		confirmPasswordField = new RoundedPasswordFieldComponent(20, 20, 20, 10, 10);
 		confirmPasswordPlaceholder.setLabelFor(confirmPasswordField);
 		confirmPasswordField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -232,7 +232,7 @@ public class SignUpView {
 		addressPlaceholder.setBounds(519, 284, 426, 14);
 		frame.getContentPane().add(addressPlaceholder);
 		
-		addressField = new RoundedTextField();
+		addressField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		addressPlaceholder.setLabelFor(addressField);
 		addressField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -258,7 +258,7 @@ public class SignUpView {
 		cpfPlaceholder.setBounds(519, 448, 61, 14);
 		frame.getContentPane().add(cpfPlaceholder);
 		
-		cpfField = new RoundedTextField();
+		cpfField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		cpfPlaceholder.setLabelFor(cpfField);
 		cpfField.addFocusListener(new FocusAdapter() {
 			@Override

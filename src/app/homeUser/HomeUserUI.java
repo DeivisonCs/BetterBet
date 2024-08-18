@@ -29,6 +29,8 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
 import dao.EventDAO;
 import dao.EventPostgresDAO;
 import dao.MatchDAO;
