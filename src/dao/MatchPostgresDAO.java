@@ -97,9 +97,36 @@ public class MatchPostgresDAO implements MatchDAO {
 	}
 
 	@Override
-	public Match getMatchById() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Match getMatchById(Integer matchId) throws SQLException {
+	    String query = "SELECT * FROM match WHERE match_id = ?";
+
+	    try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)) {
+	        ps.setInt(1, matchId);
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            Integer id = rs.getInt("match_id");
+	            Integer idEvent = rs.getInt("event_id");
+	            Integer teamAId = rs.getInt("a_team");
+	            Integer scoreTeamA = rs.getInt("a_team_score");
+	            float oddTeamA = rs.getFloat("a_team_odd");
+	            float oddDraw = rs.getFloat("draw_odd");
+	            Integer teamBId = rs.getInt("b_team");
+	            Integer scoreTeamB = rs.getInt("b_team_score");
+	            float oddTeamB = rs.getFloat("b_team_odd");
+	            LocalDateTime date = rs.getTimestamp("date_time").toLocalDateTime();
+
+	            Team teamA = teamPostgresDAO.getTeamById(teamAId);
+	            Team teamB = teamPostgresDAO.getTeamById(teamBId);
+
+	            return new Match(id, idEvent, teamA, scoreTeamA, oddTeamA, oddDraw, teamB, scoreTeamB, oddTeamB, date);
+	        }
+
+	        return null;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    }
 	}
 
 	@Override

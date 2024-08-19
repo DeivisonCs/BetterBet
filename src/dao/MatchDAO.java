@@ -9,7 +9,7 @@ public interface MatchDAO {
 	
 	public List<Match> getAllMatches()throws SQLException;
 	public List<Match> getMatchesByEvent(Integer event_id)throws SQLException;
-	public Match getMatchById()throws SQLException;
+	public Match getMatchById(Integer matchId)throws SQLException;
 	public boolean deleteMatchById()throws SQLException;
 	public boolean editMatch()throws SQLException;
 }

@@ -15,7 +15,7 @@ public class Ticket {
 	private List<Bet> bets;
 	
 	
-	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount) {
+	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, List<Bet> bets) {
 		super();
 		this.id = id;
 		this.odd = odd;
@@ -23,6 +23,7 @@ public class Ticket {
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
 		this.amount = amount;
+		this.bets = bets;
 	}
 	
 

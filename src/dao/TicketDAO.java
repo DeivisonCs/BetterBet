@@ -6,6 +6,6 @@ import java.util.List;
 import models.Ticket;
 
 public interface TicketDAO {
-	public List<Ticket> getTicketsByUser()throws SQLException;
+	public List<Ticket> getTicketsByUser(Integer userId)throws SQLException;
 	public int createTicket(Ticket ticket)throws SQLException;
 }

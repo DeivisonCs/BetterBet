@@ -4,17 +4,47 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import database.ConnectionDB;
+import models.Bet;
 import models.Ticket;
 
 public class TicketPostgresDAO implements TicketDAO {
 
+	BetDAO betDao = new BetPostgresDAO();
+	
 	@Override
-	public List<Ticket> getTicketsByUser() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Ticket> getTicketsByUser(Integer userId) throws SQLException {
+	    String query = "SELECT * FROM TICKET WHERE user_id = ?";
+
+	    try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)) {
+	        ps.setInt(1, userId);
+	        ResultSet rs = ps.executeQuery();
+
+	        List<Ticket> tickets = new ArrayList<Ticket>();
+
+	        while (rs.next()) {
+	            Integer id = rs.getInt("ticket_id");
+	            float odd = rs.getFloat("ODD");
+	            LocalDateTime timeStamp = rs.getTimestamp("time_stamp").toLocalDateTime();
+	            float amount = rs.getFloat("amount");
+
+	            List<Bet> bets = betDao.getBetsByTicket(id);
+
+	            float expectedProfit = odd * amount;
+
+	            Ticket ticket = new Ticket(id, odd, timeStamp, userId, expectedProfit, amount, bets);
+	            tickets.add(ticket);
+	        }
+
+	        return tickets;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    }
 	}
 	
 	@Override

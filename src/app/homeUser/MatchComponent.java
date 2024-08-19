@@ -48,7 +48,7 @@ public class MatchComponent extends JPanel {
         setLayout(new GridBagLayout());
         setBackground(DEFAULT_COLOR_MATCH_COMPONENT);
         
-        //DEFINIÇÃO DA LARGURA DOS GRIDS DO MATCH COMPONENT
+        //DEFINIÇÃO DA LARGURA E ALTURA DOS GRIDS DO MATCH COMPONENT
         GridBagLayout layout = (GridBagLayout) getLayout();
         layout.columnWidths = new int[]{PANEL_TEAM_WIDTH, PANEL_X_WIDTH, PANEL_TEAM_WIDTH};
         layout.rowHeights = new int[]{PANEL_TEAM_HEIGHT};
@@ -74,7 +74,7 @@ public class MatchComponent extends JPanel {
         lblTimeA.setHorizontalAlignment(SwingConstants.CENTER);
         lblTimeA.setForeground(DEFAULT_FONT_COLOR);
         
-        JLabel lblOddTimeA =  new JLabel(String.format("(%.1f)", match.getOddTeamA()));
+        JLabel lblOddTimeA =  new JLabel(String.format("(%.2f)", match.getOddTeamA()));
         lblOddTimeA.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblOddTimeA.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddTimeA.setHorizontalAlignment(SwingConstants.CENTER);
@@ -91,7 +91,7 @@ public class MatchComponent extends JPanel {
         panelDraw.setLayout(new BorderLayout());
         panelDraw.setBackground(DEFAULT_COLOR);
         
-        JLabel lblOddDraw =  new JLabel(String.format("(%.1f)", match.getOddDraw()));
+        JLabel lblOddDraw =  new JLabel(String.format("(%.2f)", match.getOddDraw()));
         lblOddDraw.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblOddDraw.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddDraw.setHorizontalAlignment(SwingConstants.CENTER);
@@ -234,8 +234,6 @@ public class MatchComponent extends JPanel {
             }
         });
         
-        
-
     }
     
     

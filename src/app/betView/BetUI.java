@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
@@ -16,6 +17,7 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import app.homeUser.HomeUserUI;
 import app.homeUser.RoundedButtonComponent;
@@ -29,6 +31,8 @@ import service.ticket.TicketService;
 import service.users.CommonUserService;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.ActionEvent;
 
 public class BetUI {
@@ -59,9 +63,10 @@ public class BetUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 410, 481);
+		frame.setBounds(100, 100, 394, 442);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.setUndecorated(true);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(40, 40, 40));
@@ -70,10 +75,27 @@ public class BetUI {
 		panel.setLayout(null);
 		
 		JButton cancelButton = new RoundedButtonComponent("Cancelar");
-		cancelButton.setBounds(239, 397, 89, 23);
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+			}
+		});
+		cancelButton.setBounds(239, 397, 100, 29);
 		panel.add(cancelButton);
 		
 		JScrollPane betScrollPane = new JScrollPane();
+		betScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		betScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		betScrollPane.setBorder(null);
+		betScrollPane.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+
+                JScrollBar verticalScrollBar = betScrollPane.getVerticalScrollBar();
+                int unitsToScroll = e.getWheelRotation() * 15;
+                verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
+            }
+        });
 		betScrollPane.setBounds(10, 11, 374, 317);
 		panel.add(betScrollPane);
 		
@@ -93,18 +115,18 @@ public class BetUI {
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		String finalOddValue = String.format("(%.1f)", ticket.getOdd());
+		String finalOddValue = String.format("Odd: %.2f", ticket.getOdd());
 		JLabel lblNewLabel = new JLabel(finalOddValue);
-		lblNewLabel.setBounds(289, 11, 46, 14);
+		lblNewLabel.setBounds(280, 15, 84, 14);
 		panel_1.add(lblNewLabel);
 		
-		textField = new RoundedTextFieldComponent(10, 20, 20, 10, 10);
-		textField.setBounds(49, 8, 155, 20);
+		textField = new RoundedTextFieldComponent(10, 20, 20, 10, 20);
+		textField.setBounds(49, 8, 155, 28);
 		panel_1.add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Valor: ");
-		lblNewLabel_1.setBounds(11, 11, 46, 14);
+		lblNewLabel_1.setBounds(10, 15, 46, 14);
 		panel_1.add(lblNewLabel_1);
 		
 		JButton betButton = new RoundedButtonComponent("Apostar");
@@ -141,10 +163,8 @@ public class BetUI {
 				
 			}
 		});
-		betButton.setBounds(68, 397, 89, 23);
+		betButton.setBounds(68, 397, 100, 29);
 		panel.add(betButton);
-		
-		
 		
 		frame.setVisible(true);
 	}
@@ -163,6 +183,7 @@ public class BetUI {
 	    for (Bet bet : ticket.getBets()) {
 	        BetComponent betComponent = new BetComponent(bet);
 	        betsPanel.add(betComponent, gbc);
+	        gbc.gridy++;
 	    }
 	    
 	    gbc.weighty = 1.0;
@@ -173,6 +194,4 @@ public class BetUI {
 	    betsPanel.revalidate();
 	    betsPanel.repaint();
 	}
-	
-	
 }
