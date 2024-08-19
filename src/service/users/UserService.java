@@ -36,6 +36,25 @@ public class UserService {
 		return validField;
 	}
 	
+	public String updateUser(User user, String newPassword, String confirmPassword) throws SQLException{
+		String validField = middleware.updateUser(user, newPassword, confirmPassword);
+		
+		if(validField.equals("200")) {
+			try {
+				if(newPassword != null) {
+					user.setPassword(PasswordHandler.hashPassword(newPassword));
+				}
+					
+				userDb.edit(user);
+			}
+			catch(SQLException ex) {
+				throw ex;
+			}
+		}
+		
+		return validField;
+	}
+	
 	public Integer loginUser(String email, String password) throws SQLException{
 		try {
 			return userDb.login(email, password);

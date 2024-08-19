@@ -31,7 +31,7 @@ public class UserPostgresDAO implements UserDAO {
 	    ){
 	        connection.setAutoCommit(false);
 
-	        if(isEmailRegistered(newUser.getEmail())) {
+	        if(getUserByEmail(newUser.getEmail()) != null) {
 	        	throw new SQLException("Email já cadastrado.");
 	        }
 	        
@@ -245,7 +245,59 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public boolean edit(User user, int id) throws SQLException {
+	public boolean edit(User user) throws SQLException {
+		String query1 = "UPDATE users SET name=?, email=?, password=? WHERE user_id=?";
+		String query2 = "UPDATE bet_users  SET address=? WHERE user_id=?";
+		
+		Connection connection = ConnectionDB.getInstance().getConnection();
+		try (
+			PreparedStatement ps = connection.prepareStatement(query1);
+			PreparedStatement betInf = connection.prepareStatement(query2))
+		{
+			connection.setAutoCommit(false);
+			
+			// Verifica se tem o email ja cadastrado em outro usuário
+			if(this.getUserByEmail(user.getEmail()).getId() != user.getId()) {
+				throw new SQLException("Email já cadastrado.");
+			}
+			
+			ps.setString(1, user.getName());
+			ps.setString(2, user.getEmail());
+			ps.setString(3, user.getPassword());
+			ps.setInt(4, user.getId());
+			
+			ps.executeUpdate();
+			
+			if(user.getPermission().equals("user")) {
+				betInf.setString(1, ((CommonUser)user).getAddress());
+				betInf.setInt(2, user.getId());
+				
+				betInf.executeUpdate();
+			}
+			
+			connection.commit();
+			return true;
+		}
+		catch (SQLException e) {
+	        e.printStackTrace();
+	        if (connection != null) {
+	            try {
+	                connection.rollback(); // Reverte a transação em caso de erro
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	        throw e;
+	    } finally {
+	        if (connection != null) {
+	            try {
+	                connection.setAutoCommit(true); // Ativa o auto-commit de volta
+	            } catch (SQLException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+	    }
+		
 //		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
 //
 //        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
@@ -264,7 +316,7 @@ public class UserPostgresDAO implements UserDAO {
 //            e.printStackTrace();
 //            throw e;
 //        }
-		return false;
+//		return false;
 	}
 
 
@@ -286,9 +338,9 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public boolean isEmailRegistered(String email) throws SQLException{
-		String query = "SELECT COUNT(*) FROM users WHERE email=?";
-		int count = 0;
+	public User getUserByEmail(String email) throws SQLException{
+		String query = "SELECT * FROM users WHERE email=?";
+		User user = null;
 		
 		try(
 			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
@@ -298,10 +350,17 @@ public class UserPostgresDAO implements UserDAO {
 			ResultSet response = ps.executeQuery();
 			
 			if(response.next()) {
-				count = response.getInt(1);
+				user = response.getString("permission").equals("admin") ? new AdminUser() : new CommonUser();
+				
+				user.setId(response.getInt("user_id"));
+				user.setName(response.getString("name"));
+				user.setCpf(response.getString("cpf"));
+				user.setEmail(response.getString("email"));
+				user.setPassword(response.getString("password"));
+				user.setPermission(response.getString("permission"));
 			}
 			
-			return count >= 1;
+			return user;
 		}
 		catch (SQLException ex) {
 			ex.printStackTrace();

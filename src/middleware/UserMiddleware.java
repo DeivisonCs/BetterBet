@@ -10,7 +10,7 @@ import models.User;
 public class UserMiddleware {
 	private final String VALIDATED = "200";
 	
-	public String verifyNewUser(CommonUser user, String confirmPassword) {
+	public String verifyNewUser(User user, String confirmPassword) {
 		System.out.println("Middleware " + user.toString());
 		
 		// Validação do nome
@@ -32,7 +32,7 @@ public class UserMiddleware {
 		}
 		
 		// Varifica se é maior de idade
-		if(!isOlderThan18(user.getBirthDate())) {
+		if(user.getPermission().equals("user") && !isOlderThan18(((CommonUser)user).getBirthDate())) {
 			return "É necessário mais de 18 anos para criar conta na BetterBet!";
 		}	
 		
@@ -40,6 +40,32 @@ public class UserMiddleware {
 		String validPassword = validPassword(user.getPassword(), confirmPassword);
 		if(!validPassword.equals(VALIDATED)) {
 			return validPassword;
+		}
+		
+		return VALIDATED;
+	}
+	
+	public String updateUser(User user, String newPassword, String confirmPassword) {
+		System.out.println("Update Middleware " + user.toString());
+		
+		// Validação do nome
+		String validName = validName(user.getName());
+		if(!validName.equals(VALIDATED)) {
+			return validName;
+		}
+		
+		// Valida Email
+		String validEmail = validEmail(user.getEmail());
+		if(!validEmail.equals(VALIDATED)) {
+			return validEmail;
+		}
+		
+		// Validação senha
+		if(newPassword != null) {
+			String validPassword = validPassword(newPassword, confirmPassword);
+			if(!validPassword.equals(VALIDATED)) {
+				return validPassword;
+			}
 		}
 		
 		return VALIDATED;

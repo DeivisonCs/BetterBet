@@ -1,4 +1,4 @@
-package app.homeUser;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

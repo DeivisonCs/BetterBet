@@ -1,4 +1,4 @@
-package app.homeUser;
+package components;
 
 import javax.swing.*;
 import java.awt.*;

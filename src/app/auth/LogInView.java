@@ -1,4 +1,4 @@
-package app;
+package app.auth;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 
+import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
 import components.RoundedButton;
 import components.RoundedPasswordFieldComponent;
@@ -132,6 +133,7 @@ public class LogInView {
 					
 					frame.dispose();
 					new HomeUserUI(userId);
+//					new EditUser(userId);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
