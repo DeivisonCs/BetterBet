@@ -12,6 +12,7 @@ import models.Ticket;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.GridBagLayout;
 import javax.swing.JComboBox;
@@ -22,11 +23,11 @@ import java.awt.GridBagConstraints;
 public class HistoryView {
 	
 	
-	
+	private JPanel panel_1;
 	
 	private List<Ticket> tickets = new ArrayList<Ticket>();
 	
-	private List<TicketComponent> ticketsDisplayed = new ArrayList<TicketComponent>();
+	private List<TicketComponent> ticketsDisplayed = new ArrayList<TicketComponent>();;
 	
 	private JFrame frame;
 	/**
@@ -54,6 +55,7 @@ public class HistoryView {
 	public HistoryView(Integer userId) {
 		
 		initialize();
+		updateTickets();
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class HistoryView {
 		scrollPane.setBorder(null);
 		frame.getContentPane().add(scrollPane);
 		
-		JPanel panel_1 = new JPanel();
+		panel_1 = new JPanel();
 		panel_1.setBackground(new Color(40, 40, 40));
 		scrollPane.setViewportView(panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
@@ -134,7 +136,7 @@ public class HistoryView {
 	}
 	
 	public void updateTickets() {
-		gbl_panel_1.removeAll();
+		panel_1.removeAll();
 	    
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
@@ -144,18 +146,18 @@ public class HistoryView {
 	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
-	    for (Bet bet : ticket.getBets()) {
-	        BetComponent betComponent = new BetComponent(bet);
-	        betsPanel.add(betComponent, gbc);
+	    for (Ticket ticket : tickets) {
+	        TicketComponent ticketComponent = new TicketComponent(ticket);
+	        panel_1.add(ticketComponent, gbc);
 	        gbc.gridy++;
 	    }
 	    
 	    gbc.weighty = 1.0;
 	    JPanel filler = new JPanel();
 	    filler.setBackground(new Color(40, 40, 40));
-	    gbl_panel_1.add(filler, gbc);
+	    panel_1.add(filler, gbc);
 
-	    gbl_panel_1.revalidate();
-	    gbl_panel_1.repaint();
+	    panel_1.revalidate();
+	    panel_1.repaint();
 	}
 }
