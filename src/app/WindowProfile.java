@@ -95,7 +95,7 @@ public class WindowProfile {
 
         JPanel panelProfile = new JPanel();
         panelProfile.setBorder(null);
-        panelProfile.setBackground(new Color(0, 0, 0));
+        panelProfile.setBackground(new Color(40, 40, 40));
         panelProfile.setBounds(0, 0, 945, 661);
         frame.getContentPane().add(panelProfile);
         panelProfile.setLayout(null);
@@ -268,14 +268,14 @@ public class WindowProfile {
         backButton.setBorderSize(0);
         backButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
         backButton.setBounds(5, 5, 50, 50);
-//        backButton.addMouseListener(new MouseAdapter() {
-//        	@Override
-//        	public void mouseClicked(MouseEvent e) {
-//        		frame.dispose();
-//        		new HomeUserUI(user);
-//        	}
-//        	
-//        });
+        backButton.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        		new HomeUserUI(user.getId());
+        	}
+        	
+        });
         panelProfile.add(backButton);
         
 // -------------------- Profile Image and Edit Button ----------------------------------------------        
@@ -365,8 +365,9 @@ public class WindowProfile {
         }
         
         
-   //------------------ Transaction history --------------------------------     
-
+   //------------------ Transaction history --------------------------------    
+        
+        
         JScrollPane scrollPane = new JScrollPane();
 
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -386,7 +387,7 @@ public class WindowProfile {
         frame.getContentPane().add(scrollPane);
         panelTransaction.setBorder(null);
 
-        panelTransaction.setBackground(new Color(128, 128, 128));
+        panelTransaction.setBackground(new Color(30, 30, 30));
         panelTransaction.setPreferredSize(new Dimension(240, 1000));
  
         scrollPane.setViewportView(panelTransaction);
@@ -395,7 +396,7 @@ public class WindowProfile {
         
         JPanel panelTransactionTxt = new JPanel();
         panelTransactionTxt.setBorder(null);
-        panelTransactionTxt.setBackground(new Color(128, 128, 128));
+        panelTransactionTxt.setBackground(new Color(30, 30, 30));
         panelTransactionTxt.setBounds(945, 0, 239, 66);
         frame.getContentPane().add(panelTransactionTxt);
         panelTransactionTxt.setLayout(null);
@@ -406,8 +407,12 @@ public class WindowProfile {
         lblTransaction.setFont(new Font("Tahoma", Font.PLAIN, 20));
         lblTransaction.setBounds(0, 22, 244, 33);
         panelTransactionTxt.add(lblTransaction);
-                
         
+        if(user.getPermission().equals("admin")) {
+        	panelProfile.setBounds(0, 0, 1185, 661); 
+        	scrollPane.setVisible(false);
+            
+        }
     }
     
     public void updateTransactions() {
