@@ -19,11 +19,11 @@ public class TransactionComponent extends JPanel{
 	
 	private static final int COMPONENT_WIDTH = 240;
 	private static final int COMPONENT_HEIGHT = 100;
-//	private static final int PANEL_TRANSACTION_WIDTH = 240;
-//	private static final int PANEL_TRANSACTION_HEIGHT = 1000;
 	
 	private static final Color DEFAULT_COLOR = new Color(128, 128, 128);
 	private static final Color ENTERED_COLOR = new Color(192,192,192);
+	
+	private JPanel componentTransaction;
 	
 	public TransactionComponent(Transaction transaction) {
 		this.transaction = transaction;
@@ -31,23 +31,19 @@ public class TransactionComponent extends JPanel{
 	}
 	
 	public void initialize() {
-		//this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		
-//		JPanel panelTransaction = new JPanel();
-//		panelTransaction.setPreferredSize(new Dimension(PANEL_TRANSACTION_WIDTH, PANEL_TRANSACTION_HEIGHT));
 		
 		Dimension componentTransactionSize = new Dimension(COMPONENT_WIDTH, COMPONENT_HEIGHT);
 		
-		String lblTransactionStr = String.format(transaction.getType(), "%.2d %s", transaction.getValue());
+		String lblTransactionStr = String.format("%s: R$ %.2f", transaction.getType(), transaction.getValue());
 		JLabel lblTransaction = new JLabel(lblTransactionStr);
 		
-		JPanel componentTransaction = new JPanel();
-		//componentTransaction.setPreferredSize(componentTransactionSize);
-		componentTransaction.setMaximumSize(componentTransactionSize);
-		componentTransaction.setMinimumSize(componentTransactionSize);
-		componentTransaction.setBackground(DEFAULT_COLOR);
-		componentTransaction.setLayout(null);
-		componentTransaction.addMouseListener(new MouseAdapter() {
+		//componentTransaction = new JPanel();
+
+		this.setMaximumSize(componentTransactionSize);
+		this.setMinimumSize(componentTransactionSize);
+		this.setBackground(DEFAULT_COLOR);
+		this.setLayout(null);
+		this.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				setBackground(ENTERED_COLOR);
@@ -62,11 +58,16 @@ public class TransactionComponent extends JPanel{
 			
 		});
 		
-		
-		componentTransaction.add(lblTransaction);
+		lblTransaction.setBounds(10, 20, 200, 20);
+		this.add(lblTransaction);
 		
 	}
 	
+	
+	public JPanel getComponentTransaction() {
+		
+		return this.componentTransaction;
+	}
 	
 	
 }

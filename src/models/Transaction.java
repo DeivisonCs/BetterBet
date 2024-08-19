@@ -3,6 +3,7 @@ package models;
 public class Transaction {
 	
 	private Integer id;
+	//private Integer user_id;
 	private String type;
 	private double value;
 	

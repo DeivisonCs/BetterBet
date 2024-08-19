@@ -32,12 +32,11 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-<<<<<<< HEAD
 import app.ImageUtils;
 import app.WindowProfile;
-=======
+
 import app.betView.BetUI;
->>>>>>> c875dfff4794b1c7b7363c3551463cc1c17d9bf2
+
 import dao.EventDAO;
 import dao.EventPostgresDAO;
 import dao.MatchDAO;

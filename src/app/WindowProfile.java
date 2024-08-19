@@ -134,38 +134,39 @@ public class WindowProfile {
     	        btnConfirmarDeposito.setForeground(Color.WHITE);
     	        btnConfirmarDeposito.addActionListener(new ActionListener() {
     	        	public void actionPerformed(ActionEvent e) {
-    	        		
-//    	        		Transaction deposito = new Transaction("Deposito", (Double)spinnerValorDeposito.getValue());
+	
+    	        		Transaction deposito = new Transaction("Deposito", (Double)spinnerValorDeposito.getValue());
+    	        		TransactionComponent depositoComponent = new TransactionComponent(deposito);
 //    	        		transactions.add(deposito);
 //    	        		updateTransactions();
 //    	        				
-    	        		JPanel panelSaque = new JPanel();
-    	        		panelSaque.setLayout(null);
-    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
-    	        		panelSaque.setMaximumSize(new Dimension(240,100));
-    	        		panelSaque.setBackground(new Color(128, 128, 128));
-                        panelSaque.addMouseListener(new MouseAdapter() {
-
-                			@Override
-                			public void mouseEntered(MouseEvent e) {
-                				// TODO Auto-generated method stub
-                				panelSaque.setBackground(new Color(192,192,192));
-                			}
-
-                			@Override
-                			public void mouseExited(MouseEvent e) {
-                				// TODO Auto-generated method stub
-                				panelSaque.setBackground(new Color(128, 128, 128));
-                			}
-                		
-                        	
-                        });
+//    	        		JPanel panelSaque = new JPanel();
+//    	        		panelSaque.setLayout(null);
+//    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
+//    	        		panelSaque.setMaximumSize(new Dimension(240,100));
+//    	        		panelSaque.setBackground(new Color(128, 128, 128));
+//                        panelSaque.addMouseListener(new MouseAdapter() {
+//
+//                			@Override
+//                			public void mouseEntered(MouseEvent e) {
+//
+//                				panelSaque.setBackground(new Color(192,192,192));
+//                			}
+//
+//                			@Override
+//                			public void mouseExited(MouseEvent e) {
+//
+//                				panelSaque.setBackground(new Color(128, 128, 128));
+//                			}
+//                		
+//                        	
+//                        });
+//    	        		
+//    	        		JLabel lblPanelSaque = new JLabel("Depósito R$ " + (Double)spinnerValorDeposito.getValue());
+//    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
+//    	        		panelSaque.add(lblPanelSaque);
     	        		
-    	        		JLabel lblPanelSaque = new JLabel("Depósito R$ " + (Double)spinnerValorDeposito.getValue());
-    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
-    	        		panelSaque.add(lblPanelSaque);
-    	        		
-    	        		panelTransaction.add(panelSaque);
+    	        		panelTransaction.add(depositoComponent);
     	        		panelTransaction.revalidate();
     	        		panelTransaction.repaint();
     	        		
@@ -202,40 +203,43 @@ public class WindowProfile {
     	        lblReal.setBounds(20, 60, 30, 20);
     	        dialogSaque.getContentPane().add(lblReal);
     	        
-    	        JSpinner spinnerValorSaque = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1000.0, 1.0)); // O valor max está 100, mas deve ser mudado depois para o valor do saldo
+    	        JSpinner spinnerValorSaque = new JSpinner(new SpinnerNumberModel(0.00, 0.00, 1000.00, 1.00)); // O valor max está 100, mas deve ser mudado depois para o valor do saldo
     	        spinnerValorSaque.setBounds(50, 60, 100, 25);
     	        dialogSaque.getContentPane().add(spinnerValorSaque);
     	        
     	        RoundedButton btnConfirmarSaque = new RoundedButton("Confirmar Saque");
     	        btnConfirmarSaque.addActionListener(new ActionListener() {
     	        	public void actionPerformed(ActionEvent e) {
-    	        		JPanel panelSaque = new JPanel();
-    	        		panelSaque.setLayout(null);
-    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
-    	        		panelSaque.setMaximumSize(new Dimension(240,100));
-    	        		panelSaque.setBackground(new Color(128, 128, 128));
-                        panelSaque.addMouseListener(new MouseAdapter() {
-
-                			@Override
-                			public void mouseEntered(MouseEvent e) {
-                				// TODO Auto-generated method stub
-                				panelSaque.setBackground(new Color(192,192,192));
-                			}
-
-                			@Override
-                			public void mouseExited(MouseEvent e) {
-                				// TODO Auto-generated method stub
-                				panelSaque.setBackground(new Color(128, 128, 128));
-                			}
-                		
-                        	
-                        });
     	        		
-    	        		JLabel lblPanelSaque = new JLabel("Saque R$ " + spinnerValorSaque.getValue());
-    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
-    	        		panelSaque.add(lblPanelSaque);
+    	        		Transaction saque = new Transaction("Saque", (Double)spinnerValorSaque.getValue());
+    	        		TransactionComponent saqueComponent = new TransactionComponent(saque);
+//    	        		JPanel panelSaque = new JPanel();
+//    	        		panelSaque.setLayout(null);
+//    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
+//    	        		panelSaque.setMaximumSize(new Dimension(240,100));
+//    	        		panelSaque.setBackground(new Color(128, 128, 128));
+//                        panelSaque.addMouseListener(new MouseAdapter() {
+//
+//                			@Override
+//                			public void mouseEntered(MouseEvent e) {
+//       
+//                				panelSaque.setBackground(new Color(192,192,192));
+//                			}
+//
+//                			@Override
+//                			public void mouseExited(MouseEvent e) {
+//
+//                				panelSaque.setBackground(new Color(128, 128, 128));
+//                			}
+//                		
+//                        	
+//                        });
+//    	        		
+//    	        		JLabel lblPanelSaque = new JLabel("Saque R$ " + spinnerValorSaque.getValue());
+//    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
+//    	        		panelSaque.add(lblPanelSaque);
     	        		
-    	        		panelTransaction.add(panelSaque);
+    	        		panelTransaction.add(saqueComponent);
     	        		panelTransaction.revalidate();
     	        		panelTransaction.repaint();
     	        		
@@ -288,6 +292,9 @@ public class WindowProfile {
         editButton.setBorder(null);
         editButton.setBorderSize(0);
         editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));
+        
+      // int distanciaDinamica = lblNome.getWidth() + 10;
+        
         editButton.setBounds(211, 270, 40, 40);
         panelProfile.add(editButton);
       
@@ -318,11 +325,12 @@ public class WindowProfile {
              panelProfile.add(lblNewLabel_3);
         }       
         
-        JLabel lblNewLabel_9 = new JLabel(user.getName());
-        lblNewLabel_9.setForeground(new Color(255, 255, 255));
-        lblNewLabel_9.setFont(new Font("Tahoma", Font.PLAIN, 25));
-        lblNewLabel_9.setBounds(39, 275, 187, 31);
-        panelProfile.add(lblNewLabel_9);
+        JLabel lblNome = new JLabel(user.getName());
+        lblNome.setForeground(new Color(255, 255, 255));
+        lblNome.setFont(new Font("Tahoma", Font.PLAIN, 25));
+        lblNome.setBounds(39, 275, 187, 31);
+        panelProfile.add(lblNome);
+       
         
         JLabel lblNewLabel_4 = new JLabel(user.getEmail());
         lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -345,7 +353,7 @@ public class WindowProfile {
         JLabel lblNewLabel_6 = new JLabel("Endereço");
         lblNewLabel_6.setForeground(new Color(255, 255, 255));
         lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        lblNewLabel_6.setBounds(39, 453, 62, 14);
+        lblNewLabel_6.setBounds(39, 453, 62, 16);
         panelProfile.add(lblNewLabel_6);
         
         if(this.user instanceof CommonUser) {
