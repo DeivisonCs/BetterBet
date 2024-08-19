@@ -86,7 +86,10 @@ public class HistoryView {
 		gbl_panel_1.columnWeights = new double[]{Double.MIN_VALUE};
 		gbl_panel_1.rowWeights = new double[]{Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
+
+		//String[] nomesFamilia = nomes.toArray(new String[nomes.size()]);
 		
+		//comboBox = new JComboBox<>(nomesFamilia);
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(53, 178, 214, 22);
 		frame.getContentPane().add(comboBox);
