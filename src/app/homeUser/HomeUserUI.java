@@ -185,12 +185,11 @@ public class HomeUserUI {
 				         return;
 					}
 					
-					String betType = selectedMatches.size() > 1 ? "MULTIPLA" : "SIMPLES";
 					List<Bet> bets = selectedMatches.stream()
-						    .map(m -> new Bet(betType, m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), "PENDENTE", m.getBetSelectedOption()))
+						    .map(m -> new Bet(m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), m.getBetSelectedOption()))
 						    .collect(Collectors.toList());
 
-					Ticket ticket = new Ticket(user.getId(), bets);
+					Ticket ticket = new Ticket(user.getId(),"PENDENTE", bets);
 					
 					new BetUI(ticket, HomeUserUI.this);
 				}

@@ -72,6 +72,8 @@ CREATE TABLE TICKET(
 	time_stamp TIMESTAMP NOT NULL,
 	user_id INT NOT NULL,
 	amount FLOAT NOT NULL,
+	ticket_type VARCHAR(20),
+	status VARCHAR(20),
 
 	CONSTRAINT PK_TICKET 
 		PRIMARY KEY(ticket_id),
@@ -85,8 +87,6 @@ CREATE TABLE TICKET(
 CREATE TABLE BET(
 	bet_id SERIAL NOT NULL,
 	ticket_id INT NOT NULL,
-	bet_type VARCHAR(20),
-	status VARCHAR(20),
 	team_bet VARCHAR(10),
 	match_id INT NOT NULL,
 	odd_draw FLOAT NOT NULL,
@@ -104,25 +104,6 @@ CREATE TABLE BET(
 		FOREIGN KEY (match_id)
 		REFERENCES BET_MATCH (match_id)
 );
-
-
-CREATE TABLE BET_TICKET(
-	bet_id INT NOT NULL,
-	ticket_id INT NOT NULL,
-	
-	CONSTRAINT PK_BT_TICKET
-		PRIMARY KEY (ticket_id, bet_id),
-
-	CONSTRAINT FK_BT_BET
-		FOREIGN KEY (bet_id)
-		REFERENCES BET (bet_id),
-	
-	CONSTRAINT FK_BT_TICKET
-		FOREIGN KEY (ticket_id)
-		REFERENCES BET_TICKET (ticket_id)
-
-);
-
 
 
 INSERT INTO event (sport, date_time, description, status) VALUES

@@ -127,6 +127,40 @@ public class EventPostgresDAO implements EventDAO{
 		return false;
 	}
 
+	@Override
+	public List<String> userRelatedEvents(Integer userId) throws SQLException {
+		String query = "SELECT DISTINCT E.DESCRIPTION "
+				+ "FROM EVENT AS E  "
+				+ "INNER JOIN MATCH AS MA\r\n"
+				+ "	ON (E.EVENT_ID = MA.EVENT_ID) "
+				+ "WHERE MA.MATCH_ID IN ( "
+				+ "	SELECT BET.MATCH_ID "
+				+ "	FROM BET "
+				+ "	WHERE BET.TICKET_ID IN ( "
+				+ "		SELECT TICKET.TICKET_ID  "
+				+ "		FROM TICKET\r\n"
+				+ "		WHERE TICKET.USER_ID = ? "
+				+ "	) "
+				+ ");";
+
+        List<String> events = new ArrayList<String>();
+
+        try(
+            PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
+            
+        ){
+        	ps.setInt(1, userId);
+        	ResultSet response = ps.executeQuery();
+        	while(response.next()) {
+        		events.add(response.getString("description"));
+            }
+            return events;
+        }catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+	}
+
 
 
 }

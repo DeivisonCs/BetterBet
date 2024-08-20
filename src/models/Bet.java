@@ -2,50 +2,42 @@ package models;
 
 public class Bet {
 	private Integer id;
-	private String betType;
 	private float oddTeamA;
 	private float oddTeamB;
 	private float oddDraw;
 	private Match match;
 	private Integer idTicket;
-	private String status;
 	private String selectedBet;
 	
 	
-	public Bet(Integer id, String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String selectedBet) {
+	public Bet(Integer id, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String selectedBet) {
 		super();
 		this.id = id;
-		this.betType = betType;
 		this.oddTeamA = oddTeamA;
 		this.oddTeamB = oddTeamB;
 		this.oddDraw = oddDraw;
 		this.match = match;
 		this.idTicket = idTicket;
-		this.status = status;
 		this.selectedBet = selectedBet;
 	}
 
 
-	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String status, String selectedBet) {
+	public Bet(float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String selectedBet) {
 		super();
-		this.betType = betType;
 		this.oddTeamA = oddTeamA;
 		this.oddTeamB = oddTeamB;
 		this.oddDraw = oddDraw;
 		this.match = match;
 		this.idTicket = idTicket;
-		this.status = status;
 		this.selectedBet = selectedBet;
 	}
 
-	public Bet(String betType, float oddTeamA, float oddTeamB,float oddDraw, Match match, String status, String selectedBet) {
+	public Bet(float oddTeamA, float oddTeamB,float oddDraw, Match match, String selectedBet) {
 		super();
-		this.betType = betType;
 		this.oddTeamA = oddTeamA;
 		this.oddTeamB = oddTeamB;
 		this.oddDraw = oddDraw;
 		this.match = match;
-		this.status = status;
 		this.selectedBet = selectedBet;
 	}
 	
@@ -56,16 +48,6 @@ public class Bet {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-
-	public String getBetType() {
-		return betType;
-	}
-
-
-	public void setBetType(String betType) {
-		this.betType = betType;
 	}
 
 	public Match getMatch() {
@@ -85,16 +67,6 @@ public class Bet {
 
 	public void setIdTicket(Integer idTicket) {
 		this.idTicket = idTicket;
-	}
-
-
-	public String getStatus() {
-		return status;
-	}
-
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 

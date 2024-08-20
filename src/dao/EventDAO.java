@@ -13,5 +13,5 @@ public interface EventDAO {
 	public boolean deleteEventById(int id)throws SQLException;
 	public boolean editEvent(Event event)throws SQLException;
 	public List<Event> getEventsByName(String name)throws SQLException;
-
+	public List<String> userRelatedEvents(Integer userId) throws SQLException;
 }

@@ -27,18 +27,16 @@ public class BetPostgresDAO implements BetDAO{
 
 	        while (betRS.next()) {
 	            Integer betId = betRS.getInt("bet_id");
-	            String betType = betRS.getString("bet_type");
 	            float oddTeamA = betRS.getFloat("odd_team_A");
 	            float oddTeamB = betRS.getFloat("odd_team_B");
 	            float oddDraw = betRS.getFloat("odd_draw");
 	            Integer matchId = betRS.getInt("match_id");
 	            Integer idTicket = betRS.getInt("ticket_id");
-	            String status = betRS.getString("status");
 	            String selectedBet = betRS.getString("team_bet");
 
 	            Match match = matchDao.getMatchById(matchId);
 
-	            Bet bet = new Bet(betId, betType, oddTeamA, oddTeamB, oddDraw, match, idTicket, status, selectedBet);
+	            Bet bet = new Bet(betId, oddTeamA, oddTeamB, oddDraw, match, idTicket, selectedBet);
 	            betsByTicket.add(bet);
 	        }
 
@@ -51,19 +49,17 @@ public class BetPostgresDAO implements BetDAO{
 
 	@Override
 	public int createBet(Bet bet) throws SQLException {
-		String query = "INSERT INTO BET (ticket_id, bet_type, status, selected_bet, match_id, odd_draw, odd_team_A, odd_team_B) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO BET (ticket_id, selected_bet, match_id, odd_draw, odd_team_A, odd_team_B) VALUES (?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS))
         {
 
             ps.setInt(1, bet.getIdTicket());
-            ps.setString(2, bet.getBetType());
-            ps.setString(3, bet.getStatus());
-            ps.setString(4, bet.getSelectedBet());
-            ps.setInt(5, bet.getMatch().getId());
-            ps.setFloat(6, bet.getOddDraw());
-            ps.setFloat(7, bet.getOddTeamA());
-            ps.setFloat(8, bet.getOddTeamB());
+            ps.setString(2, bet.getSelectedBet());
+            ps.setInt(3, bet.getMatch().getId());
+            ps.setFloat(4, bet.getOddDraw());
+            ps.setFloat(5, bet.getOddTeamA());
+            ps.setFloat(6, bet.getOddTeamB());
             
             ps.executeUpdate();
             

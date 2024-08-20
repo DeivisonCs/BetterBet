@@ -31,12 +31,13 @@ public class TicketPostgresDAO implements TicketDAO {
 	            float odd = rs.getFloat("ODD");
 	            LocalDateTime timeStamp = rs.getTimestamp("time_stamp").toLocalDateTime();
 	            float amount = rs.getFloat("amount");
+	            String type = rs.getString("ticket_type");
+	            String status = rs.getString("status");
 
-	            List<Bet> bets = betDao.getBetsByTicket(id);
 
 	            float expectedProfit = odd * amount;
 
-	            Ticket ticket = new Ticket(id, odd, timeStamp, userId, expectedProfit, amount, bets);
+	            Ticket ticket = new Ticket(id, odd, timeStamp, userId, expectedProfit, amount, type, status);
 	            tickets.add(ticket);
 	        }
 
@@ -49,7 +50,7 @@ public class TicketPostgresDAO implements TicketDAO {
 	
 	@Override
 	public int createTicket(Ticket ticket) throws SQLException {
-		String query = "INSERT INTO TICKET (odd, time_stamp, user_id, amount) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO TICKET (odd, time_stamp, user_id, amount, ticket_type, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS))
         {
@@ -58,6 +59,8 @@ public class TicketPostgresDAO implements TicketDAO {
             ps.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
             ps.setInt(3, ticket.getIdUser());
             ps.setFloat(4, ticket.getAmount());
+            ps.setString(5, ticket.getTicketType());
+            ps.setString(6, ticket.getStatus());
 
             ps.executeUpdate();
             

@@ -13,9 +13,12 @@ public class Ticket {
 	private float expectedProfit;
 	private float amount;
 	private List<Bet> bets;
+	private String ticketType;
+	private String status;
 	
 	
-	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, List<Bet> bets) {
+	//Construtor para quando traz o ticket do banco
+	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, String ticketType, String status) {
 		super();
 		this.id = id;
 		this.odd = odd;
@@ -23,24 +26,31 @@ public class Ticket {
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
 		this.amount = amount;
-		this.bets = bets;
+		this.bets = new ArrayList<Bet>();
+		this.ticketType = ticketType;
+		this.status = status;
 	}
 	
-
-	public Ticket(float odd, Integer idUser, float expectedProfit, float amount) {
+	//Construtor usado para inserir o Ticket no banco(VERIFICAR SE ESTA SENDO USADO)
+	public Ticket(float odd, Integer idUser, float expectedProfit, float amount, String ticketType, String status) {
 		super();
 		this.bets = new ArrayList<Bet>();
 		this.odd = odd;
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
 		this.amount = amount;
+		this.ticketType = ticketType;
+		this.status = status;
 	}
 
-	public Ticket(Integer idUser, List<Bet> bets) {
+	//Construtor usado para criar o ticket antes do usuario inserir os valores de aposta
+	public Ticket(Integer idUser,String status, List<Bet> bets) {
 		super();
 		this.bets = bets;
 		this.idUser = idUser;
 		this.odd = calculateOdd();
+		this.status = status;
+		setTicketType(bets);
 	}
 	
 	private float calculateOdd() {
@@ -60,6 +70,8 @@ public class Ticket {
 
 		return finalOdd;
 	}
+	
+	
 
 	public Integer getId() {
 		return id;
@@ -113,7 +125,29 @@ public class Ticket {
         this.bets = bets;
     }
     
-    public List<Bet> getBets() {
+    
+    public String getTicketType() {
+		return ticketType;
+	}
+
+    
+	private void setTicketType(List<Bet> bets) {
+		this.ticketType = bets.size() > 1 ? "MULTIPLA" : "SIMPLES";
+			
+	}
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	public List<Bet> getBets() {
         return this.bets;
     }
 	
