@@ -1,4 +1,4 @@
-package dao;
+package dao.bet;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

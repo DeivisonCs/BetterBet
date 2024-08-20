@@ -1,4 +1,4 @@
-package dao;
+package dao.bet;
 
 import java.sql.SQLException;
 import java.util.List;

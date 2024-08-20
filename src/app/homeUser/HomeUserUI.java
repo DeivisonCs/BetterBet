@@ -23,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +33,18 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import components.EventComponent;
+import components.MatchComponent;
+import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
+
 import app.ImageUtils;
-import app.WindowProfile;
-
 import app.betView.BetUI;
-
-import dao.EventDAO;
-import dao.EventPostgresDAO;
-import dao.MatchDAO;
-import dao.MatchPostgresDAO;
+import app.profile.WindowProfile;
+import dao.event.EventDAO;
+import dao.event.EventPostgresDAO;
+import dao.match.MatchDAO;
+import dao.match.MatchPostgresDAO;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
@@ -115,6 +119,8 @@ public class HomeUserUI {
 			}
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -216,7 +222,7 @@ public class HomeUserUI {
 			public void mouseClicked(MouseEvent e) {
 				
 				frame.dispose();
-				new WindowProfile(user);
+				new WindowProfile(user.getId());
 			}
 			
 		});

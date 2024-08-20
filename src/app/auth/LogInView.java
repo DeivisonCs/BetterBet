@@ -1,4 +1,4 @@
-package app;
+package app.auth;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,10 +15,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 
+import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
 import components.RoundedButton;
-import components.RoundedPasswordField;
-import components.RoundedTextField;
+import components.RoundedPasswordFieldComponent;
+import components.RoundedTextFieldComponent;
 import models.CommonUser;
 import models.User;
 import service.users.UserService;
@@ -29,7 +30,7 @@ public class LogInView {
 	private JTextPane txtpnBemVindoAo;
 	private JLabel emailPlaceholder;
 	private JLabel passwordPlaceholder;
-	private RoundedTextField emailField;
+	private RoundedTextFieldComponent emailField;
 	private JPasswordField passwordField;
 	
 	public LogInView() {
@@ -74,7 +75,7 @@ public class LogInView {
 		emailPlaceholder.setBounds(588, 251, 274, 14);
 		frame.getContentPane().add(emailPlaceholder);
 		
-		emailField = new RoundedTextField();
+		emailField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		emailPlaceholder.setLabelFor(emailField);
 		emailField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -99,7 +100,7 @@ public class LogInView {
 		passwordPlaceholder.setBounds(588, 314, 274, 14);
 		frame.getContentPane().add(passwordPlaceholder);
 		
-		passwordField = new RoundedPasswordField();
+		passwordField = new RoundedPasswordFieldComponent(20, 20, 20, 10, 10);
 		passwordPlaceholder.setLabelFor(passwordField);
 		passwordField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -132,6 +133,7 @@ public class LogInView {
 					
 					frame.dispose();
 					new HomeUserUI(userId);
+//					new EditUser(userId);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());

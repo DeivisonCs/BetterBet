@@ -1,5 +1,8 @@
 package service.users;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import dao.users.UserDAO;
@@ -18,7 +21,7 @@ public class UserService {
 		this.middleware = new UserMiddleware();
 	}
 
-	public String createUser(User newUser, String confirmPassword) throws SQLException{
+	public String createUser(User newUser, String confirmPassword) throws SQLException, IOException{
 		
 		String validField = middleware.verifyNewUser((CommonUser)newUser, confirmPassword);
 		
@@ -36,6 +39,25 @@ public class UserService {
 		return validField;
 	}
 	
+	public String updateUser(User user, String newPassword, String confirmPassword, File selectedImgFile) throws SQLException, FileNotFoundException{
+		String validField = middleware.updateUser(user, newPassword, confirmPassword);
+		
+		if(validField.equals("200")) {
+			try {
+				if(newPassword != null) {
+					user.setPassword(PasswordHandler.hashPassword(newPassword));
+				}
+					
+				userDb.edit(user, selectedImgFile);
+			}
+			catch(SQLException ex) {
+				throw ex;
+			}
+		}
+		
+		return validField;
+	}
+	
 	public Integer loginUser(String email, String password) throws SQLException{
 		try {
 			return userDb.login(email, password);
@@ -45,7 +67,7 @@ public class UserService {
 		}
 	}
 	
-	public User getUser(Integer id) throws SQLException {
+	public User getUser(Integer id) throws SQLException, IOException {
 		try {
 			return userDb.getById(id);
 		}

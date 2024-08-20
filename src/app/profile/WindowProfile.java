@@ -1,4 +1,4 @@
-package app;
+package app.profile;
 
 import java.awt.EventQueue;
 
@@ -14,23 +14,31 @@ import java.awt.Dimension;
 
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 
 import javax.swing.SwingConstants;
 
+import app.ImageUtils;
+import app.RoundedButton;
+import app.TransactionComponent;
+import app.auth.LogInView;
+import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
+import dao.transaction.TransactionDAO;
+import dao.transaction.TransactionPostgresDAO;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
-
-import dao.TransactionDAO;
-import dao.TransactionPostgresDAO;
+import service.users.UserService;
 
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionListener;
@@ -43,10 +51,13 @@ public class WindowProfile {
     private JFrame frame;
     private final JPanel panelTransaction = new JPanel();
     
+    private ImageIcon profileImg;
+    
     private List<Transaction> transactions = new ArrayList<Transaction>();
     private List<TransactionComponent> transactionComponents = new ArrayList<TransactionComponent>();
     
     private User user;
+    private UserService userService = new UserService();
     
     private TransactionDAO transactionDAO = new TransactionPostgresDAO();
     
@@ -67,15 +78,14 @@ public class WindowProfile {
     /**
      * Create the application.
      */
-    public WindowProfile(User user) {
-    	this.user = user;
+    public WindowProfile(Integer userId) {
     	
     	try {
-    		
+    		this.user = userService.getUser(userId);    		
     		this.transactions = transactionDAO.getTransactions();
     		
     	}catch (Exception e) {
-			
+			e.printStackTrace();
 		}
     	
         initialize();
@@ -95,7 +105,7 @@ public class WindowProfile {
 
         JPanel panelProfile = new JPanel();
         panelProfile.setBorder(null);
-        panelProfile.setBackground(new Color(0, 0, 0));
+        panelProfile.setBackground(new Color(40, 40, 40));
         panelProfile.setBounds(0, 0, 945, 661);
         frame.getContentPane().add(panelProfile);
         panelProfile.setLayout(null);
@@ -214,24 +224,28 @@ public class WindowProfile {
         backButton.setBorder(null);
         backButton.setBorderSize(0);
         backButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
-        backButton.setBounds(5, 5, 50, 50);
-//        backButton.addMouseListener(new MouseAdapter() {
-//        	@Override
-//        	public void mouseClicked(MouseEvent e) {
-//        		frame.dispose();
-//        		new HomeUserUI(user);
-//        	}
-//        	
-//        });
+        backButton.setBounds(5, 5, 30, 30);
+        backButton.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        		new HomeUserUI(user.getId());
+        	}
+        	
+        });
         panelProfile.add(backButton);
         
-// -------------------- Profile Image and Edit Button ----------------------------------------------        
+// -------------------- Profile Image and Edit Button ----------------------------------------------   
+        profileImg = 
+        		user.getProfileImage() != null?
+        		user.getProfileImage() : 
+    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
         
         ImageUtils profilePicture = new ImageUtils();
         profilePicture.setBorderSize(0);
         
         profilePicture.setBorder(null);;
-        profilePicture.setImage(new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"))); // NOI18N
+        profilePicture.setImage(profileImg); // NOI18N
         profilePicture.setBounds(52, 68, 147, 147);
         panelProfile.add(profilePicture);
         
@@ -243,6 +257,15 @@ public class WindowProfile {
       // int distanciaDinamica = lblNome.getWidth() + 10;
         
         editButton.setBounds(211, 270, 40, 40);
+        editButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				new EditUser(user.getId());
+				frame.dispose();
+			}
+			
+		});
         panelProfile.add(editButton);
       
 //--------------- Log Out ---------------------------------------------
@@ -312,8 +335,9 @@ public class WindowProfile {
         }
         
         
-   //------------------ Transaction history --------------------------------     
-
+   //------------------ Transaction history --------------------------------    
+        
+        
         JScrollPane scrollPane = new JScrollPane();
 
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -333,7 +357,7 @@ public class WindowProfile {
         frame.getContentPane().add(scrollPane);
         panelTransaction.setBorder(null);
 
-        panelTransaction.setBackground(new Color(128, 128, 128));
+        panelTransaction.setBackground(new Color(30, 30, 30));
         panelTransaction.setPreferredSize(new Dimension(240, 1000));
  
         scrollPane.setViewportView(panelTransaction);
@@ -342,7 +366,7 @@ public class WindowProfile {
         
         JPanel panelTransactionTxt = new JPanel();
         panelTransactionTxt.setBorder(null);
-        panelTransactionTxt.setBackground(new Color(128, 128, 128));
+        panelTransactionTxt.setBackground(new Color(30, 30, 30));
         panelTransactionTxt.setBounds(945, 0, 239, 66);
         frame.getContentPane().add(panelTransactionTxt);
         panelTransactionTxt.setLayout(null);
@@ -353,8 +377,12 @@ public class WindowProfile {
         lblTransaction.setFont(new Font("Tahoma", Font.PLAIN, 20));
         lblTransaction.setBounds(0, 22, 244, 33);
         panelTransactionTxt.add(lblTransaction);
-                
         
+        if(user.getPermission().equals("admin")) {
+        	panelProfile.setBounds(0, 0, 1185, 661); 
+        	scrollPane.setVisible(false);
+            
+        }
     }
     
     public void updateTransactions() {

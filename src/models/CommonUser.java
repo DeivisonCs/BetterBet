@@ -1,5 +1,7 @@
 package models;
 
+import javax.swing.ImageIcon;
+
 public class CommonUser extends User {
 	private float balance;
 	private String address;
@@ -7,16 +9,16 @@ public class CommonUser extends User {
 	
 	public CommonUser(){}
 	
-	public CommonUser(Integer id, String name, String cpf, String birthDate, String email, String address, String password,  String permission, float balance) {
-		super(id, name, cpf, email, password, permission);
+	public CommonUser(Integer id, String name, ImageIcon profileImage, String cpf, String birthDate, String email, String address, String password,  String permission, float balance) {
+		super(id, name, profileImage, cpf, email, password, permission);
 		
 		this.birthDate = birthDate;
 		this.address= address;
 		this.balance = balance;
 	}
 
-	public CommonUser(String name, String cpf, String birthDate, String email, String address, String password,  String permission, float balance) {
-		super(name, cpf, email, password, permission);
+	public CommonUser(String name, ImageIcon profileImage, String cpf, String birthDate, String email, String address, String password,  String permission, float balance) {
+		super(name, profileImage, cpf, email, password, permission);
 		
 		this.birthDate = birthDate;
 		this.address= address;
