@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import models.Match;
 
@@ -20,18 +21,22 @@ public class MatchComponent extends JPanel {
 
 	private Match match;
 	private static final int PANEL_TEAM_WIDTH = 400;
-	private static final int PANEL_TEAM_HEIGHT = 100;
+	private static final int PANEL_TEAM_HEIGHT = 400;
+	
 	private static final int PANEL_X_WIDTH = 50; 
-	private static final int PANEL_X_HEIGHT = 100; 
+	private static final int PANEL_X_HEIGHT = 400; 
 
-	private static final Color SELECTED_FONT_COLOR =  new Color(40, 40, 40); 
+	private static final Color DEFAULT_COLOR_MATCH_COMPONENT = new Color(40, 40, 40); 
+	
+	private static final Color SELECTED_FONT_COLOR =  new Color(30, 30, 30); 
 	private static final Color DEFAULT_FONT_COLOR =  new Color(150, 150, 150);
 	
-    private static final Color SELECTED_COLOR = new Color(150, 150, 150); 
-    private static final Color DEFAULT_COLOR = new Color(40, 40, 40); 
+    private static final Color SELECTED_COLOR = new Color(150, 150, 150);
+    private static final Color DEFAULT_COLOR = new Color(30, 30, 30); 
     private static final int COMPONENT_HEIGHT = 50;
     private boolean isSelectedTeamA = false;
     private boolean isSelectedTeamB = false;
+    private boolean isSelectedDraw = false;
 
     public MatchComponent(Match match) {
         this.match = match;
@@ -39,10 +44,15 @@ public class MatchComponent extends JPanel {
     }
 
     private void initialize() {
+    	
         setLayout(new GridBagLayout());
-        setBackground(DEFAULT_COLOR);
+        setBackground(DEFAULT_COLOR_MATCH_COMPONENT);
+        
+        //DEFINIÇÃO DA LARGURA DOS GRIDS DO MATCH COMPONENT
         GridBagLayout layout = (GridBagLayout) getLayout();
-        layout.columnWidths = new int[]{PANEL_TEAM_WIDTH, PANEL_X_WIDTH, PANEL_TEAM_WIDTH}; // Largura das colunas
+        layout.columnWidths = new int[]{PANEL_TEAM_WIDTH, PANEL_X_WIDTH, PANEL_TEAM_WIDTH};
+        layout.rowHeights = new int[]{PANEL_TEAM_HEIGHT};
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weighty = 1.0;
@@ -50,48 +60,46 @@ public class MatchComponent extends JPanel {
         Dimension timePanelSize = new Dimension(PANEL_TEAM_WIDTH, PANEL_TEAM_HEIGHT);
         Dimension xPanelSize = new Dimension(PANEL_X_WIDTH, PANEL_X_HEIGHT);
         
-        JPanel panelTime2 = new JPanel();
-
-        String lblTime1Str = String.format("(%.1f) %s", match.getOddTeamA(), match.getTeamA().getName());
-        JLabel lblTime1 = new JLabel(lblTime1Str);
+        //CONFIGURAÇÕES DE EXIBIÇÃO DO TIME A
         
-        String lblTime2Str = String.format("%s (%.1f)", match.getTeamB().getName(), match.getOddTeamB());
-        JLabel lblTime2 = new JLabel(lblTime2Str);
+        JPanel panelTimeA = new JPanel();
+        panelTimeA.setPreferredSize(timePanelSize);
+        panelTimeA.setBackground(DEFAULT_COLOR);
+        panelTimeA.setLayout(new BorderLayout());
         
+        String lblTimeAStr = String.format("%s", match.getTeamA().getName());
+        JLabel lblTimeA = new JLabel(lblTimeAStr);
+        lblTimeA.setBorder(new EmptyBorder(5, 0, 5, 0));
+        lblTimeA.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblTimeA.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTimeA.setForeground(DEFAULT_FONT_COLOR);
         
-        JPanel panelTime1 = new JPanel();
-        panelTime1.setPreferredSize(timePanelSize);
-        panelTime1.setBackground(DEFAULT_COLOR);
-        panelTime1.setLayout(new BorderLayout());
-        panelTime1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (isSelectedTeamB && !isSelectedTeamA) {
-                    isSelectedTeamB = false;
-                    panelTime2.setBackground(DEFAULT_COLOR);
-                    lblTime2.setForeground(DEFAULT_FONT_COLOR);
-                }
-
-                isSelectedTeamA = !isSelectedTeamA;
-                Color backgroundColor = isSelectedTeamA ? SELECTED_COLOR : DEFAULT_COLOR;
-                Color fontColor = isSelectedTeamA ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
-                MatchComponent.this.dispatchEvent(e);
-                panelTime1.setBackground(backgroundColor);
-                lblTime1.setForeground(fontColor);
-                revalidate();
-                repaint();
-            }
-        });
+        JLabel lblOddTimeA =  new JLabel(String.format("(%.1f)", match.getOddTeamA()));
+        lblOddTimeA.setBorder(new EmptyBorder(5, 0, 5, 0));
+        lblOddTimeA.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblOddTimeA.setHorizontalAlignment(SwingConstants.CENTER);
+        lblOddTimeA.setForeground(DEFAULT_FONT_COLOR);
         
-        lblTime1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lblTime1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTime1.setForeground(DEFAULT_FONT_COLOR);
-        panelTime1.add(lblTime1, BorderLayout.CENTER);
-
+        panelTimeA.add(lblTimeA, BorderLayout.NORTH);
+        panelTimeA.add(lblOddTimeA, BorderLayout.SOUTH);
         gbc.gridx = 0;
-        //gbc.weightx = 0;
-        add(panelTime1, gbc);
-
+        add(panelTimeA, gbc);
+        
+        //CONFIGURAÇÕES DE EXIBIÇÃO DO EMPATE
+        
+        JPanel panelDraw = new JPanel();
+        panelDraw.setLayout(new BorderLayout());
+        panelDraw.setBackground(DEFAULT_COLOR);
+        
+        JLabel lblOddDraw =  new JLabel(String.format("(%.1f)", match.getOddDraw()));
+        lblOddDraw.setBorder(new EmptyBorder(5, 0, 5, 0));
+        lblOddDraw.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblOddDraw.setHorizontalAlignment(SwingConstants.CENTER);
+        lblOddDraw.setForeground(DEFAULT_FONT_COLOR);
+        panelDraw.add(lblOddDraw, BorderLayout.CENTER);
+        
+      //CONFIGURAÇÕES DE EXIBIÇÃO DO X (VERSUS)
+                
         JPanel panelX = new JPanel();
         panelX.setPreferredSize(xPanelSize);
         panelX.setBackground(DEFAULT_COLOR);
@@ -104,48 +112,133 @@ public class MatchComponent extends JPanel {
         });
         
         JLabel lblX = new JLabel("X");
+        lblX.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblX.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblX.setHorizontalAlignment(SwingConstants.CENTER);
         lblX.setForeground(DEFAULT_FONT_COLOR);
-        panelX.add(lblX, BorderLayout.CENTER);
-
+        
+        
+        panelX.add(lblX, BorderLayout.NORTH);
+        panelX.add(panelDraw, BorderLayout.SOUTH);
         gbc.gridx = 1;
-        //gbc.weightx = 0;
         add(panelX, gbc);
         
+      //CONFIGURAÇÕES DE EXIBIÇÃO DO TIME B
         
-        panelTime2.setPreferredSize(timePanelSize);
-        panelTime2.setBackground(DEFAULT_COLOR);
-        panelTime2.setLayout(new BorderLayout());
-        panelTime2.addMouseListener(new MouseAdapter() {
+        JPanel panelTimeB = new JPanel();
+        panelTimeB.setPreferredSize(timePanelSize);
+        panelTimeB.setBackground(DEFAULT_COLOR);
+        panelTimeB.setLayout(new BorderLayout());
+        
+        String lblTimeBStr = String.format("%s", match.getTeamB().getName());
+        JLabel lblTimeB = new JLabel(lblTimeBStr);
+        lblTimeB.setBorder(new EmptyBorder(5, 0, 5, 0));
+        lblTimeB.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblTimeB.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTimeB.setForeground(DEFAULT_FONT_COLOR);
+
+        JLabel lblOddTimeB =  new JLabel(String.format("(%.1f)", match.getOddTeamB()));
+        lblOddTimeB.setBorder(new EmptyBorder(5, 0, 5, 0));
+        lblOddTimeB.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        lblOddTimeB.setHorizontalAlignment(SwingConstants.CENTER);
+        lblOddTimeB.setForeground(DEFAULT_FONT_COLOR);
+        
+        panelTimeB.add(lblTimeB, BorderLayout.NORTH);
+        panelTimeB.add(lblOddTimeB, BorderLayout.SOUTH);
+        
+        gbc.gridx = 2;
+        add(panelTimeB, gbc);
+        
+        //EVENTO DE CLIQUE DE MOUSE 'TIME A' - MUDANÇA DE COR
+        panelTimeA.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (isSelectedTeamA && !isSelectedTeamB) {
+                if ((isSelectedTeamB || isSelectedDraw ) && !isSelectedTeamA) {
+                    isSelectedTeamB = false;
+                    
+                    isSelectedDraw = false;
+                    panelDraw.setBackground(DEFAULT_COLOR);
+                    lblOddDraw.setForeground(DEFAULT_FONT_COLOR);
+                    
+                    panelTimeB.setBackground(DEFAULT_COLOR);
+                    lblTimeB.setForeground(DEFAULT_FONT_COLOR);
+                    lblOddTimeB.setForeground(DEFAULT_FONT_COLOR);
+                }
+
+                isSelectedTeamA = !isSelectedTeamA;
+                Color backgroundColor = isSelectedTeamA ? SELECTED_COLOR : DEFAULT_COLOR;
+                Color fontColor = isSelectedTeamA ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
+                MatchComponent.this.dispatchEvent(e);
+                panelTimeA.setBackground(backgroundColor);
+                lblTimeA.setForeground(fontColor);
+                lblOddTimeA.setForeground(fontColor);
+                revalidate();
+                repaint();
+            }
+        });
+        
+
+      //EVENTO DE CLIQUE DE MOUSE 'EMPATE' - MUDANÇA DE COR
+        
+        panelDraw.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if ((isSelectedTeamB || isSelectedTeamA) && !isSelectedDraw) {
+                    isSelectedTeamB = false;
+                    panelTimeB.setBackground(DEFAULT_COLOR);
+                    lblTimeB.setForeground(DEFAULT_FONT_COLOR);
+                    lblOddTimeB.setForeground(DEFAULT_FONT_COLOR);
+                    
                     isSelectedTeamA = false;
-                    panelTime1.setBackground(DEFAULT_COLOR);
-                    lblTime1.setForeground(DEFAULT_FONT_COLOR);
+                    panelTimeA.setBackground(DEFAULT_COLOR);
+                    lblTimeA.setForeground(DEFAULT_FONT_COLOR);
+                    lblOddTimeA.setForeground(DEFAULT_FONT_COLOR);
+                }
+
+                isSelectedDraw = !isSelectedDraw;
+                Color backgroundColor = isSelectedDraw ? SELECTED_COLOR : DEFAULT_COLOR;
+                Color fontColor = isSelectedDraw ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
+                MatchComponent.this.dispatchEvent(e);
+                panelDraw.setBackground(backgroundColor);
+                lblOddDraw.setForeground(fontColor);
+                revalidate();
+                repaint();
+            }
+        });
+        
+      //EVENTO DE CLIQUE DE MOUSE 'TIME B' - MUDANÇA DE COR
+        
+        panelTimeB.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if ((isSelectedTeamA || isSelectedDraw) && !isSelectedTeamB) {
+                    isSelectedTeamA = false;
+                    isSelectedDraw = false;
+                    panelDraw.setBackground(DEFAULT_COLOR);
+                    lblOddDraw.setForeground(DEFAULT_FONT_COLOR);
+                    
+                    panelTimeA.setBackground(DEFAULT_COLOR);
+                    lblTimeA.setForeground(DEFAULT_FONT_COLOR);
+                    lblOddTimeA.setForeground(DEFAULT_FONT_COLOR);
                 }
 
                 isSelectedTeamB = !isSelectedTeamB;
                 Color backgroundColor = isSelectedTeamB ? SELECTED_COLOR : DEFAULT_COLOR;
                 Color fontColor = isSelectedTeamB ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
                 MatchComponent.this.dispatchEvent(e);
-                panelTime2.setBackground(backgroundColor);
-                lblTime2.setForeground(fontColor);
+                panelTimeB.setBackground(backgroundColor);
+                lblTimeB.setForeground(fontColor);
+                lblOddTimeB.setForeground(fontColor);
                 revalidate();
                 repaint();
             }
         });
         
-        lblTime2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        lblTime2.setHorizontalAlignment(SwingConstants.CENTER);
-        lblTime2.setForeground(DEFAULT_FONT_COLOR);
-        panelTime2.add(lblTime2, BorderLayout.CENTER);
+        
 
-        gbc.gridx = 2;
-        //gbc.weightx = 0; 
-        add(panelTime2, gbc);
     }
+    
+    
     
     @Override
     public Dimension getPreferredSize() {
@@ -164,4 +257,13 @@ public class MatchComponent extends JPanel {
 		return isSelectedTeamB;
 	}
 
+	public String getBetSelectedOption() {
+		if(this.isSelectedTeamA) {
+			return "TEAM_A";
+		}else if(this.isSelectedTeamB) {
+			return "TEAM_B";
+		}else{
+			return "DRAW";
+		}
+	}
 }

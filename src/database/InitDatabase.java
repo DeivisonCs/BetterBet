@@ -10,7 +10,9 @@ public class InitDatabase {
 	public static void initializeDatabase() {
 		
 		String dropTables = 
-			    "DROP TABLE IF EXISTS users CASCADE;"
+			    "DROP TABLE IF EXISTS bet CASCADE;"
+			  + "DROP TABLE IF EXISTS ticket CASCADE;"
+			  +  "DROP TABLE IF EXISTS users CASCADE;"
 			  + "DROP TABLE IF EXISTS bet_users CASCADE;"
 			  + "DROP TABLE IF EXISTS team CASCADE;"
 			  + "DROP TABLE IF EXISTS match CASCADE;"
@@ -31,7 +33,7 @@ public class InitDatabase {
 		String createTableBetUsers = 
 				"CREATE TABLE bet_users("
 				+ "    bet_user_id SERIAL NOT NULL,"
-				+ "    user_id int,"
+				+ "    user_id int UNIQUE,"
 				+ "    birthDate VARCHAR(10),"
 				+ "    address VARCHAR(100),"
 				+ "    balance FLOAT,"
@@ -86,6 +88,41 @@ public class InitDatabase {
 				+ "  	"
 				+ ");";
 		
+		String createTableTicket = 
+				"CREATE TABLE ticket("
+				+ "	ticket_id SERIAL NOT NULL,"
+				+ "	odd FLOAT NOT NULL,"
+				+ "	time_stamp TIMESTAMP NOT NULL,"
+				+ "	user_id INT NOT NULL,"
+				+ "	amount FLOAT NOT NULL,"
+				+ "	"
+				+ "	CONSTRAINT pk_ticket PRIMARY KEY (ticket_id),"
+				+ "	"
+				+ "	CONSTRAINT fk_ticket_user FOREIGN KEY "
+				+ "		(user_id) REFERENCES bet_users (user_id)"
+				+ ");";
+
+		String createTableBet = 
+				"CREATE TABLE bet("
+				+ "	bet_id SERIAL NOT NULL,"
+				+ "	ticket_id INT NOT NULL,"
+				+ "	bet_type VARCHAR(20),"
+				+ "	status VARCHAR(20),"
+				+ "	selected_bet VARCHAR(10),"
+				+ "	match_id INT NOT NULL,"
+				+ "	odd_draw FLOAT NOT NULL,"
+				+ "	odd_team_A FLOAT NOT NULL,"
+				+ "	odd_team_B FLOAT NOT NULL,"
+				+ "	"
+				+ "	CONSTRAINT pk_bet PRIMARY KEY (bet_id),"
+				+ "	"
+				+ "	CONSTRAINT fk_bet_ticket FOREIGN KEY "
+				+ "		(ticket_id) REFERENCES ticket (ticket_id),"
+				+ "	"
+				+ "	CONSTRAINT fk_bet_match FOREIGN KEY "
+				+ "		(match_id) REFERENCES match (match_id)"
+				+ ");";
+		
 		String insertAdmUser =	
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
@@ -104,6 +141,8 @@ public class InitDatabase {
 			statement.execute(createTableTeam);
 			statement.execute(createTableMatch);
 			statement.execute(insertAdmUser);
+			statement.execute(createTableTicket);
+			statement.execute(createTableBet);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}

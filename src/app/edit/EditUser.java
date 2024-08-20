@@ -7,6 +7,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +17,9 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
+import app.profile.WindowProfile;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 
@@ -28,7 +32,8 @@ import models.CommonUser;
 import models.User;
 import service.users.UserService;
 
-public class EditUser {
+
+public class EditUser{
 
 	private JFrame frame;
 	private User user;
@@ -78,7 +83,6 @@ public class EditUser {
 			e.printStackTrace();
 			frame.dispose();
 		}
-
 		
 		initialize();
 	}
@@ -121,6 +125,7 @@ public class EditUser {
         	@Override
         	public void mouseClicked(MouseEvent e) {
         		frame.dispose();
+        		new WindowProfile(user.getId());
         	}
         });
         returnButton.setBorderSize(0);
@@ -149,9 +154,10 @@ public class EditUser {
                 if (result == JFileChooser.APPROVE_OPTION) {
                 	selectedImgFile = fileChooser.getSelectedFile();
                     profile_img = new ImageIcon(selectedImgFile.getAbsolutePath());
-                    profilePicture.setImage(profile_img);
                     
-                    System.out.println("cahnged: " + profile_img);
+                    updateProfileImage(profile_img);
+                    
+                    System.out.println("changed: " + profile_img);
                 }
         	}
         });
@@ -237,7 +243,7 @@ public class EditUser {
 		frame.getContentPane().add(confirmPasswordField);
 		
 		
-		// ------------------------- SignUp Button -------------------------
+		// ------------------------- Save Button -------------------------
 		RoundedButton button = new RoundedButton("Salvar");
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -272,27 +278,16 @@ public class EditUser {
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
+						new WindowProfile(user.getId());
 						frame.dispose();
 					}
 				}
 				catch(SQLException | FileNotFoundException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
-				
-//				userEdited = user.getPermission().equals("admin") ? new AdminUser() : new CommonUser();
-//				
-//				String password = new String(passwordField.getPassword()).equals("")? user.getPassword() : new String(passwordField.getPassword());
-//				
-//				userEdited.setName(nameField.getText());
-//				userEdited.setCpf(user.getCpf());
-//				userEdited.setEmail(emailField.getText());
-//				userEdited.setPassword(password);
-//				userEdited.setPermission(user.getPermission());
-//				
-//				if(userEdited.getPermission().equals("user")) {
-//					((CommonUser)userEdited).setAddress(((CommonUser)user).getAddress());
-//				}
 			}
+			
+			
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 22));
         button.setBounds(301, 596, 179, 59);
@@ -300,5 +295,11 @@ public class EditUser {
         button.setForeground(Color.WHITE);
         frame.getContentPane().add(button);
         
+	}
+	
+	
+	private void updateProfileImage(ImageIcon newImage) {
+	    profilePicture.setImage(newImage);
+	    profilePicture.repaint();
 	}
 }

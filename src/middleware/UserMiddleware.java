@@ -158,4 +158,9 @@ public class UserMiddleware {
 		
 		return age>=18;
 	}
+	
+
+	public boolean isInsufficientBalance(CommonUser user, float betAmount) {
+		return user.getBalance() - betAmount < 0;
+	}
 }

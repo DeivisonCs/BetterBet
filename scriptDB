@@ -65,3 +65,82 @@ CREATE TABLE match(
 		(b_team) REFERENCES team (team_id)
   	
 );
+
+CREATE TABLE TICKET(
+	ticket_id SERIAL NOT NULL,
+	ODD FLOAT NOT NULL,
+	time_stamp TIMESTAMP NOT NULL,
+	user_id INT NOT NULL,
+	amount FLOAT NOT NULL,
+
+	CONSTRAINT PK_TICKET 
+		PRIMARY KEY(ticket_id),
+
+	CONSTRAINT FK_TICKET_USER
+		FOREIGN KEY (user_id)
+		REFERENCES BET_USER (user_id)
+);
+
+
+CREATE TABLE BET(
+	bet_id SERIAL NOT NULL,
+	ticket_id INT NOT NULL,
+	bet_type VARCHAR(20),
+	status VARCHAR(20),
+	team_bet VARCHAR(10),
+	match_id INT NOT NULL,
+	odd_draw FLOAT NOT NULL,
+	odd_team_A FLOAT NOT NULL,
+	odd_team_B FLOAT NOT NULL,
+	
+	CONSTRAINT PK_BET 
+		PRIMARY KEY(bet_id),
+
+	CONSTRAINT FK_BET_TICKET
+		FOREIGN KEY (ticket_id)
+		REFERENCES TICKET (ticket_id),
+
+	CONSTRAINT FK_BET_MATCH
+		FOREIGN KEY (match_id)
+		REFERENCES BET_MATCH (match_id)
+);
+
+
+CREATE TABLE BET_TICKET(
+	bet_id INT NOT NULL,
+	ticket_id INT NOT NULL,
+	
+	CONSTRAINT PK_BT_TICKET
+		PRIMARY KEY (ticket_id, bet_id),
+
+	CONSTRAINT FK_BT_BET
+		FOREIGN KEY (bet_id)
+		REFERENCES BET (bet_id),
+	
+	CONSTRAINT FK_BT_TICKET
+		FOREIGN KEY (ticket_id)
+		REFERENCES BET_TICKET (ticket_id)
+
+);
+
+
+
+INSERT INTO event (sport, date_time, description, status) VALUES
+('Futebol', '2024-08-10 18:00:00', 'Campeonato Brasileiro - Série A', 'Agendado'),
+('Futebol', '2024-08-15 20:30:00', 'Copa do Mundo - Quartas de Final', 'Agendado'),
+('Futebol', '2024-08-20 21:00:00', 'Amistoso Internacional', 'Concluído');
+
+INSERT INTO team (name, sport) VALUES
+('Flamengo', 'Futebol'),
+('Palmeiras', 'Futebol'),
+('Barcelona', 'Futebol'),
+('Manchester United', 'Futebol'),
+('Real Madrid', 'Futebol'),
+('Paris Saint-Germain', 'Futebol');
+-- Atualizar partidas com empate 0x0
+INSERT INTO match (event_id, a_team, b_team, date_time, a_team_score, b_team_score, a_team_odd, b_team_odd, status, draw_odd) VALUES
+(1, 1, 2, '2024-08-10 18:00:00', 0, 0, 2.50, 3.00, 'Concluído', 3.20),
+(2, 3, 4, '2024-08-15 20:30:00', 0, 0, 2.75, 2.90, 'Concluído', 3.10),
+(3, 5, 6, '2024-08-20 21:00:00', 3, 2, 1.80, 4.00, 'Concluído', 3.50);
+
+

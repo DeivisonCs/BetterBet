@@ -1,4 +1,4 @@
-package dao;
+package dao.team;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

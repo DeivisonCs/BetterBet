@@ -18,4 +18,6 @@ public interface UserDAO {
     public User getById(Integer id) throws SQLException, IOException;
     public boolean deleteById(int id) throws SQLException;
     public boolean edit(User user, File selectedImgFile) throws SQLException , FileNotFoundException;
+    public void updateBalance(User user, float betAmount) throws SQLException;
+
 }
