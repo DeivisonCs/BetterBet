@@ -16,7 +16,8 @@ public class InitDatabase {
 			  + "DROP TABLE IF EXISTS bet_users CASCADE;"
 			  + "DROP TABLE IF EXISTS team CASCADE;"
 			  + "DROP TABLE IF EXISTS match CASCADE;"
-			  + "DROP TABLE IF EXISTS event CASCADE;";
+			  + "DROP TABLE IF EXISTS event CASCADE;"
+			  + "DROP TABLE IF EXISTS transactions CASCADE";
 		
 		String createTableUsers = 
 				"CREATE TABLE users("
@@ -123,6 +124,19 @@ public class InitDatabase {
 				+ "		(match_id) REFERENCES match (match_id)"
 				+ ");";
 		
+		String createTableTransactions = 
+				"CREATE TABLE transactions("
+				+ "	transaction_id SERIAL NOT NULL,"
+				+ "	user_id SERIAL NOT NULL,"
+				+ "	type_transaction VARCHAR(10) NOT NULL,"
+				+ "	value_transaction FLOAT NOT NULL,"
+				+ " "
+				+ "	CONSTRAINT pk_transaction PRIMARY KEY (transaction_id),"
+				+ " "
+				+ "	CONSTRAINT fk_user_transaction FOREIGN KEY (user_id)"
+				+ "	REFERENCES users (user_id)"
+				+ ");";
+		
 		String insertAdmUser =	
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
@@ -146,6 +160,15 @@ public class InitDatabase {
 				+ "'1992/08/01' ,"
 				+ "100.00);";
 		
+		String insertTransaction = 
+				"INSERT INTO transactions (type_transaction, value_transaction) VALUES"
+				+ "('Saque', 10.0),"
+				+ "('Deposito', 50.0),"
+				+ "('Saque', 5.0),"
+				+ "('Deposito', 30.0),"
+				+ "('Deposito', 10.0),"
+				+ "('Saque', 25.0);";
+		
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
 			
 			statement.execute(dropTables);
@@ -158,6 +181,8 @@ public class InitDatabase {
 			statement.execute(createTableTicket);
 			statement.execute(createTableBet);
 			statement.execute(insertCommonUser);
+			statement.execute(createTableTransactions);
+			statement.execute(insertTransaction);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}

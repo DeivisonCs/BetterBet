@@ -61,9 +61,7 @@ public class WindowProfile {
     
     private TransactionDAO transactionDAO = new TransactionPostgresDAO();
     
-    /**
-     * Launch the application.
-     */
+
 //    public static void main(String[] args) {
 //        EventQueue.invokeLater(() -> {
 //            try {
@@ -75,9 +73,6 @@ public class WindowProfile {
 //        });
 //    }
 
-    /**
-     * Create the application.
-     */
     public WindowProfile(Integer userId) {
     	
     	try {
@@ -92,9 +87,7 @@ public class WindowProfile {
         updateTransactions();
     }
 
-    /**
-     * Initialize the contents of the frame.
-     */
+
     private void initialize() {
         frame = new JFrame();
         frame.setBounds(100, 100, 1200, 700);
@@ -291,7 +284,7 @@ public class WindowProfile {
         	 JLabel lblNewLabel_3 = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
              lblNewLabel_3.setForeground(new Color(255, 255, 255));
              lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-             lblNewLabel_3.setBounds(764, 62, 108, 37);
+             lblNewLabel_3.setBounds(764, 62, 120, 37);
              panelProfile.add(lblNewLabel_3);
         }       
         
@@ -330,7 +323,7 @@ public class WindowProfile {
         	JLabel lblNewLabel_8 = new JLabel(((CommonUser) user).getAddress());
         	lblNewLabel_8.setFont(new Font("Tahoma", Font.PLAIN, 12));
         	lblNewLabel_8.setForeground(new Color(255, 255, 255));
-        	lblNewLabel_8.setBounds(39, 478, 138, 14);
+        	lblNewLabel_8.setBounds(39, 478, 160, 14);
         	panelProfile.add(lblNewLabel_8);
         }
         
@@ -346,7 +339,7 @@ public class WindowProfile {
         scrollPane.addMouseWheelListener(new MouseWheelListener() {
   		@Override
   		public void mouseWheelMoved(MouseWheelEvent e) {
-  			// TODO Auto-generated method stub
+  			
   			JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
   			int unitsToScroll = e.getWheelRotation() * 20;
   			verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
@@ -355,14 +348,13 @@ public class WindowProfile {
         });
 
         frame.getContentPane().add(scrollPane);
+        scrollPane.setViewportView(panelTransaction);
+        
         panelTransaction.setBorder(null);
-
         panelTransaction.setBackground(new Color(30, 30, 30));
         panelTransaction.setPreferredSize(new Dimension(240, 1000));
- 
-        scrollPane.setViewportView(panelTransaction);
-
         panelTransaction.setLayout(new BoxLayout(panelTransaction, BoxLayout.Y_AXIS));
+        
         
         JPanel panelTransactionTxt = new JPanel();
         panelTransactionTxt.setBorder(null);

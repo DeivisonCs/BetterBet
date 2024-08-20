@@ -26,7 +26,7 @@ public class TransactionPostgresDAO implements TransactionDAO{
 				transactions.add(
 						new Transaction(
 								response.getInt("transaction_id"),
-							//	response.getInt("user_id"),
+								response.getInt("user_id"),
 								response.getString("type_transaction"),
 								response.getDouble("value_transaction")	
 						)
