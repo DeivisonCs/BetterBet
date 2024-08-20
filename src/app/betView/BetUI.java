@@ -20,8 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import app.homeUser.HomeUserUI;
-import app.homeUser.RoundedButtonComponent;
-import app.homeUser.RoundedTextFieldComponent;
+import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
 import models.Bet;
 import models.CommonUser;
 import models.Ticket;

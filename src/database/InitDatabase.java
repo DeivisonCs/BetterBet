@@ -26,7 +26,8 @@ public class InitDatabase {
 				+ "    email VARCHAR(50) NOT NULL UNIQUE,"
 				+ "    password VARCHAR(70) NOT NULL,"
 				+ "    permission VARCHAR(20) NOT NULL,"
-				+ "    CONSTRAINT pk_userDB PRIMARY KEY (user_id)"
+				+ "	   profile_image BYTEA,"
+				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
 				+ ");";
 		
 		String createTableBetUsers = 
@@ -123,12 +124,27 @@ public class InitDatabase {
 				+ ");";
 		
 		String insertAdmUser =	
-				"INSERT INTO users (name, cpf, email, password, permission) VALUES"
+				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
+				+ "null,"
 				+ "'111.111.111-11', "
 				+ "'admin@gmail.com'," 
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
 				+ " 'admin');";
+		
+		String insertCommonUser =
+				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
+				+ "('Vanessa', "
+				+ "null,"
+				+ "'222.222.222-22', "
+				+ "'van@gmail.com',"
+				+ "'" + PasswordHandler.hashPassword("van123") + "',"
+				+ " 'user');"
+				+ "INSERT INTO bet_users (user_id, address, birthdate, balance) VALUES"
+				+ "(2,"
+				+ "'Rua José Sátiro de Oliveira' ,"
+				+ "'1992/08/01' ,"
+				+ "100.00);";
 		
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
 			
@@ -141,6 +157,7 @@ public class InitDatabase {
 			statement.execute(insertAdmUser);
 			statement.execute(createTableTicket);
 			statement.execute(createTableBet);
+			statement.execute(insertCommonUser);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}

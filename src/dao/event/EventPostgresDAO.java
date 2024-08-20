@@ -1,4 +1,4 @@
-package dao;
+package dao.event;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

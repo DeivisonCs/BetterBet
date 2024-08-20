@@ -3,8 +3,8 @@ package service.bets;
 import java.sql.SQLException;
 import java.util.List;
 
-import dao.BetDAO;
-import dao.BetPostgresDAO;
+import dao.bet.BetDAO;
+import dao.bet.BetPostgresDAO;
 import models.Bet;
 
 public class BetService {

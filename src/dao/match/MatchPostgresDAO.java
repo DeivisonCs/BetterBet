@@ -1,4 +1,4 @@
-package dao;
+package dao.match;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import dao.team.TeamPostgresDAO;
 import database.ConnectionDB;
 import models.Match;
 import models.Team;

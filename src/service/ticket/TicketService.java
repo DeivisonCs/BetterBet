@@ -2,8 +2,8 @@ package service.ticket;
 
 import java.sql.SQLException;
 
-import dao.TicketDAO;
-import dao.TicketPostgresDAO;
+import dao.ticket.TicketDAO;
+import dao.ticket.TicketPostgresDAO;
 import models.Ticket;
 
 public class TicketService {
