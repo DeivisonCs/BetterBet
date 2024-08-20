@@ -2,6 +2,7 @@ package app.auth;
 
 import java.awt.EventQueue;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import java.awt.Panel;
@@ -21,12 +22,13 @@ import app.homeUser.HomeUserUI;
 import components.RoundedTextFieldComponent;
 import database.InitDatabase;
 import models.CommonUser;
-
+import components.ImageUtils;
 import components.RoundedButton;
 import components.RoundedPasswordFieldComponent;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import service.users.CommonUserService;
@@ -49,6 +51,8 @@ public class SignUpView {
 	private JLabel confirmPasswordPlaceholder;
 	private JLabel addressPlaceholder;
 	private JLabel cpfPlaceholder;
+	
+	private ImageUtils imgUtils = new ImageUtils();
 	
 
 	/**
@@ -78,7 +82,7 @@ public class SignUpView {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() {	
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.setBounds(100, 100, 1170, 699);
@@ -291,6 +295,7 @@ public class SignUpView {
 				
 				CommonUser newUser = new CommonUser(
 						nameField.getText(),
+						null,
 						cpfField.getText(),
 						formatedDate.format(birthDateField.getDate()),
 						emailField.getText(),
@@ -314,6 +319,8 @@ public class SignUpView {
 					}
 				}
 				catch(SQLException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				} catch (IOException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				

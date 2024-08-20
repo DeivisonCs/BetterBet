@@ -1,5 +1,12 @@
 package dao.users;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +17,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+import components.ImageUtils;
 import database.ConnectionDB;
 import models.AdminUser;
 import models.CommonUser;
@@ -17,12 +28,13 @@ import models.User;
 import security.PasswordHandler;
 
 public class UserPostgresDAO implements UserDAO {
+	private ImageUtils imgUtils = new ImageUtils();
 
 	@Override
 	public User create(User newUser) throws SQLException {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
 	    String betUserQuery = "INSERT INTO bet_users (user_id, birthDate, address, balance) VALUES (?, ?, ?, ?)";
-
+	    
 	    Connection connection = ConnectionDB.getInstance().getConnection();
 
 	    try (
@@ -38,7 +50,8 @@ public class UserPostgresDAO implements UserDAO {
 	        if(isCpfRegistered(newUser.getCpf())) {
 	        	throw new SQLException("CPF já cadastrado.");
 	        }
-
+	        
+	        
 	        ps.setString(1, newUser.getName());
 	        ps.setString(2, newUser.getCpf());
 	        ps.setString(3, newUser.getEmail());
@@ -145,7 +158,7 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAll() throws SQLException {
+	public List<User> getAll() throws SQLException, IOException {
 		String query = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
 
@@ -153,11 +166,16 @@ public class UserPostgresDAO implements UserDAO {
             PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
             ResultSet response = ps.executeQuery()
         ){
-            while(response.next()){
+            while(response.next()){	
+            	byte[] profileImgData = response.getBytes("profile_image");
+				InputStream is = new ByteArrayInputStream(profileImgData);
+				BufferedImage imgBuffer = ImageIO.read(is);
+            	
                 users.add(
             		new CommonUser(
                             response.getInt("user_id"),
-                            response.getString("name"), 
+                            response.getString("name"),
+                            new ImageIcon(imgBuffer),
                             response.getString("cpf"), 
                             response.getString("birthDate"),
                             response.getString("email"),
@@ -169,7 +187,7 @@ public class UserPostgresDAO implements UserDAO {
                 );
             }
         }
-        catch(Exception e){
+        catch(SQLException e){
             e.printStackTrace();
             throw e;
         }   
@@ -178,7 +196,7 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public User getById(Integer id) throws SQLException {
+	public User getById(Integer id) throws SQLException, IOException {
 		String query1 = "SELECT * FROM users WHERE user_id = ?";
 		String query2 = "SELECT * FROM bet_users WHERE bet_user_id=?";
 		
@@ -194,6 +212,15 @@ public class UserPostgresDAO implements UserDAO {
 			
 			if(response.next()) {
 				user = response.getString("permission").equals("user")? new CommonUser() : new AdminUser(); 
+				
+				if(response.getBytes("profile_image") != null) {
+					byte[] profileImgData = response.getBytes("profile_image");
+					InputStream is = new ByteArrayInputStream(profileImgData);
+					BufferedImage imgBuffer = ImageIO.read(is);
+					
+					user.setProfileImage(new ImageIcon(imgBuffer));
+					
+				}
 				
 				user.setId(response.getInt("user_id"));
 				user.setName(response.getString("name"));
@@ -245,7 +272,7 @@ public class UserPostgresDAO implements UserDAO {
 	}
 
 	@Override
-	public boolean edit(User user) throws SQLException {
+	public boolean edit(User user, File selectedImgFile) throws SQLException, FileNotFoundException {
 		String query1 = "UPDATE users SET name=?, email=?, password=? WHERE user_id=?";
 		String query2 = "UPDATE bet_users  SET address=? WHERE user_id=?";
 		
@@ -260,6 +287,11 @@ public class UserPostgresDAO implements UserDAO {
 			if(this.getUserByEmail(user.getEmail()).getId() != user.getId()) {
 				throw new SQLException("Email já cadastrado.");
 			}
+			
+			if(selectedImgFile != null) {
+				updateProfileImage(user.getId(), selectedImgFile);
+			}
+			
 			
 			ps.setString(1, user.getName());
 			ps.setString(2, user.getEmail());
@@ -288,7 +320,12 @@ public class UserPostgresDAO implements UserDAO {
 	            }
 	        }
 	        throw e;
-	    } finally {
+	    } 
+		catch(FileNotFoundException e){
+            e.printStackTrace();
+            throw e;
+        }
+		finally {
 	        if (connection != null) {
 	            try {
 	                connection.setAutoCommit(true); // Ativa o auto-commit de volta
@@ -297,26 +334,27 @@ public class UserPostgresDAO implements UserDAO {
 	            }
 	        }
 	    }
+	}
+	
+	public void updateProfileImage(int userId, File selectedImgFile) throws SQLException, FileNotFoundException{
+		String query = "UPDATE users SET profile_image=? WHERE user_id=?";
 		
-//		String query = "UPDATE users SET name=? age=? email=? password=? WHERE user_id=?";
-//
-//        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
-//
-//            ps.setString(1, user.getName());
-//            ps.setInt(2, user.getAge());
-//            ps.setString(3, user.getEmail());
-//            ps.setString(4, user.getPassword());
-//            ps.setInt(5, id);
-//
-//            int rowsAffected = ps.executeUpdate();
-//
-//            return rowsAffected>0;
-//        }
-//        catch(Exception e){
-//            e.printStackTrace();
-//            throw e;
-//        }
-//		return false;
+		try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
+			
+			FileInputStream fis = new FileInputStream(selectedImgFile);
+			
+			ps.setBinaryStream(1, fis, (int) selectedImgFile.length());
+			ps.setInt(2, userId);
+			
+			ps.executeUpdate();
+			
+			System.out.println("add image: " + selectedImgFile);
+		}
+		catch(SQLException | FileNotFoundException e){
+            e.printStackTrace();
+            throw e;
+        }
+		
 	}
 
 

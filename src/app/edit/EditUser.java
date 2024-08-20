@@ -7,12 +7,17 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 
 import components.ImageUtils;
 import components.RoundedButton;
@@ -29,6 +34,11 @@ public class EditUser {
 	private User user;
 	private User userEdited;
 	private UserService userService = new UserService();
+	private ImageUtils imgUtils = new ImageUtils();
+	private File selectedImgFile = null;
+	
+	private ImageIcon profile_img;
+	private ImageUtils profilePicture;
 	
 	private JLabel namePlaceholder;
 	private RoundedTextFieldComponent nameField;
@@ -63,6 +73,10 @@ public class EditUser {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			frame.dispose();
+		} catch (IOException e) {
+			e.printStackTrace();
+			frame.dispose();
 		}
 
 		
@@ -82,7 +96,7 @@ public class EditUser {
 		JLabel PageTitle = new JLabel("Atualizar Informações");
 		PageTitle.setForeground(new Color(255, 215, 0));
 		PageTitle.setFont(new Font("Tahoma", Font.PLAIN, 33));
-		PageTitle.setBounds(216, 63, 327, 31);
+		PageTitle.setBounds(216, 63, 319, 31);
 		frame.getContentPane().add(PageTitle);
 		
 		
@@ -111,19 +125,40 @@ public class EditUser {
         });
         returnButton.setBorderSize(0);
         
-        returnButton.setBorder(null);;
+        returnButton.setBorder(null);
         returnButton.setImage(new ImageIcon(getClass().getResource("/public/images/back-arrow.jpg")));
         returnButton.setBounds(24, 24, 30, 30);
         frame.getContentPane().add(returnButton);
 		
 		
 		// ------------------------- Profile Img -------------------------        
+        profile_img = 
+        		user.getProfileImage() != null?
+        		user.getProfileImage() : 
+    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
         
-        ImageUtils profilePicture = new ImageUtils();
+        System.out.println(profile_img);
+        
+        profilePicture = new ImageUtils();
+        profilePicture.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(null);
+                
+                if (result == JFileChooser.APPROVE_OPTION) {
+                	selectedImgFile = fileChooser.getSelectedFile();
+                    profile_img = new ImageIcon(selectedImgFile.getAbsolutePath());
+                    profilePicture.setImage(profile_img);
+                    
+                    System.out.println("cahnged: " + profile_img);
+                }
+        	}
+        });
         profilePicture.setBorderSize(0);
         
-        profilePicture.setBorder(null);;
-        profilePicture.setImage(new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg")));
+        profilePicture.setBorder(null);
+        profilePicture.setImage(profile_img);
         profilePicture.setBounds(138, 159, 147, 147);
         frame.getContentPane().add(profilePicture);
 		
@@ -223,13 +258,14 @@ public class EditUser {
 				user.setName(nameField.getText());
 				user.setEmail(emailField.getText());
 				user.setPassword(user.getPassword());
+//				user.setProfileImage(profile_img);
 				
 				if(user.getPermission().equals("user")) {
 					((CommonUser)user).setAddress(addressField.getText());
 				}
 				
 				try {
-					String validUser = userService.updateUser(user, password, confirmPassword);
+					String validUser = userService.updateUser(user, password, confirmPassword, selectedImgFile);
 					
 					if(!validUser.equals("200")) {
 						JOptionPane.showMessageDialog(null, validUser);
@@ -239,7 +275,7 @@ public class EditUser {
 						frame.dispose();
 					}
 				}
-				catch(SQLException ex) {
+				catch(SQLException | FileNotFoundException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 				

@@ -11,9 +11,21 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 
 public class ImageUtils extends JComponent {
 
@@ -100,8 +112,26 @@ public class ImageUtils extends JComponent {
         return new Rectangle(new Point(x, y), new Dimension(width, height));
     }
 
-    private Image toImage(Icon icon) {
+    public Image toImage(Icon icon) {
         return ((ImageIcon) icon).getImage();
     }
+    
+    // Converte ImageIcon para BufferedImage
+    public BufferedImage toBufferedImage(ImageIcon imageIcon) {
+        Image image = imageIcon.getImage();
+        if (image instanceof BufferedImage) {
+            return (BufferedImage) image;
+        }
+        
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        bufferedImage.getGraphics().drawImage(image, 0, 0, null);
+        return bufferedImage;
+    }
 
+    // Converte BufferedImage para byte[]
+    public byte[] toByteArray(BufferedImage bufferedImage, String format) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, format, baos);
+        return baos.toByteArray();
+    }
 }

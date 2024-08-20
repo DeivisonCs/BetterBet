@@ -132,8 +132,8 @@ public class LogInView {
 //					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
 					
 					frame.dispose();
-					new HomeUserUI(userId);
-//					new EditUser(userId);
+//					new HomeUserUI(userId);
+					new EditUser(userId);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());

@@ -24,6 +24,7 @@ public class InitDatabase {
 				+ "    email VARCHAR(50) NOT NULL UNIQUE,"
 				+ "    password VARCHAR(70) NOT NULL,"
 				+ "    permission VARCHAR(20) NOT NULL,"
+				+ "	   profile_image BYTEA,"
 				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
 				+ ");";
 		
@@ -86,8 +87,9 @@ public class InitDatabase {
 				+ ");";
 		
 		String insertAdmUser =	
-				"INSERT INTO users (name, cpf, email, password, permission) VALUES"
+				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
+				+ "null,"
 				+ "'111.111.111-11', "
 				+ "'admin@gmail.com'," 
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
