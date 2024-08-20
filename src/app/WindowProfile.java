@@ -137,34 +137,6 @@ public class WindowProfile {
 	
     	        		Transaction deposito = new Transaction("Deposito", (Double)spinnerValorDeposito.getValue());
     	        		TransactionComponent depositoComponent = new TransactionComponent(deposito);
-//    	        		transactions.add(deposito);
-//    	        		updateTransactions();
-//    	        				
-//    	        		JPanel panelSaque = new JPanel();
-//    	        		panelSaque.setLayout(null);
-//    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
-//    	        		panelSaque.setMaximumSize(new Dimension(240,100));
-//    	        		panelSaque.setBackground(new Color(128, 128, 128));
-//                        panelSaque.addMouseListener(new MouseAdapter() {
-//
-//                			@Override
-//                			public void mouseEntered(MouseEvent e) {
-//
-//                				panelSaque.setBackground(new Color(192,192,192));
-//                			}
-//
-//                			@Override
-//                			public void mouseExited(MouseEvent e) {
-//
-//                				panelSaque.setBackground(new Color(128, 128, 128));
-//                			}
-//                		
-//                        	
-//                        });
-//    	        		
-//    	        		JLabel lblPanelSaque = new JLabel("Depósito R$ " + (Double)spinnerValorDeposito.getValue());
-//    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
-//    	        		panelSaque.add(lblPanelSaque);
     	        		
     	        		panelTransaction.add(depositoComponent);
     	        		panelTransaction.revalidate();
@@ -213,31 +185,6 @@ public class WindowProfile {
     	        		
     	        		Transaction saque = new Transaction("Saque", (Double)spinnerValorSaque.getValue());
     	        		TransactionComponent saqueComponent = new TransactionComponent(saque);
-//    	        		JPanel panelSaque = new JPanel();
-//    	        		panelSaque.setLayout(null);
-//    	        		panelSaque.setMinimumSize(new Dimension(240, 100));
-//    	        		panelSaque.setMaximumSize(new Dimension(240,100));
-//    	        		panelSaque.setBackground(new Color(128, 128, 128));
-//                        panelSaque.addMouseListener(new MouseAdapter() {
-//
-//                			@Override
-//                			public void mouseEntered(MouseEvent e) {
-//       
-//                				panelSaque.setBackground(new Color(192,192,192));
-//                			}
-//
-//                			@Override
-//                			public void mouseExited(MouseEvent e) {
-//
-//                				panelSaque.setBackground(new Color(128, 128, 128));
-//                			}
-//                		
-//                        	
-//                        });
-//    	        		
-//    	        		JLabel lblPanelSaque = new JLabel("Saque R$ " + spinnerValorSaque.getValue());
-//    	        		lblPanelSaque.setBounds(10, 20, 200, 20);
-//    	        		panelSaque.add(lblPanelSaque);
     	        		
     	        		panelTransaction.add(saqueComponent);
     	        		panelTransaction.revalidate();
