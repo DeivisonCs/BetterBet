@@ -132,6 +132,20 @@ public class InitDatabase {
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
 				+ " 'admin');";
 		
+		String insertCommonUser =
+				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
+				+ "('Vanessa', "
+				+ "null,"
+				+ "'222.222.222-22', "
+				+ "'van@gmail.com',"
+				+ "'" + PasswordHandler.hashPassword("van123") + "',"
+				+ " 'user');"
+				+ "INSERT INTO bet_users (user_id, address, birthdate, balance) VALUES"
+				+ "(2,"
+				+ "'Rua José Sátiro de Oliveira' ,"
+				+ "'1992/08/01' ,"
+				+ "100.00);";
+		
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
 			
 			statement.execute(dropTables);
@@ -143,6 +157,7 @@ public class InitDatabase {
 			statement.execute(insertAdmUser);
 			statement.execute(createTableTicket);
 			statement.execute(createTableBet);
+			statement.execute(insertCommonUser);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}
