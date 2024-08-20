@@ -25,6 +25,14 @@ public class UserMiddleware {
 			return validCpf;
 		}
 		
+		//Valida Address
+		if(user.getPermission().equals("user")) {
+			String validAddress = validAddress(((CommonUser) user).getAddress());
+			if(!validAddress.equals(VALIDATED)) {
+				return validAddress;
+			}
+		}
+		
 		// Valida Email
 		String validEmail = validEmail(user.getEmail());
 		if(!validEmail.equals(VALIDATED)) {
@@ -106,6 +114,14 @@ public class UserMiddleware {
 		}
 		if(email.contains(" ")) {
 			return "Email não deve conter espaços em branco!";
+		}
+		
+		return VALIDATED;
+	}
+	
+	private String validAddress(String address) {
+		if(address == null || address.equals("")) {
+			return "Endereço não pode ser nulo!";
 		}
 		
 		return VALIDATED;
