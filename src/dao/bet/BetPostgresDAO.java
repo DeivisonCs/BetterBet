@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.match.MatchDAO;
+import dao.match.MatchPostgresDAO;
 import database.ConnectionDB;
 import models.Bet;
 import models.Match;

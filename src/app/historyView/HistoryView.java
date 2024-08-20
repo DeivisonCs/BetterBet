@@ -1,16 +1,17 @@
 package app.historyView;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import app.betView.BetComponent;
-import dao.EventDAO;
-import dao.EventPostgresDAO;
-import dao.TicketDAO;
-import dao.TicketPostgresDAO;
+import dao.event.EventDAO;
+import dao.event.EventPostgresDAO;
+import dao.ticket.TicketDAO;
+import dao.ticket.TicketPostgresDAO;
 import models.Bet;
 import models.Ticket;
 import models.User;
@@ -18,6 +19,7 @@ import service.users.UserService;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,17 +32,15 @@ import java.awt.GridBagConstraints;
 public class HistoryView {
 	
 	
-	private JPanel panel_1;
+	private JPanel ticketsPanel;
 	private EventDAO eventDao = new EventPostgresDAO();
 	private UserService userService = new UserService();
 	private TicketDAO ticketDAO = new TicketPostgresDAO();
 	private User user;
-	private List<Ticket> tickets = new ArrayList<Ticket>();
+	private List<Ticket> tickets;
 	private List<String> events;
 	private String[] status =  {"PENDENTE", "FINALIZADO"};
 	private String[] types = {"SIMPLES", "MULTIPLA"};
-	
-	private List<TicketComponent> ticketsDisplayed = new ArrayList<TicketComponent>();;
 	
 	private JFrame frame;
 	/**
@@ -71,7 +71,12 @@ public class HistoryView {
 			events = eventDao.userRelatedEvents(userId);
 			user = userService.getUser(userId);
 			tickets = ticketDAO.getTicketsByUser(userId);
+			System.out.println(userId);
+			System.out.println("tamanho: " + tickets.size());
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -98,15 +103,15 @@ public class HistoryView {
 		scrollPane.setBorder(null);
 		frame.getContentPane().add(scrollPane);
 		
-		panel_1 = new JPanel();
-		panel_1.setBackground(new Color(40, 40, 40));
-		scrollPane.setViewportView(panel_1);
-		GridBagLayout gbl_panel_1 = new GridBagLayout();
-		gbl_panel_1.columnWidths = new int[]{0};
-		gbl_panel_1.rowHeights = new int[]{0};
-		gbl_panel_1.columnWeights = new double[]{Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{Double.MIN_VALUE};
-		panel_1.setLayout(gbl_panel_1);
+		ticketsPanel = new JPanel();
+		ticketsPanel.setBackground(new Color(40, 40, 40));
+		scrollPane.setViewportView(ticketsPanel);
+		GridBagLayout gbl_ticketsPanel = new GridBagLayout();
+		gbl_ticketsPanel.columnWidths = new int[]{0};
+		gbl_ticketsPanel.rowHeights = new int[]{0};
+		gbl_ticketsPanel.columnWeights = new double[]{1.0};
+		gbl_ticketsPanel.rowWeights = new double[]{1.0};
+		ticketsPanel.setLayout(gbl_ticketsPanel);
 
 			
 		
@@ -154,7 +159,7 @@ public class HistoryView {
 	}
 	
 	public void updateTickets() {
-		panel_1.removeAll();
+		ticketsPanel.removeAll();
 	    
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
@@ -166,17 +171,18 @@ public class HistoryView {
 	    
 	    for (Ticket ticket : tickets) {
 	        TicketComponent ticketComponent = new TicketComponent(ticket);
-	        panel_1.add(ticketComponent, gbc);
+	        ticketComponent.setPreferredSize(new Dimension(584, 200)); 
+	        ticketsPanel.add(ticketComponent, gbc);
 	        gbc.gridy++;
 	    }
 	    
 	    gbc.weighty = 1.0;
 	    JPanel filler = new JPanel();
 	    filler.setBackground(new Color(40, 40, 40));
-	    panel_1.add(filler, gbc);
+	    ticketsPanel.add(filler, gbc);
 
-	    panel_1.revalidate();
-	    panel_1.repaint();
+	    ticketsPanel.revalidate();
+	    ticketsPanel.repaint();
 	}
 	
 }

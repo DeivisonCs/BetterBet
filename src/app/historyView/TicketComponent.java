@@ -10,148 +10,128 @@ import javax.swing.SwingConstants;
 import models.Ticket;
 
 @SuppressWarnings("serial")
-public class TicketComponent extends JPanel{
+public class TicketComponent extends JPanel {
 
-
-    JPanel ticketPanel;
-
+    private JPanel ticketPanel;
     private Ticket ticket;
     private Color statusBackground;
     private String statusImagePath;
 
-    /**
-     * Launch the application.
-     */
-    /*
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    TicketComponent window = new TicketComponent(null);
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
-    /**
-     * Create the application.
-     */
     public TicketComponent(Ticket ticket) {
-    	setTicketStatus();
+        this.ticket = ticket; 
+        setTicketStatus();
         initialize();
     }
 
-    /**
-     * Initialize the contents of the frame.
-     */
+
     private void initialize() {
 
-        ticketPanel = new JPanel();
-        ticketPanel.setBackground(new Color(20, 20, 20));
-        ticketPanel.setLayout(null);
+        setBackground(new Color(20, 20, 20));
+        setLayout(null);
 
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground(new Color(55, 55, 55));
-        panel_1.setBounds(63, 102, 137, 60);
-        ticketPanel.add(panel_1);
-        panel_1.setLayout(null);
+        JPanel panelOdd = new JPanel();
+        panelOdd.setBackground(new Color(55, 55, 55));
+        panelOdd.setBounds(63, 102, 137, 60);
+        this.add(panelOdd);
+        panelOdd.setLayout(null);
 
-        JLabel lblNewLabel_3 = new JLabel("ODD");
-        lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3.setForeground(new Color(255, 255, 255));
-        lblNewLabel_3.setBounds(0, 11, 137, 14);
-        panel_1.add(lblNewLabel_3);
+        JLabel labelOddTitle = new JLabel("ODD");
+        labelOddTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        labelOddTitle.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelOddTitle.setForeground(Color.WHITE);
+        labelOddTitle.setBounds(0, 11, 137, 14);
+        panelOdd.add(labelOddTitle);
 
         String oddValue = String.format("%.2f", ticket.getOdd());
-        JLabel lblNewLabel_3_3 = new JLabel(oddValue);
-        lblNewLabel_3_3.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3_3.setForeground(Color.WHITE);
-        lblNewLabel_3_3.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3_3.setBounds(0, 35, 137, 14);
-        panel_1.add(lblNewLabel_3_3);
+        JLabel labelOddValue = new JLabel(oddValue);
+        labelOddValue.setHorizontalAlignment(SwingConstants.CENTER);
+        labelOddValue.setForeground(Color.WHITE);
+        labelOddValue.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelOddValue.setBounds(0, 35, 137, 14);
+        panelOdd.add(labelOddValue);
 
-        JPanel panel_2 = new JPanel();
-        panel_2.setBackground(new Color(55, 55, 55));
-        panel_2.setBounds(231, 102, 137, 60);
-        ticketPanel.add(panel_2);
-        panel_2.setLayout(null);
+        JPanel panelBet = new JPanel();
+        panelBet.setBackground(new Color(55, 55, 55));
+        panelBet.setBounds(231, 102, 137, 60);
+        this.add(panelBet);
+        panelBet.setLayout(null);
 
-        JLabel lblNewLabel_3_1 = new JLabel("APOSTA");
-        lblNewLabel_3_1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3_1.setForeground(Color.WHITE);
-        lblNewLabel_3_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3_1.setBounds(0, 11, 137, 14);
-        panel_2.add(lblNewLabel_3_1);
+        JLabel labelBetTitle = new JLabel("APOSTA");
+        labelBetTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        labelBetTitle.setForeground(Color.WHITE);
+        labelBetTitle.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelBetTitle.setBounds(0, 11, 137, 14);
+        panelBet.add(labelBetTitle);
 
         String betValue = String.format("%.2f", ticket.getAmount());
-        JLabel lblNewLabel_3_4 = new JLabel(betValue);
-        lblNewLabel_3_4.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3_4.setForeground(Color.WHITE);
-        lblNewLabel_3_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3_4.setBounds(0, 36, 137, 14);
-        panel_2.add(lblNewLabel_3_4);
+        JLabel labelBetValue = new JLabel(betValue);
+        labelBetValue.setHorizontalAlignment(SwingConstants.CENTER);
+        labelBetValue.setForeground(Color.WHITE);
+        labelBetValue.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelBetValue.setBounds(0, 36, 137, 14);
+        panelBet.add(labelBetValue);
 
-        JPanel panel_3 = new JPanel();
-        panel_3.setBackground(new Color(55, 55, 55));
-        panel_3.setBounds(395, 102, 137, 60);
-        ticketPanel.add(panel_3);
-        panel_3.setLayout(null);
+        JPanel panelProfit = new JPanel();
+        panelProfit.setBackground(new Color(55, 55, 55));
+        panelProfit.setBounds(395, 102, 137, 60);
+        this.add(panelProfit);
+        panelProfit.setLayout(null);
 
-        JLabel lblNewLabel_3_2 = new JLabel("GANHOS");
-        lblNewLabel_3_2.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3_2.setForeground(Color.WHITE);
-        lblNewLabel_3_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3_2.setBounds(0, 11, 137, 14);
-        panel_3.add(lblNewLabel_3_2);
+        JLabel labelProfitTitle = new JLabel("GANHOS");
+        labelProfitTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        labelProfitTitle.setForeground(Color.WHITE);
+        labelProfitTitle.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelProfitTitle.setBounds(0, 11, 137, 14);
+        panelProfit.add(labelProfitTitle);
 
         String expectedProfit = String.format("%.2f", ticket.getExpectedProfit());
-        JLabel lblNewLabel_3_5 = new JLabel(expectedProfit);
-        lblNewLabel_3_5.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3_5.setForeground(Color.WHITE);
-        lblNewLabel_3_5.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        lblNewLabel_3_5.setBounds(0, 36, 137, 14);
-        panel_3.add(lblNewLabel_3_5);
+        JLabel labelProfitValue = new JLabel(expectedProfit);
+        labelProfitValue.setHorizontalAlignment(SwingConstants.CENTER);
+        labelProfitValue.setForeground(Color.WHITE);
+        labelProfitValue.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        labelProfitValue.setBounds(0, 36, 137, 14);
+        panelProfit.add(labelProfitValue);
 
-        JLabel lblNewLabel = new JLabel("Nome do Evento");
-        lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        lblNewLabel.setForeground(new Color(255, 255, 255));
-        lblNewLabel.setBounds(25, 21, 103, 14);
-        ticketPanel.add(lblNewLabel);
+        JLabel labelEventName = new JLabel("Nome do Evento");
+        labelEventName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        labelEventName.setForeground(Color.WHITE);
+        labelEventName.setBounds(25, 21, 103, 14);
+        this.add(labelEventName);
 
         String betType = ticket.getTicketType();
-        JLabel lblNewLabel_1 = new JLabel(betType);
-        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        lblNewLabel_1.setForeground(new Color(255, 255, 255));
-        lblNewLabel_1.setBounds(25, 46, 90, 14);
-        ticketPanel.add(lblNewLabel_1);
+        JLabel labelBetType = new JLabel(betType);
+        labelBetType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        labelBetType.setForeground(Color.WHITE);
+        labelBetType.setBounds(25, 46, 90, 14);
+        this.add(labelBetType);
 
-        
         RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground);
         roundedImagePanel.setBounds(470, 21, 48, 49); 
-        ticketPanel.add(roundedImagePanel);
+        this.add(roundedImagePanel);
 
-        JLabel lblNewLabel_2 = new JLabel("Caso Simples: Vencedor: Nome do Time");
-        lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        lblNewLabel_2.setForeground(new Color(255, 255, 255));
-        lblNewLabel_2.setBounds(25, 71, 250, 14);
-        ticketPanel.add(lblNewLabel_2);
-        
+        JLabel labelOutcome = new JLabel("Caso Simples: Vencedor: Nome do Time");
+        labelOutcome.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        labelOutcome.setForeground(Color.WHITE);
+        labelOutcome.setBounds(25, 71, 250, 14);
+        this.add(labelOutcome);
     }
-    
+
+
     private void setTicketStatus() {
-    	if(ticket.getStatus().equals("GANHOU")) {
-    	    statusBackground = Color.GREEN;
-    	    statusImagePath = "/images/check.png";
-    	}else if(ticket.getStatus().equals("PERDEU")) {
-    	    statusBackground = Color.RED;
-    	    statusImagePath = "/images/fail.png";
-    	}else {
-    		statusBackground = Color.YELLOW;
-    	    statusImagePath = "/images/pending.png";
-    	}
+        switch (ticket.getStatus()) {
+            case "GANHOU":
+                statusBackground = Color.GREEN;
+                statusImagePath = "/images/check.png";
+                break;
+            case "PERDEU":
+                statusBackground = Color.RED;
+                statusImagePath = "/images/fail.png";
+                break;
+            default:
+                statusBackground = Color.YELLOW;
+                statusImagePath = "/images/pending.png";
+                break;
+        }
     }
 }

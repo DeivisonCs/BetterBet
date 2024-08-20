@@ -25,6 +25,7 @@ import app.RoundedButton;
 import app.TransactionComponent;
 import app.auth.LogInView;
 import app.edit.EditUser;
+import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
@@ -115,6 +116,12 @@ public class WindowProfile {
         buttonHistApostas.setBounds(737, 568, 179, 59);
         buttonHistApostas.setBackground(new Color(64, 128, 128)); // Example color
         buttonHistApostas.setForeground(Color.WHITE);
+        buttonHistApostas.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		
+        			new HistoryView(user.getId());
+        		}
+        	});
         panelProfile.add(buttonHistApostas);
         
 //------------------------- Deposit button -------------------------------------

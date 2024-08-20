@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.bet.BetDAO;
+import dao.bet.BetPostgresDAO;
 import database.ConnectionDB;
 import models.Bet;
 import models.Ticket;

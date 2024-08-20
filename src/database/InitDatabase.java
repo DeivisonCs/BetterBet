@@ -27,7 +27,7 @@ public class InitDatabase {
 				+ "    password VARCHAR(70) NOT NULL,"
 				+ "    permission VARCHAR(20) NOT NULL,"
 				+ "	   profile_image BYTEA,"
-				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
+				+ "    CONSTRAINT pk_userDB PRIMARY KEY (user_id)"
 				+ ");";
 		
 		String createTableBetUsers = 
