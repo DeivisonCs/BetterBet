@@ -28,6 +28,7 @@ import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
+import database.InitDatabase;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
@@ -68,16 +69,17 @@ public class WindowProfile {
     /**
      * Launch the application.
      */
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(() -> {
-//            try {
-//                WindowProfile window = new WindowProfile(2);
-//                window.frame.setVisible(true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//    }
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+            	InitDatabase.initializeDatabase();
+                WindowProfile window = new WindowProfile(1);
+                window.frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     /**
      * Create the application.
@@ -352,36 +354,36 @@ public class WindowProfile {
         JLabel nameField = new JLabel(user.getName());
         nameField.setForeground(new Color(156, 156, 156));
         nameField.setFont(new Font("Tahoma", Font.PLAIN, 25));
-        nameField.setBounds(39, 275, 294, 31);
+        nameField.setBounds(39, 249, 294, 31);
         panelProfile.add(nameField);
           
         JLabel emailLabel = new JLabel("Email");
         emailLabel.setForeground(new Color(156, 156, 156));
         emailLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        emailLabel.setBounds(39, 332, 107, 14);
+        emailLabel.setBounds(39, 306, 107, 14);
         panelProfile.add(emailLabel);
         
         JLabel emailField = new JLabel(user.getEmail());
         emailField.setFont(new Font("Tahoma", Font.PLAIN, 12));
         emailField.setForeground(new Color(255, 255, 255));
-        emailField.setBounds(49, 357, 267, 14);
+        emailField.setBounds(49, 331, 267, 14);
         panelProfile.add(emailField);
         
         JLabel cpfLabel = new JLabel("CPF");
         cpfLabel.setForeground(new Color(156, 156, 156));
         cpfLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        cpfLabel.setBounds(39, 396, 46, 14);
+        cpfLabel.setBounds(39, 370, 46, 14);
         panelProfile.add(cpfLabel);
         
         JLabel cpfField = new JLabel(user.getCpf());
         cpfField.setFont(new Font("Tahoma", Font.PLAIN, 12));
         cpfField.setForeground(new Color(255, 255, 255));
-        cpfField.setBounds(49, 420, 197, 14);
+        cpfField.setBounds(49, 394, 197, 14);
         panelProfile.add(cpfField);
         
 
         // Campo de endereço aparece apenas se for usuário comun (adição no final)
-        
+        	  
         
         
    //------------------ Transaction history --------------------------------    
@@ -460,77 +462,76 @@ public class WindowProfile {
     public void placeAdmContents() {
     	logOut.setBounds(1050, 10, 120, 30);
 		panelProfile.setBounds(0, 0, 1185, 661); 
-    	scrollPane.setVisible(false); 
     }
     
  // Mostra conteudos específicos para usuários comuns
     public void placeUserContents() {
-    		logOut.setBounds(785, 10, 120, 30);
-    		
-    		JLabel balanceField = new JLabel("Saldo");
-    	  	balanceField.setForeground(new Color(156, 156, 156));
-    	  	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-    	    balanceField.setBounds(39, 512, 108, 37);
-            panelProfile.add(balanceField);
-       
-    	   	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
-    	   	balanceField.setForeground(new Color(255, 255, 255));
-    	   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-    	   	balanceField.setBounds(49, 537, 108, 37);
-            panelProfile.add(balanceField);
-    		
-    		JLabel addressLabel = new JLabel("Endereço");
-            addressLabel.setForeground(new Color(156, 156, 156));
-            addressLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-            addressLabel.setBounds(39, 462, 138, 14);
-            panelProfile.add(addressLabel);
-            
-            JLabel addressField = new JLabel("vdvvv");
-            addressField.setForeground(Color.WHITE);
-            addressField.setFont(new Font("Tahoma", Font.PLAIN, 12));
-            addressField.setBounds(52, 487, 267, 14);
-            panelProfile.add(addressField);
-            
-            scrollPane = new JScrollPane();
-        	
-	        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-	        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-	        scrollPane.setBounds(945, 66, 240, 595);
-	        scrollPane.addMouseWheelListener(new MouseWheelListener() {
-	  		@Override
-	  		public void mouseWheelMoved(MouseWheelEvent e) {
-	  			// TODO Auto-generated method stub
-	  			JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
-	  			int unitsToScroll = e.getWheelRotation() * 20;
-	  			verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
-	  		}
-	     	  
-	        });
-	
-	        frame.getContentPane().add(scrollPane);
-	        panelTransaction.setBorder(null);
-	
-	        panelTransaction.setBackground(new Color(30, 30, 30));
-	        panelTransaction.setPreferredSize(new Dimension(240, 1000));
-	 
-	        scrollPane.setViewportView(panelTransaction);
-	
-	        panelTransaction.setLayout(new BoxLayout(panelTransaction, BoxLayout.Y_AXIS));
-	        
-	        JPanel panelTransactionTxt = new JPanel();
-	        panelTransactionTxt.setBorder(null);
-	        panelTransactionTxt.setBackground(new Color(30, 30, 30));
-	        panelTransactionTxt.setBounds(945, 0, 239, 66);
-	        frame.getContentPane().add(panelTransactionTxt);
-	        panelTransactionTxt.setLayout(null);
-	        
-	        JLabel lblTransaction = new JLabel("Movimentação");
-	        lblTransaction.setHorizontalAlignment(SwingConstants.CENTER);
-	        lblTransaction.setForeground(new Color(255, 255, 255));
-	        lblTransaction.setFont(new Font("Tahoma", Font.PLAIN, 20));
-	        lblTransaction.setBounds(0, 22, 244, 33);
-	        panelTransactionTxt.add(lblTransaction);	  
-    	}
+		logOut.setBounds(785, 10, 120, 30);
+		
+		JLabel balanceField = new JLabel("Saldo");
+	  	balanceField.setForeground(new Color(156, 156, 156));
+	  	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	    balanceField.setBounds(39, 486, 108, 37);
+        panelProfile.add(balanceField);
+   
+	   	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
+	   	balanceField.setForeground(new Color(255, 255, 255));
+	   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	   	balanceField.setBounds(49, 511, 108, 37);
+        panelProfile.add(balanceField);
+		
+		JLabel addressLabel = new JLabel("Endereço");
+        addressLabel.setForeground(new Color(156, 156, 156));
+        addressLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        addressLabel.setBounds(39, 436, 138, 14);
+        panelProfile.add(addressLabel);
+        
+        JLabel addressField = new JLabel("vdvvv");
+        addressField.setForeground(Color.WHITE);
+        addressField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        addressField.setBounds(52, 461, 267, 14);
+        panelProfile.add(addressField);
+        
+        scrollPane = new JScrollPane();
+    	
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(945, 66, 240, 595);
+        scrollPane.addMouseWheelListener(new MouseWheelListener() {
+  		@Override
+  		public void mouseWheelMoved(MouseWheelEvent e) {
+  			// TODO Auto-generated method stub
+  			JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+  			int unitsToScroll = e.getWheelRotation() * 20;
+  			verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
+  		}
+     	  
+        });
+
+        frame.getContentPane().add(scrollPane);
+        panelTransaction.setBorder(null);
+
+        panelTransaction.setBackground(new Color(30, 30, 30));
+        panelTransaction.setPreferredSize(new Dimension(240, 1000));
+ 
+        scrollPane.setViewportView(panelTransaction);
+
+        panelTransaction.setLayout(new BoxLayout(panelTransaction, BoxLayout.Y_AXIS));
+        
+        JPanel panelTransactionTxt = new JPanel();
+        panelTransactionTxt.setBorder(null);
+        panelTransactionTxt.setBackground(new Color(30, 30, 30));
+        panelTransactionTxt.setBounds(945, 0, 239, 66);
+        frame.getContentPane().add(panelTransactionTxt);
+        panelTransactionTxt.setLayout(null);
+        
+        JLabel lblTransaction = new JLabel("Movimentação");
+        lblTransaction.setHorizontalAlignment(SwingConstants.CENTER);
+        lblTransaction.setForeground(new Color(255, 255, 255));
+        lblTransaction.setFont(new Font("Tahoma", Font.PLAIN, 20));
+        lblTransaction.setBounds(0, 22, 244, 33);
+        panelTransactionTxt.add(lblTransaction);  
+	}
 }
 
 
