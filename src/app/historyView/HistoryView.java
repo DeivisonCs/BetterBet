@@ -23,9 +23,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.awt.GridBagLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 
@@ -34,33 +37,18 @@ public class HistoryView {
 	
 	private JPanel ticketsPanel;
 	private EventDAO eventDao = new EventPostgresDAO();
-	private UserService userService = new UserService();
 	private TicketDAO ticketDAO = new TicketPostgresDAO();
+	private UserService userService = new UserService();
 	private User user;
-	private List<Ticket> tickets;
+	private List<Ticket> allTickets;
+	private List<Ticket> ticketsDisplayed;
 	private List<String> events;
-	private String[] status =  {"PENDENTE", "FINALIZADO"};
-	private String[] types = {"SIMPLES", "MULTIPLA"};
-	
+	private String[] status =  {"----------","PENDENTE", "GANHOU", "PERDEU"};
+	private String[] types = {"----------","SIMPLES", "MULTIPLA"};
+	JComboBox<String> typeComboBox;
+	JComboBox<String> eventsComboBox;
+	JComboBox<String> statusComboBox;
 	private JFrame frame;
-	/**
-	 * Launch the application.
-	 */
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    SwingUtilities.invokeLater(() -> {
-//                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
-//                        HomeUserUI window = new HomeUserUI(commonUser);
-//                        window.frame.setVisible(true);
-//                    });
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
 	/**
 	 * Create the application.
@@ -70,9 +58,10 @@ public class HistoryView {
 		try {
 			events = eventDao.userRelatedEvents(userId);
 			user = userService.getUser(userId);
-			tickets = ticketDAO.getTicketsByUser(userId);
-			System.out.println(userId);
-			System.out.println("tamanho: " + tickets.size());
+			allTickets = ticketDAO.getTicketsByUser(userId);
+			ticketsDisplayed = new ArrayList<Ticket>();
+			allTickets.forEach(ticket -> ticketsDisplayed.add(ticket));
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,20 +103,53 @@ public class HistoryView {
 		ticketsPanel.setLayout(gbl_ticketsPanel);
 
 			
-		
-		
-		JComboBox<String> typeComboBox = new JComboBox<>(this.types);
+		typeComboBox = new JComboBox<>(this.types);
 		typeComboBox.setBounds(53, 319, 214, 22);
+		typeComboBox.addActionListener((e) -> {
+			
+			try {
+				ticketsFilter();
+				updateTickets();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(frame, "Falha ao carregar apostas!");
+				e1.printStackTrace();
+			}
+			updateTickets();
+		});
+			
+		
 		frame.getContentPane().add(typeComboBox);
 	
+		this.events.add(0, "----------");
 		String[] events = this.events.toArray(new String[this.events.size()]);
-		JComboBox<String> eventsComboBox = new JComboBox<>(events);
+		eventsComboBox = new JComboBox<>(events);
 		eventsComboBox.setBounds(53, 249, 214, 22);
+		eventsComboBox.addActionListener((e) -> {
+			
+			try {
+				ticketsFilter();
+				updateTickets();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(frame, "Falha ao carregar apostas!");
+				e1.printStackTrace();
+			}
+			updateTickets();
+		});
 		frame.getContentPane().add(eventsComboBox);
 		
 		
-		JComboBox<String> statusComboBox = new JComboBox<>(this.status);
+		statusComboBox = new JComboBox<>(this.status);
 		statusComboBox.setBounds(53, 396, 214, 22);
+		statusComboBox.addActionListener((e) -> {
+			try {
+				ticketsFilter();
+				updateTickets();
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(frame, "Falha ao carregar apostas!");
+				e1.printStackTrace();
+			}
+			updateTickets();
+		});
 		frame.getContentPane().add(statusComboBox);
 		
 		
@@ -169,7 +191,7 @@ public class HistoryView {
 	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
-	    for (Ticket ticket : tickets) {
+	    for (Ticket ticket : ticketsDisplayed) {
 	        TicketComponent ticketComponent = new TicketComponent(ticket);
 	        ticketComponent.setPreferredSize(new Dimension(584, 200)); 
 	        ticketsPanel.add(ticketComponent, gbc);
@@ -183,6 +205,56 @@ public class HistoryView {
 
 	    ticketsPanel.revalidate();
 	    ticketsPanel.repaint();
+	}
+	
+
+	private void filterByStatus(String status) {
+		
+		ticketsDisplayed = ticketsDisplayed.stream()
+			    .filter(ticket -> ticket.getStatus().equals(status))
+			    .collect(Collectors.toList());
+
+		
+	}
+	
+	private void filterByType(String type) {
+		
+		ticketsDisplayed = ticketsDisplayed.stream()
+			    .filter(ticket -> ticket.getTicketType().equals(type))
+			    .collect(Collectors.toList());
+		
+	}
+	
+	private void filterByEvent(String description) throws SQLException{
+		
+		ticketsDisplayed = ticketDAO.getTicketsByEventAndUser(description, user.getId());
+		
+	}
+	
+	private void ticketsFilter() throws SQLException {
+		
+		final String type = (String)typeComboBox.getSelectedItem();
+		final String event = (String)eventsComboBox.getSelectedItem();
+		final String status = (String)statusComboBox.getSelectedItem();
+		
+		if(ticketsDisplayed.size() != allTickets.size()) {
+			ticketsDisplayed.clear();
+			allTickets.forEach(ticket -> ticketsDisplayed.add(ticket));
+		}
+		
+		
+		if(!event.equals("----------")) {
+			filterByEvent(event);
+		}
+		
+		if(!type.equals("----------")) {
+			filterByType(type);
+		}
+		
+		if(!status.equals("----------")) {
+			filterByStatus(status);
+		}
+		
 	}
 	
 }

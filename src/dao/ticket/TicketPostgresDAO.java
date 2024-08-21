@@ -82,4 +82,55 @@ public class TicketPostgresDAO implements TicketDAO {
         }
 	}
 
+	@Override
+	public List<Ticket> getTicketsByEventAndUser(String description, Integer userId) throws SQLException {
+		
+		String query = "SELECT * "
+				+ "FROM TICKET AS T "
+				+ "WHERE TICKET_ID IN ( "
+				+ "	SELECT TICKET_ID "
+				+ "	FROM BET AS B "
+				+ "	INNER JOIN MATCH AS MA "
+				+ "		ON(B.MATCH_ID = MA.MATCH_ID) "
+				+ "	INNER JOIN EVENT AS EV "
+				+ "		ON(MA.EVENT_ID = EV.EVENT_ID) "
+				+ "	WHERE EV.DESCRIPTION LIKE ? "
+				+ ") AND USER_ID = ?;"
+				+ "";
+
+        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS))
+        {
+
+            ps.setString(1, description);
+            ps.setInt(2, userId);
+
+            ResultSet rs = ps.executeQuery();
+            
+            List<Ticket> tickets = new ArrayList<Ticket>();
+            
+            while (rs.next()) {
+	            Integer id = rs.getInt("ticket_id");
+	            float odd = rs.getFloat("ODD");
+	            LocalDateTime timeStamp = rs.getTimestamp("time_stamp").toLocalDateTime();
+	            float amount = rs.getFloat("amount");
+	            String type = rs.getString("ticket_type");
+	            String status = rs.getString("status");
+	            Integer idUser = rs.getInt("user_id");
+
+
+	            float expectedProfit = odd * amount;
+
+	            Ticket ticket = new Ticket(id, odd, timeStamp, idUser, expectedProfit, amount, type, status);
+	            tickets.add(ticket);
+	        }
+
+            return tickets;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+
+            throw e;
+        }
+	}
+
 }
