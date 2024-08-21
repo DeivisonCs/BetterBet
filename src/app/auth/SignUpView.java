@@ -315,7 +315,8 @@ public class SignUpView {
 						JOptionPane.showMessageDialog(null, "Usuário cadastrado!\nBem vindo " + newUser.getName());
 						
 						frame.dispose();
-						new HomeUserUI(newUser.getId());
+						
+						new HomeUserUI(userService.loginUser(newUser.getEmail(), new String(passwordField.getPassword())));
 					}
 				}
 				catch(SQLException ex) {
