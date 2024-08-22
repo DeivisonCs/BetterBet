@@ -118,32 +118,7 @@ public class UserPostgresDAO implements UserDAO {
 			if(response.next() && PasswordHandler.validPassword(password, response.getString("password"))) {
 				
 				id = response.getInt("user_id");
-				
-//				if(response.getString("permission").equals("user"))
-//					user = new CommonUser();
-//				else {
-//					user = new AdminUser();
-//				}
-//				
-//				user.setId(response.getInt("user_id"));
-//				user.setName(response.getString("name"));
-//				user.setEmail(response.getString("email"));
-//				user.setCpf(response.getString("cpf"));
-//				user.setPassword(password);
-//				user.setPermission(response.getString("permission"));
-//			}
-//			
-//			// --------------------- Informações do Usuário de Apostas ---------------------
-//			if(user != null && user.getPermission().equals("user")) {
-//				
-//				psBetUser.setInt(1, user.getId());
-//				ResultSet responseBetUser = psBetUser.executeQuery();
-//				 
-//				if(responseBetUser.next()) {
-//					((CommonUser) user).setBalance(responseBetUser.getFloat("balance"));
-//					((CommonUser) user).setAddress(responseBetUser.getString("address"));
-//					((CommonUser) user).setBirthDate(responseBetUser.getString("birthDate"));
-//				}
+
 			}
 			else {
 				throw new SQLException("Email ou senha inválidos!");

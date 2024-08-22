@@ -69,17 +69,17 @@ public class WindowProfile {
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-            	InitDatabase.initializeDatabase();
-                WindowProfile window = new WindowProfile(1);
-                window.frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(() -> {
+//            try {
+//            	InitDatabase.initializeDatabase();
+//                WindowProfile window = new WindowProfile(1);
+//                window.frame.setVisible(true);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//    }
 
     /**
      * Create the application.
@@ -233,32 +233,6 @@ public class WindowProfile {
         	        		
         	        		Transaction saque = new Transaction("Saque", (Double)spinnerValorSaque.getValue());
         	        		TransactionComponent saqueComponent = new TransactionComponent(saque);
-//        	        		JPanel panelSaque = new JPanel();
-//        	        		panelSaque.setLayout(null);
-//        	        		panelSaque.setMinimumSize(new Dimension(240, 100));
-//        	        		panelSaque.setMaximumSize(new Dimension(240,100));
-//        	        		panelSaque.setBackground(new Color(128, 128, 128));
-//                            panelSaque.addMouseListener(new MouseAdapter() {
-    //
-//                    			@Override
-//                    			public void mouseEntered(MouseEvent e) {
-//           
-//                    				panelSaque.setBackground(new Color(192,192,192));
-//                    			}
-    //
-//                    			@Override
-//                    			public void mouseExited(MouseEvent e) {
-    //
-//                    				panelSaque.setBackground(new Color(128, 128, 128));
-//                    			}
-//                    		
-//                            	
-//                            });
-//        	        		
-//        	        		JLabel lblPanelSaque = new JLabel("Saque R$ " + spinnerValorSaque.getValue());
-//        	        		lblPanelSaque.setBounds(10, 20, 200, 20);
-//        	        		panelSaque.add(lblPanelSaque);
-        	        		
         	        		panelTransaction.add(saqueComponent);
         	        		panelTransaction.revalidate();
         	        		panelTransaction.repaint();
@@ -383,7 +357,6 @@ public class WindowProfile {
         
 
         // Campo de endereço aparece apenas se for usuário comun (adição no final)
-        	  
         
         
    //------------------ Transaction history --------------------------------    
@@ -462,6 +435,45 @@ public class WindowProfile {
     public void placeAdmContents() {
     	logOut.setBounds(1050, 10, 120, 30);
 		panelProfile.setBounds(0, 0, 1185, 661); 
+		
+		// ---------------- Create Event Button ----------------
+		RoundedButton buttonCreateEvent = new RoundedButton("Criar Evento");
+		buttonCreateEvent.setBounds(990, 140, 179, 59);
+		buttonCreateEvent.setBackground(new Color(64, 128, 128)); 
+		buttonCreateEvent.setForeground(Color.WHITE);
+		
+		buttonCreateEvent.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new CreateEvent(user.getId());
+			}
+		});
+        panelProfile.add(buttonCreateEvent);
+        
+        
+     // ---------------- Add Match Button ----------------
+     		RoundedButton buttonAddMatch = new RoundedButton("Criar Partida");
+     		buttonAddMatch.setBounds(990, 210, 179, 59);
+     		buttonAddMatch.setBackground(new Color(64, 128, 128)); 
+     		buttonAddMatch.setForeground(Color.WHITE);
+     		
+     		buttonAddMatch.addMouseListener(new MouseAdapter() {
+     			
+     			@Override
+     			public void mouseClicked(MouseEvent e) {
+     				new AddMatch(user.getId());
+     			}
+     		});
+             panelProfile.add(buttonAddMatch);
+        
+        
+     // ---------------- Close Event Button ----------------
+        RoundedButton buttonCloseEvent = new RoundedButton("Fechar Evento");
+        buttonCloseEvent.setBounds(990, 280, 179, 59);
+        buttonCloseEvent.setBackground(new Color(64, 128, 128)); 
+        buttonCloseEvent.setForeground(Color.WHITE);       
+        panelProfile.add(buttonCloseEvent);
     }
     
  // Mostra conteudos específicos para usuários comuns

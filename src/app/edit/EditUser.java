@@ -93,6 +93,7 @@ public class EditUser{
 
 	private void initialize() {
 		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.setBounds(100, 100, 800, 750);
 		frame.setResizable(false);
