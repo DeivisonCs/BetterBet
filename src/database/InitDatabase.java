@@ -28,7 +28,7 @@ public class InitDatabase {
 				+ "    password VARCHAR(70) NOT NULL,"
 				+ "    permission VARCHAR(20) NOT NULL,"
 				+ "	   profile_image BYTEA,"
-				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
+				+ "    CONSTRAINT pk_userDB PRIMARY KEY (user_id)"
 				+ ");";
 		
 		String createTableBetUsers = 
@@ -96,6 +96,8 @@ public class InitDatabase {
 				+ "	time_stamp TIMESTAMP NOT NULL,"
 				+ "	user_id INT NOT NULL,"
 				+ "	amount FLOAT NOT NULL,"
+				+ " ticket_type VARCHAR(20),"
+				+ " status VARCHAR(20),"
 				+ "	"
 				+ "	CONSTRAINT pk_ticket PRIMARY KEY (ticket_id),"
 				+ "	"
@@ -107,8 +109,6 @@ public class InitDatabase {
 				"CREATE TABLE bet("
 				+ "	bet_id SERIAL NOT NULL,"
 				+ "	ticket_id INT NOT NULL,"
-				+ "	bet_type VARCHAR(20),"
-				+ "	status VARCHAR(20),"
 				+ "	selected_bet VARCHAR(10),"
 				+ "	match_id INT NOT NULL,"
 				+ "	odd_draw FLOAT NOT NULL,"
@@ -127,7 +127,7 @@ public class InitDatabase {
 		String createTableTransactions = 
 				"CREATE TABLE transactions("
 				+ "	transaction_id SERIAL NOT NULL,"
-				+ "	user_id SERIAL NOT NULL,"
+				+ "	user_id INT NOT NULL,"
 				+ "	type_transaction VARCHAR(10) NOT NULL,"
 				+ "	value_transaction FLOAT NOT NULL,"
 				+ " "
@@ -161,13 +161,13 @@ public class InitDatabase {
 				+ "100.00);";
 		
 		String insertTransaction = 
-				"INSERT INTO transactions (type_transaction, value_transaction) VALUES"
-				+ "('Saque', 10.0),"
-				+ "('Deposito', 50.0),"
-				+ "('Saque', 5.0),"
-				+ "('Deposito', 30.0),"
-				+ "('Deposito', 10.0),"
-				+ "('Saque', 25.0);";
+				"INSERT INTO transactions (user_id, type_transaction, value_transaction) VALUES"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0),"
+				+ "(SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0);";
 		
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
 			
