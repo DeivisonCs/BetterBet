@@ -8,6 +8,7 @@ public class Match {
 	private Integer id;
 	
 	private Integer idEvent;
+	private String status;
 	
 	private Team teamA;
 	private Integer scoreTeamA;
@@ -24,7 +25,7 @@ public class Match {
 		
 	
 	public Match(Integer id, Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, LocalDateTime date) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date) {
 		super();
 		this.id = id;
 		this.idEvent = idEvent;
@@ -35,12 +36,13 @@ public class Match {
 		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
+		this.status = status;
 		this.date = date;
 	}
 	
 	
 	public Match(Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, LocalDateTime date) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date) {
 		super();
 		this.idEvent = idEvent;
 		this.teamA = teamA;
@@ -50,6 +52,7 @@ public class Match {
 		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
+		this.status = status;
 		this.date = date;
 	}
 
@@ -144,7 +147,18 @@ public class Match {
 		this.teamB = teamB;
 	}
 	
+	public String getStatus() {
+		return this.status;
+	}
+	
+	public void setString(String status) {
+		this.status = status;
+	}
 	
 	
+	@Override
+    public String toString() {
+        return getTeamA().getName() + " x " + getTeamB().getName();
+    }
 	
 }

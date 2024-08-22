@@ -465,14 +465,21 @@ public class WindowProfile {
      				new AddMatch(user.getId());
      			}
      		});
-             panelProfile.add(buttonAddMatch);
+            panelProfile.add(buttonAddMatch);
         
         
      // ---------------- Close Event Button ----------------
-        RoundedButton buttonCloseEvent = new RoundedButton("Fechar Evento");
+        RoundedButton buttonCloseEvent = new RoundedButton("Finalizar Partida");
         buttonCloseEvent.setBounds(990, 280, 179, 59);
         buttonCloseEvent.setBackground(new Color(64, 128, 128)); 
-        buttonCloseEvent.setForeground(Color.WHITE);       
+        buttonCloseEvent.setForeground(Color.WHITE);      
+        buttonCloseEvent.addMouseListener(new MouseAdapter() {
+ 			
+ 			@Override
+ 			public void mouseClicked(MouseEvent e) {
+ 				new FinishMatch(user.getId());
+ 			}
+ 		});
         panelProfile.add(buttonCloseEvent);
     }
     
@@ -545,5 +552,3 @@ public class WindowProfile {
         panelTransactionTxt.add(lblTransaction);  
 	}
 }
-
-

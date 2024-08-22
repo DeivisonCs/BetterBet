@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import dao.team.TeamDAO;
 import dao.team.TeamPostgresDAO;
@@ -42,7 +43,7 @@ public class MatchPostgresDAO implements MatchDAO {
 			ps.setFloat(7, newMatch.getOddTeamA());
 			ps.setFloat(8, newMatch.getOddTeamB());
 			ps.setFloat(9, newMatch.getOddDraw());
-			ps.setString(10, "Criado");
+			ps.setString(10, newMatch.getStatus());
 			
 			ps.executeUpdate();
 			
@@ -89,6 +90,7 @@ public class MatchPostgresDAO implements MatchDAO {
                             teamB,
                             response.getInt("b_team_score"),
                             response.getFloat("b_team_odd"),
+                            response.getString("status"),
                             dateTime
                             )
                 );
@@ -129,6 +131,7 @@ public class MatchPostgresDAO implements MatchDAO {
                             teamB,
                             response.getInt("b_team_score"),
                             response.getFloat("b_team_odd"),
+                            response.getString("status"),
                             dateTime
                             )
                 );
@@ -158,12 +161,13 @@ public class MatchPostgresDAO implements MatchDAO {
 	            Integer teamBId = rs.getInt("b_team");
 	            Integer scoreTeamB = rs.getInt("b_team_score");
 	            float oddTeamB = rs.getFloat("b_team_odd");
+	            String status = rs.getString("status");
 	            LocalDateTime date = rs.getTimestamp("date_time").toLocalDateTime();
 
 	            Team teamA = teamPostgresDAO.getTeamById(teamAId);
 	            Team teamB = teamPostgresDAO.getTeamById(teamBId);
 
-	            return new Match(id, idEvent, teamA, scoreTeamA, oddTeamA, oddDraw, teamB, scoreTeamB, oddTeamB, date);
+	            return new Match(id, idEvent, teamA, scoreTeamA, oddTeamA, oddDraw, teamB, scoreTeamB, oddTeamB, status, date);
 	        }
 
 	        return null;
@@ -171,6 +175,32 @@ public class MatchPostgresDAO implements MatchDAO {
 	        e.printStackTrace();
 	        throw e;
 	    }
+	}
+	
+	@Override
+	public boolean finishMatch(int matchId) throws SQLException{
+		String query = "UPDATE match SET status='finalizado', a_team_score=?, b_team_score=?  WHERE match_id = ?";
+		Random random = new Random();
+		
+		try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
+			
+			ps.setInt(1, random.nextInt(6));
+			ps.setInt(2, random.nextInt(6));
+			ps.setInt(3, matchId);
+			
+			int rowsAffected = ps.executeUpdate();
+	        
+			
+	        if (rowsAffected == 0) {
+	        	return false;
+	        }
+	        
+	        return true;
+		}
+		catch(SQLException ex) {
+			ex.printStackTrace();
+	        throw ex;
+		}
 	}
 
 	@Override

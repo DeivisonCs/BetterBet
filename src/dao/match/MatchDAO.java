@@ -13,4 +13,5 @@ public interface MatchDAO {
 	public Match getMatchById(Integer matchId)throws SQLException;
 	public boolean deleteMatchById()throws SQLException;
 	public boolean editMatch()throws SQLException;
+	public boolean finishMatch(int matchId) throws SQLException;
 }

@@ -253,7 +253,7 @@ public class InitDatabase {
 				+ "((SELECT event_id FROM event WHERE description = 'Copa do Mundo da FIFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Brasil'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Argentina'),"
-				+ " 2.10, 3.25, 3.00, 'pendente', 2, 2, '2024-05-19 17:12:00'),"
+				+ " 2.10, 3.25, 3.00, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Copa do Mundo da FIFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'França'),"

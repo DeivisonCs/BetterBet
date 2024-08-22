@@ -182,6 +182,7 @@ public class AddMatch {
 								teamB,
 								0,
 								(float) 1.8,
+								"pendente",
 								LocalDateTime.now());
 						
 						try {

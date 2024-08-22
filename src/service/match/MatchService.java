@@ -1,6 +1,7 @@
 package service.match;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import dao.match.MatchDAO;
 import dao.match.MatchPostgresDAO;
@@ -29,5 +30,37 @@ public class MatchService {
 		}
 		
 		return valid;
+	}
+	
+	
+	public List<Match> getAll() throws SQLException{
+		try {
+			return this.matchDB.getAllMatches();
+		}
+		catch (SQLException ex) {
+			throw new SQLException();
+		}
+	}
+	
+	public List<Match> getAllByEventId(int eventId) throws SQLException{
+		try {
+			return this.matchDB.getMatchesByEvent(eventId);
+		}
+		catch (SQLException ex) {
+			throw new SQLException();
+		}
+	}
+	
+	public boolean finishMatch(int matchId) throws SQLException{	
+		if(matchId != -1) {
+			try {
+				return this.matchDB.finishMatch(matchId);
+			}
+			catch (SQLException ex) {
+				throw new SQLException();
+			}
+		}
+		
+		return false;
 	}
 }
