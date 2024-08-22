@@ -12,7 +12,7 @@ public class InitDatabase {
 		String dropTables = 
 			    "DROP TABLE IF EXISTS bet CASCADE;"
 			  + "DROP TABLE IF EXISTS ticket CASCADE;"
-			  +  "DROP TABLE IF EXISTS users CASCADE;"
+			  + "DROP TABLE IF EXISTS users CASCADE;"
 			  + "DROP TABLE IF EXISTS bet_users CASCADE;"
 			  + "DROP TABLE IF EXISTS team CASCADE;"
 			  + "DROP TABLE IF EXISTS match CASCADE;"
@@ -164,7 +164,7 @@ public class InitDatabase {
 				"INSERT INTO transactions (user_id, type_transaction, value_transaction) VALUES"
 				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0),"
 				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0),"
-				+ "(SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
 				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0),"
 				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0),"
 				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0);";
