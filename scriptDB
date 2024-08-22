@@ -87,7 +87,7 @@ CREATE TABLE TICKET(
 CREATE TABLE BET(
 	bet_id SERIAL NOT NULL,
 	ticket_id INT NOT NULL,
-	team_bet VARCHAR(10),
+	selected_bet VARCHAR(10),
 	match_id INT NOT NULL,
 	odd_draw FLOAT NOT NULL,
 	odd_team_A FLOAT NOT NULL,

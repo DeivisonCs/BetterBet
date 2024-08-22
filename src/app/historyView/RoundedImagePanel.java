@@ -11,8 +11,10 @@ import java.io.IOException;
 public class RoundedImagePanel extends JPanel {
     private BufferedImage image;
     private Color backgroundColor;
+    private int radius;
 
-    public RoundedImagePanel(String imagePath, Color backgroundColor) {
+    public RoundedImagePanel(String imagePath, Color backgroundColor, int radius) {
+    	this.radius = radius;
         this.backgroundColor = backgroundColor;
 
         try {
@@ -21,10 +23,11 @@ public class RoundedImagePanel extends JPanel {
             e.printStackTrace();
         }
 
-        setPreferredSize(new Dimension(50, 50));
+        setPreferredSize(new Dimension(radius, radius));
         setOpaque(false);
     }
 
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -34,14 +37,14 @@ public class RoundedImagePanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, 50, 50);
+        Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, radius, radius);
         g2d.setClip(circle);
 
         g2d.setColor(backgroundColor);
         g2d.fill(circle);
 
         if (image != null) {
-            g2d.drawImage(image, 0, 0, 50, 50, null);
+            g2d.drawImage(image, 0, 0, radius, radius, null);
         }
     }
 

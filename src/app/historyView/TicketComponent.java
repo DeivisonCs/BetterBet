@@ -1,21 +1,31 @@
 package app.historyView;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
+import java.sql.SQLException;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import models.Ticket;
+import service.bets.BetService;
 
 @SuppressWarnings("serial")
 public class TicketComponent extends JPanel {
 
-    private JPanel ticketPanel;
     private Ticket ticket;
     private Color statusBackground;
     private String statusImagePath;
+    private BetService betService = new BetService();
 
 
     public TicketComponent(Ticket ticket) {
@@ -29,8 +39,33 @@ public class TicketComponent extends JPanel {
 
         setBackground(new Color(20, 20, 20));
         setLayout(null);
+        setOpaque(false);
+        addMouseListener(new MouseAdapter() {
+		
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
 
-        JPanel panelOdd = new JPanel();
+            @Override
+            public void mouseExited(MouseEvent e) {
+                setCursor(Cursor.getDefaultCursor());
+                
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	try {
+					ticket.setBets(betService.getBetsByTicketId(ticket.getId()));
+					new ShowTicketComponent(ticket);
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null,"Erro ao carregar aposta");
+				}
+               
+            }
+        });
+
+        RoundedPanel panelOdd = new RoundedPanel();
         panelOdd.setBackground(new Color(55, 55, 55));
         panelOdd.setBounds(63, 102, 137, 60);
         this.add(panelOdd);
@@ -51,7 +86,7 @@ public class TicketComponent extends JPanel {
         labelOddValue.setBounds(0, 35, 137, 14);
         panelOdd.add(labelOddValue);
 
-        JPanel panelBet = new JPanel();
+        RoundedPanel panelBet = new RoundedPanel();
         panelBet.setBackground(new Color(55, 55, 55));
         panelBet.setBounds(231, 102, 137, 60);
         this.add(panelBet);
@@ -72,7 +107,7 @@ public class TicketComponent extends JPanel {
         labelBetValue.setBounds(0, 36, 137, 14);
         panelBet.add(labelBetValue);
 
-        JPanel panelProfit = new JPanel();
+        RoundedPanel panelProfit = new RoundedPanel();
         panelProfit.setBackground(new Color(55, 55, 55));
         panelProfit.setBounds(395, 102, 137, 60);
         this.add(panelProfit);
@@ -93,28 +128,29 @@ public class TicketComponent extends JPanel {
         labelProfitValue.setBounds(0, 36, 137, 14);
         panelProfit.add(labelProfitValue);
 
-        JLabel labelEventName = new JLabel("Nome do Evento");
-        labelEventName.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        labelEventName.setForeground(Color.WHITE);
-        labelEventName.setBounds(25, 21, 103, 14);
-        this.add(labelEventName);
-
         String betType = ticket.getTicketType();
         JLabel labelBetType = new JLabel(betType);
-        labelBetType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        labelBetType.setFont(new Font("Tahoma", Font.PLAIN, 16));
         labelBetType.setForeground(Color.WHITE);
-        labelBetType.setBounds(25, 46, 90, 14);
+        labelBetType.setBounds(47, 45, 153, 14);
         this.add(labelBetType);
-
-        RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground);
+        int radius = 50;
+        RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground, radius);
         roundedImagePanel.setBounds(470, 21, 48, 49); 
         this.add(roundedImagePanel);
 
-        JLabel labelOutcome = new JLabel("Caso Simples: Vencedor: Nome do Time");
-        labelOutcome.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        labelOutcome.setForeground(Color.WHITE);
-        labelOutcome.setBounds(25, 71, 250, 14);
-        this.add(labelOutcome);
+    }
+    
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 25, 25));
+        
+        g2.dispose();
     }
 
 

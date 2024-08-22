@@ -22,5 +22,16 @@ public class BetService {
 	    }
 	}
 
+	public List<Bet> getBetsByTicketId(Integer ticketId) throws SQLException {
+		List<Bet> bets = null;
+	    
+        try {
+            bets = betDao.getBetsByTicket(ticketId);
+            return bets;
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao buscar apostas ");
+        }
+    
+	}
 	
 }

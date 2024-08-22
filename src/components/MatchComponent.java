@@ -254,6 +254,9 @@ public class MatchComponent extends JPanel {
 	public boolean isSelectedTeamB() {
 		return isSelectedTeamB;
 	}
+	public boolean isSelectedDraw() {
+		return isSelectedDraw;
+	}
 
 	public String getBetSelectedOption() {
 		if(this.isSelectedTeamA) {

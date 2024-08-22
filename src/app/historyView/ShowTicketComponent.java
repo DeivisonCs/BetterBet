@@ -1,5 +1,4 @@
-package app.betView;
-
+package app.historyView;
 
 import java.awt.GridBagConstraints;
 
@@ -9,50 +8,37 @@ import javax.swing.JScrollBar;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-
-import java.sql.SQLException;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Color;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-import app.homeUser.HomeUserUI;
+import app.betView.BetComponent;
 import components.RoundedButtonComponent;
-import components.RoundedTextFieldComponent;
 import models.Bet;
-import models.CommonUser;
 import models.Ticket;
-
-import service.bets.BetService;
-import service.ticket.TicketService;
-import service.users.CommonUserService;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.ActionEvent;
 
-public class BetUI {
-	private HomeUserUI mainFrame;
+public class ShowTicketComponent {
 	private JFrame frame;
-	private JTextField textField;
 	private JPanel betsPanel;
 	
 	private Ticket ticket;
-	private TicketService ticketService= new TicketService();
-	private BetService betService = new BetService();
-	private CommonUserService userService = new CommonUserService();
-
+    private Color statusBackground;
+    private String statusImagePath;
+    
 	
 	/**
 	 * Create the application.
 	 */
-	public BetUI(Ticket ticket, HomeUserUI mainFrame) {
+	public ShowTicketComponent(Ticket ticket) {
 		this.ticket = ticket;
-		this.mainFrame = mainFrame;
+		setTicketStatus();
 		initialize();
 		updatebets();
 		
@@ -74,13 +60,14 @@ public class BetUI {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JButton cancelButton = new RoundedButtonComponent("Cancelar", new Color(170,170,170) , new Color(220,220,220));
+		JButton cancelButton = new RoundedButtonComponent("Cancelar");
+		cancelButton.setText("Voltar");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
 			}
 		});
-		cancelButton.setBounds(239, 397, 100, 29);
+		cancelButton.setBounds(151, 402, 100, 29);
 		panel.add(cancelButton);
 		
 		JScrollPane betScrollPane = new JScrollPane();
@@ -117,57 +104,23 @@ public class BetUI {
 		
 		String finalOddValue = String.format("Odd: %.2f", ticket.getOdd());
 		JLabel lblNewLabel = new JLabel(finalOddValue);
-		lblNewLabel.setBounds(280, 15, 84, 14);
+		lblNewLabel.setBounds(29, 15, 84, 14);
 		panel_1.add(lblNewLabel);
 		
-		textField = new RoundedTextFieldComponent(10, 20, 20, 10, 20);
-		textField.setBounds(49, 8, 155, 28);
-		panel_1.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel_1 = new JLabel("Valor: ");
-		lblNewLabel_1.setBounds(10, 15, 46, 14);
+		String value = String.format("Valor apostado: %.2f", ticket.getAmount());
+		JLabel lblNewLabel_1 = new JLabel(value);
+		lblNewLabel_1.setBounds(113, 15, 121, 14);
 		panel_1.add(lblNewLabel_1);
 		
-		JButton betButton = new RoundedButtonComponent("Apostar", new Color(170,170,170) , new Color(220,220,220));
-		betButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-									
-					
-				try {
-					float amount = Float.parseFloat(textField.getText());
-					userService.updateBalance(((CommonUser)mainFrame.getUser()), amount);
-					ticket.setAmount(amount);
-					Ticket updatedTicket = ticketService.createTicket(ticket);
-					updatedTicket.getBets().forEach((bet) -> bet.setIdTicket(updatedTicket.getId()));
-					betService.createBets(updatedTicket.getBets());
-					float newBalance = ((CommonUser)mainFrame.getUser()).getBalance() - amount;
-					((CommonUser)mainFrame.getUser()).setBalance(newBalance);
-					
-		            JLabel balanceLabel = mainFrame.getBalanceLabel();
-		            balanceLabel.setText("Saldo: " + newBalance);
-		            
-					mainFrame.getFrame().revalidate();
-					mainFrame.getFrame().repaint();
-					frame.dispose();
-					
-				} catch (NumberFormatException e3) {
-					 JOptionPane.showMessageDialog(frame, "Por favor, insira um valor numérico válido!", "Erro", JOptionPane.ERROR_MESSAGE);
-				} catch (SQLException e1) {
-					 JOptionPane.showMessageDialog(null, "O sistema encontra-se fora do ar", "Aviso", JOptionPane.ERROR_MESSAGE);
-					 e1.printStackTrace();
-				} catch (Exception e2) {
-					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);
-					e2.printStackTrace();
-				}
-				
-				
-			}
-		});
-		betButton.setBounds(68, 397, 100, 29);
-		panel.add(betButton);
+		String expectedProfit = String.format("Ganhos: %.2f", ticket.getExpectedProfit());
+		JLabel lblNewLabel_2 = new JLabel(expectedProfit);
+		lblNewLabel_2.setBounds(260, 15, 78, 14);
+		panel_1.add(lblNewLabel_2);
 		
+		int radius = 50;
+        RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground,radius);
+        roundedImagePanel.setBounds(336, 386, 48, 49); 
+        panel.add(roundedImagePanel);
 		frame.setVisible(true);
 	}
 	
@@ -197,5 +150,20 @@ public class BetUI {
 	    betsPanel.repaint();
 	}
 	
-   
+    private void setTicketStatus() {
+        switch (ticket.getStatus()) {
+            case "GANHOU":
+                statusBackground = Color.GREEN;
+                statusImagePath = "/images/check.png";
+                break;
+            case "PERDEU":
+                statusBackground = Color.RED;
+                statusImagePath = "/images/fail.png";
+                break;
+            default:
+                statusBackground = Color.YELLOW;
+                statusImagePath = "/images/pending.png";
+                break;
+        }
+    }
 }

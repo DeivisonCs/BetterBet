@@ -78,25 +78,7 @@ public class HomeUserUI {
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
 	private EventDAO eventDao = new EventPostgresDAO();
-	/**
-	 * Launch the application.
-	 */
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    SwingUtilities.invokeLater(() -> {
-//                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
-//                        HomeUserUI window = new HomeUserUI(commonUser);
-//                        window.frame.setVisible(true);
-//                    });
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
+	
 	/**
 	 * Create the application.
 	 */
@@ -309,7 +291,7 @@ public class HomeUserUI {
 	}
 	
 	
-	
+	//Adiciona as partidas no gridbaglayout
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
@@ -329,19 +311,19 @@ public class HomeUserUI {
         	MatchComponent matchComponent;
         	Optional<Integer> positionIfExists = positionIfExistsSelectedMatchComponent(match.getIdEvent(), match.getTeamA().getName(), match.getTeamB().getName());
         	
-        	
-        	
         	if (positionIfExists.isEmpty()) {
 				matchComponent = new MatchComponent(match);
 				matchComponent.addMouseListener(new MouseAdapter() {
+					
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB())
+						//Adiciona a partida na lista de partidas selecionadas
+						if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB() || matchComponent.isSelectedDraw())
 								&& !selectedMatches.contains(matchComponent)) {
 							selectedMatches.add(matchComponent);
 						}
-
-						if (!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB()) {
+						//Remove a partida da lista de partidas selecionadas caso seja desselecionada
+						if (!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB() && !matchComponent.isSelectedDraw()) {
 							selectedMatches.remove(matchComponent);
 						}
 					}
@@ -362,6 +344,7 @@ public class HomeUserUI {
         gamesPanel.repaint();
 	}
 	
+	//Adiciona os eventos no gridbagLayout
 	public void updateEvents() {
 	    eventsPanel.removeAll();
 
@@ -411,6 +394,8 @@ public class HomeUserUI {
 	    eventsPanel.repaint();
 	}
 	
+	
+	//No momento da atualização das partidas ao clicar em um evento, verifica se a partida daquele evento ja esta selecionada e a mantém selecionada.
 	private Optional<Integer> positionIfExistsSelectedMatchComponent(Integer event_id, String team_a, String team_b) {
 		if(!selectedMatches.isEmpty()) {
 			for (MatchComponent component : selectedMatches) {

@@ -34,7 +34,7 @@ public class BetPostgresDAO implements BetDAO{
 	            float oddDraw = betRS.getFloat("odd_draw");
 	            Integer matchId = betRS.getInt("match_id");
 	            Integer idTicket = betRS.getInt("ticket_id");
-	            String selectedBet = betRS.getString("team_bet");
+	            String selectedBet = betRS.getString("selected_bet");
 
 	            Match match = matchDao.getMatchById(matchId);
 

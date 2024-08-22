@@ -5,26 +5,33 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
-import app.betView.BetComponent;
+import app.ImageUtils;
+import app.homeUser.HomeUserUI;
 import dao.event.EventDAO;
 import dao.event.EventPostgresDAO;
 import dao.ticket.TicketDAO;
 import dao.ticket.TicketPostgresDAO;
-import models.Bet;
 import models.Ticket;
 import models.User;
 import service.users.UserService;
 
-import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.awt.GridBagLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -82,19 +89,30 @@ public class HistoryView {
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(0, 0, 0));
-		panel.setBounds(0, 0, 1184, 65);
-		frame.getContentPane().add(panel);
+		JPanel navPanel = new JPanel();
+		navPanel.setBackground(new Color(0, 0, 0));
+		navPanel.setBounds(0, 0, 1184, 65);
+		frame.getContentPane().add(navPanel);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(600, 63, 584, 598);
-		scrollPane.setBorder(null);
-		frame.getContentPane().add(scrollPane);
+		JScrollPane ticketsScrollPane = new JScrollPane();
+		ticketsScrollPane.setBounds(600, 63, 584, 598);
+		ticketsScrollPane.setBorder(null);
+		ticketsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		ticketsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		ticketsScrollPane.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+
+                JScrollBar verticalScrollBar = ticketsScrollPane.getVerticalScrollBar();
+                int unitsToScroll = e.getWheelRotation() * 15;
+                verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
+            }
+        });
+		frame.getContentPane().add(ticketsScrollPane);
 		
 		ticketsPanel = new JPanel();
 		ticketsPanel.setBackground(new Color(40, 40, 40));
-		scrollPane.setViewportView(ticketsPanel);
+		ticketsScrollPane.setViewportView(ticketsPanel);
 		GridBagLayout gbl_ticketsPanel = new GridBagLayout();
 		gbl_ticketsPanel.columnWidths = new int[]{0};
 		gbl_ticketsPanel.rowHeights = new int[]{0};
@@ -153,27 +171,41 @@ public class HistoryView {
 		frame.getContentPane().add(statusComboBox);
 		
 		
-		JLabel lblNewLabel = new JLabel("Histórico");
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 21));
-		lblNewLabel.setBounds(53, 96, 224, 31);
-		frame.getContentPane().add(lblNewLabel);
+		JLabel historyLabel = new JLabel("Histórico");
+		historyLabel.setForeground(new Color(255, 255, 255));
+		historyLabel.setFont(new Font("Tahoma", Font.PLAIN, 21));
+		historyLabel.setBounds(53, 96, 224, 31);
+		frame.getContentPane().add(historyLabel);
 		
-		JLabel lblNewLabel_1_1 = new JLabel("Tipo:");
-		lblNewLabel_1_1.setForeground(Color.WHITE);
-		lblNewLabel_1_1.setBounds(53, 292, 46, 14);
-		frame.getContentPane().add(lblNewLabel_1_1);
+		JLabel typeLabel = new JLabel("Tipo:");
+		typeLabel.setForeground(Color.WHITE);
+		typeLabel.setBounds(53, 292, 46, 14);
+		frame.getContentPane().add(typeLabel);
 		
-		JLabel lblNewLabel_1_1_1 = new JLabel("Evento:");
-		lblNewLabel_1_1_1.setForeground(Color.WHITE);
-		lblNewLabel_1_1_1.setBounds(53, 221, 59, 14);
-		frame.getContentPane().add(lblNewLabel_1_1_1);
+		JLabel eventLabel = new JLabel("Evento:");
+		eventLabel.setForeground(Color.WHITE);
+		eventLabel.setBounds(53, 221, 59, 14);
+		frame.getContentPane().add(eventLabel);
 		
-		JLabel lblNewLabel_2 = new JLabel("Status:");
-		lblNewLabel_2.setForeground(new Color(255, 255, 255));
-		lblNewLabel_2.setBounds(53, 371, 46, 14);
-		frame.getContentPane().add(lblNewLabel_2);
+		JLabel statusLabel = new JLabel("Status:");
+		statusLabel.setForeground(new Color(255, 255, 255));
+		statusLabel.setBounds(53, 371, 46, 14);
+		frame.getContentPane().add(statusLabel);
 		frame.setResizable(false);
+		
+		int radius = 50;
+        JPanel backButton = new RoundedImagePanel("/resources/images/back-arrow.jpg", new Color(255,255,255), radius);
+        backButton.setBounds(10, 11, 50, 54);
+        backButton.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        		new HomeUserUI(user.getId());
+        	}
+        	
+        });
+        navPanel.setLayout(null);
+        navPanel.add(backButton);
 		
 		frame.setBounds(100, 100, 1200, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
