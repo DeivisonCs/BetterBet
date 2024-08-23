@@ -54,6 +54,8 @@ public class TransactionPostgresDAO implements TransactionDAO{
 			ps.setInt(1, transaction.getUserId());
 			ps.setString(2, transaction.getType());
 			ps.setDouble(3, transaction.getValue());
+
+			ps.executeUpdate();
 			
 		} catch (Exception e) {
 			
