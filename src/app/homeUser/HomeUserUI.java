@@ -77,6 +77,7 @@ public class HomeUserUI {
 	
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
+	JLabel gamesDescriptionLabel;
 	
 	private  String textFieldValue;
 	private ImageIcon profileImg;
@@ -270,10 +271,10 @@ public class HomeUserUI {
 		frame.getContentPane().add(gamesDescriptionPanel);
 		gamesDescriptionPanel.setLayout(null);
 		
-		JLabel gamesDescriptionLabel = new JLabel("Jogos em Andamento:");
+		gamesDescriptionLabel = new JLabel("Todos os Jogos: ");
 		gamesDescriptionLabel.setForeground(new Color(255, 255, 255));
 		gamesDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
-		gamesDescriptionLabel.setBounds(25, 11, 264, 43);
+		gamesDescriptionLabel.setBounds(25, 11, 527, 43);
 		gamesDescriptionPanel.add(gamesDescriptionLabel);
 		
 		JScrollPane eventScrollPane = new JScrollPane();
@@ -395,13 +396,19 @@ public class HomeUserUI {
 	                    selectedEventComponent = eventComponent;
 	                    matches.clear();
 	                    
-	                    try {matches = matchDao.getMatchesByEvent(event.getId());} 
+	                    try {
+	                    	gamesDescriptionLabel.setText(event.getName());
+	                    	matches = matchDao.getMatchesByEvent(event.getId());
+	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();
 	                } else {
 	                    selectedEventComponent = null;
-	                    try {matches = matchDao.getAllMatches();} 
+	                    try {
+	                    	matches = matchDao.getAllMatches();
+	                    	gamesDescriptionLabel.setText("Todos os Jogos: ");
+	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();
