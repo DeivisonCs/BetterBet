@@ -152,7 +152,7 @@ public class WindowProfile {
         profileImg = 
         		user.getProfileImage() != null?
         		user.getProfileImage() : 
-    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
+    			new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"));
         
         ImageUtils profilePicture = new ImageUtils();
         profilePicture.setBorderSize(0);
