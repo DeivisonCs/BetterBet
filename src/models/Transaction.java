@@ -10,6 +10,7 @@ public class Transaction {
 	public Transaction (Integer id, Integer userId, String type, double value) {
 		super();
 		this.id = id;
+		this.userId = userId;
 		this.type = type;
 		this.value = value;
 		
@@ -17,6 +18,7 @@ public class Transaction {
 	
 	public Transaction (Integer userId, String type, double value) {
 		super();
+		this.userId = userId;
 		this.type = type;
 		this.value = value;
 	}
