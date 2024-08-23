@@ -75,6 +75,7 @@ public class HomeUserUI {
 	private JPanel eventsPanel;
 	
 	private  String textFieldValue;
+	private ImageIcon profileImg;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
 	private EventDAO eventDao = new EventPostgresDAO();
@@ -177,14 +178,9 @@ public class HomeUserUI {
 			balanceLabel.setBounds(25, 30, 164, 14);
 			navBarPanel.add(balanceLabel);
 		}
-		
-		JLabel accountLabel = new JLabel("Conta");
-			accountLabel.setForeground(new Color(255, 255, 255));
-			accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-			accountLabel.setBounds(1009, 23, 59, 14);
-			navBarPanel.add(accountLabel);
+
 			
-			if(this.user instanceof CommonUser) {
+		if(this.user instanceof CommonUser) {
 			JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
 			makeBetButton.setBackground(new Color(35, 35, 35));
 			makeBetButton.setForeground(new Color(255, 255, 255));
@@ -211,9 +207,13 @@ public class HomeUserUI {
 			navBarPanel.add(makeBetButton);
 		}
 		
+		profileImg = 
+        		user.getProfileImage() != null?
+        		user.getProfileImage() : 
+    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
 		
 		ImageUtils profilePicture = new ImageUtils();
-		profilePicture.setImage(new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg")));
+		profilePicture.setImage(profileImg);
 		profilePicture.setBounds(1100, 13, 44, 44);
 		profilePicture.setBorder(null);
 		profilePicture.setBorderSize(0);
