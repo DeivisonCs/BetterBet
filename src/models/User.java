@@ -1,5 +1,9 @@
 package models;
 
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
+
 public abstract class User {
 	
 	private Integer id;
@@ -8,20 +12,23 @@ public abstract class User {
 	private String email;
 	private String password;
 	private String permission;
+	private ImageIcon profileImage;
 	
 	public User(){}
 	
-	public User(Integer id, String name, String cpf, String email, String password,  String permission) {
+	public User(Integer id, String name, ImageIcon profileImage ,String cpf, String email, String password,  String permission) {
 		this.id = id;
 		this.name = name;
+		this.profileImage = profileImage;
 		this.cpf = cpf;
 		this.email = email;
 		this.password = password;
 		this.permission = permission;
 	}
 	
-	public User(String name, String cpf, String email, String password,  String permission) {
+	public User(String name, ImageIcon profileImage, String cpf, String email, String password,  String permission) {
 		this.name = name;
+		this.profileImage = profileImage;
 		this.email = email;
 		this.cpf = cpf;
 		this.password = password;
@@ -34,6 +41,8 @@ public abstract class User {
 	public void setId(Integer id) {this.id = id;}
 	public String getName() {return name;}
 	public void setName(String name) {this.name = name;}
+	public ImageIcon getProfileImage() {return this.profileImage;}
+	public void setProfileImage(ImageIcon img) {this.profileImage = img;}
 	public String getEmail() {return email;}
 	public void setEmail(String email) {this.email = email;}
 	public String getPassword() {return password;}

@@ -7,9 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import models.AdminUser;
+import models.Bet;
 import models.CommonUser;
 import models.Event;
 import models.Match;
+import models.Ticket;
 import models.User;
 import security.Permission;
 import service.users.UserService;
@@ -17,36 +19,55 @@ import service.users.UserService;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import dao.EventDAO;
-import dao.EventPostgresDAO;
-import dao.MatchDAO;
-import dao.MatchPostgresDAO;
+import components.EventComponent;
+import components.MatchComponent;
+import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
+
+import app.ImageUtils;
+import app.betView.BetUI;
+import app.profile.WindowProfile;
+import dao.event.EventDAO;
+import dao.event.EventPostgresDAO;
+import dao.match.MatchDAO;
+import dao.match.MatchPostgresDAO;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
 public class HomeUserUI {
+	private int positionX;
+	private int positionY;
+	
 	private User user;
 	private UserService userService= new UserService();
 
 	private JFrame frame;
+	JLabel balanceLabel;
 	
 	private List<Match> matches = new ArrayList<Match>();
 	private List<MatchComponent> selectedMatches = new ArrayList<MatchComponent>();
@@ -58,6 +79,7 @@ public class HomeUserUI {
 	private JPanel eventsPanel;
 	
 	private  String textFieldValue;
+	private ImageIcon profileImg;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
 	private EventDAO eventDao = new EventPostgresDAO();
@@ -83,8 +105,11 @@ public class HomeUserUI {
 	/**
 	 * Create the application.
 	 */
-	public HomeUserUI(Integer userId) {
+	public HomeUserUI(Integer userId, int positionX, int positionY) {
 		System.out.println("UserId Home " + userId);
+		
+		this.positionX = positionX;
+		this.positionY = positionY;
 		
 		try {
 			this.matches = matchDao.getAllMatches();
@@ -103,6 +128,8 @@ public class HomeUserUI {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		initialize();
@@ -117,6 +144,8 @@ public class HomeUserUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setVisible(true);
+		frame.setBounds(positionX, positionY, 1200, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
@@ -152,40 +181,65 @@ public class HomeUserUI {
 		
 		
 		if(this.user instanceof CommonUser) {
-			JLabel balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
+			balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
 			balanceLabel.setForeground(new Color(255, 255, 255));
 			balanceLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
 			balanceLabel.setBounds(25, 30, 164, 14);
 			navBarPanel.add(balanceLabel);
 		}
-		
-		JLabel accountLabel = new JLabel("Conta");
-			accountLabel.setForeground(new Color(255, 255, 255));
-			accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-			accountLabel.setBounds(1009, 23, 59, 14);
-			navBarPanel.add(accountLabel);
+
 			
-			if(this.user instanceof CommonUser) {
+		if(this.user instanceof CommonUser) {
 			JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
 			makeBetButton.setBackground(new Color(35, 35, 35));
 			makeBetButton.setForeground(new Color(255, 255, 255));
 			makeBetButton.setFont(new Font("Tahoma", Font.PLAIN, 11));
 			makeBetButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for(MatchComponent match : selectedMatches)	{
-						System.out.println(match.getMatch().getTeamA().getName() + "x" + match.getMatch().getTeamB().getName());
+					
+					if(selectedMatches.isEmpty()) {
+						 JOptionPane.showMessageDialog(null, "Nenhuma partida selecionada.", "Aviso", JOptionPane.WARNING_MESSAGE);
+				         return;
 					}
+					
+					String betType = selectedMatches.size() > 1 ? "MULTIPLA" : "SIMPLES";
+					List<Bet> bets = selectedMatches.stream()
+						    .map(m -> new Bet(betType, m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), "PENDENTE", m.getBetSelectedOption()))
+						    .collect(Collectors.toList());
+
+					Ticket ticket = new Ticket(user.getId(), bets);
+					
+					new BetUI(ticket, HomeUserUI.this);
 				}
 			});
 			makeBetButton.setBounds(846, 18, 128, 29);
 			navBarPanel.add(makeBetButton);
 		}
 		
-		/*
-		ProfileImageComponent panel = new ProfileImageComponent();
-		panel.setBounds(942, 15, 63, 44);
-		navBarPanel.add(panel);
-		*/
+		profileImg = 
+        		user.getProfileImage() != null?
+        		user.getProfileImage() : 
+    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
+		
+		ImageUtils profilePicture = new ImageUtils();
+		profilePicture.setImage(profileImg);
+		profilePicture.setBounds(1100, 13, 44, 44);
+		profilePicture.setBorder(null);
+		profilePicture.setBorderSize(0);
+		profilePicture.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
+				frame.dispose();
+				
+				new WindowProfile(user.getId(), x, y);
+			}
+			
+		});
+		navBarPanel.add(profilePicture);
+		
 		
 		GridBagLayout layoutGamesPanel = new GridBagLayout();
 		gamesPanel = new JPanel(layoutGamesPanel);
@@ -219,7 +273,7 @@ public class HomeUserUI {
 		JLabel gamesDescriptionLabel = new JLabel("Jogos em Andamento:");
 		gamesDescriptionLabel.setForeground(new Color(255, 255, 255));
 		gamesDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
-		gamesDescriptionLabel.setBounds(29, 21, 264, 43);
+		gamesDescriptionLabel.setBounds(25, 11, 264, 43);
 		gamesDescriptionPanel.add(gamesDescriptionLabel);
 		
 		JScrollPane eventScrollPane = new JScrollPane();
@@ -257,14 +311,11 @@ public class HomeUserUI {
 		eventsDescriptionPanel.setLayout(null);
 		
 		JLabel eventsDescriptionLabel = new JLabel("Eventos: ");
-		eventsDescriptionLabel.setBounds(10, 11, 123, 23);
-		eventsDescriptionLabel.setForeground(new Color(0, 0, 0));
+		eventsDescriptionLabel.setBounds(10, 21, 123, 23);
+		eventsDescriptionLabel.setForeground(new Color(255, 255, 255));
 		eventsDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
 		eventsDescriptionPanel.add(eventsDescriptionLabel);
-		
-		frame.setBounds(100, 100, 1200, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+			
 	}
 	
 	
@@ -272,15 +323,16 @@ public class HomeUserUI {
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
-
-		
 		GridBagConstraints gbc = new GridBagConstraints();
+		
+		
 	        gbc.gridx = 0;
-	        gbc.gridy = GridBagConstraints.RELATIVE;
+	        gbc.gridy = 0;
 	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.anchor = GridBagConstraints.NORTH;  
 	        gbc.weightx = 1.0;
-	        gbc.insets.bottom = 0;
+	        gbc.insets.bottom = 10;
+	        gbc.insets.top = 5;
         
         for (Match match : matches) {
         	
@@ -382,6 +434,15 @@ public class HomeUserUI {
 		return Optional.empty();
 	}
 	
+	public User getUser() {
+		return this.user;
+	}
+
+	public JFrame getFrame() {
+		return this.frame;
+	}
 	
-	
+	public JLabel getBalanceLabel() {
+		return this.balanceLabel;
+	}
 }
