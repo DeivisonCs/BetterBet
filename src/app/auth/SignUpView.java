@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.Color;
 
 import javax.swing.JLabel;
@@ -308,15 +309,19 @@ public class SignUpView {
 				try {
 					String validUser = userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
 					
-					if(validUser != "200") {
+					if(!validUser.equals("200")) {
 						JOptionPane.showMessageDialog(null, validUser);
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "Usuário cadastrado!\nBem vindo " + newUser.getName());
 						
+						
+						Point location = frame.getLocationOnScreen();
+						int x = location.x;
+						int y = location.y;
 						frame.dispose();
 						
-						new HomeUserUI(userService.loginUser(newUser.getEmail(), new String(passwordField.getPassword())));
+						new HomeUserUI(userService.loginUser(newUser.getEmail(), new String(passwordField.getPassword())), x, y);
 					}
 				}
 				catch(SQLException ex) {
@@ -351,8 +356,12 @@ public class SignUpView {
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				frame.dispose();
-				new LogInView();
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
+        		frame.dispose();
+        		
+        		new LogInView(x, y);
 			}
 
 			@Override

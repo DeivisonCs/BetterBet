@@ -35,6 +35,7 @@ import models.User;
 import service.users.UserService;
 
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -48,7 +49,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JSpinner;
 
 public class WindowProfile {
-
+	private int positionX;
+	private int positionY;
+	
     private JFrame frame;
     private final JPanel panelTransaction = new JPanel();
     
@@ -84,7 +87,9 @@ public class WindowProfile {
     /**
      * Create the application.
      */
-    public WindowProfile(Integer userId) {
+    public WindowProfile(Integer userId, int positionX, int positionY) {
+    	this.positionX = positionX;
+    	this.positionY = positionY;
     	
     	try {
     		this.user = userService.getUser(userId);    		
@@ -103,7 +108,7 @@ public class WindowProfile {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 1200, 700);
+        frame.setBounds(positionX, positionY, 1200, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         frame.setVisible(true);
@@ -132,8 +137,12 @@ public class WindowProfile {
         backButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
+        		Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
         		frame.dispose();
-        		new HomeUserUI(user.getId());
+        		
+        		new HomeUserUI(user.getId(), x, y);
         	}
         	
         });
@@ -164,9 +173,12 @@ public class WindowProfile {
         editButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
-				new EditUser(user.getId());
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
 				frame.dispose();
+				
+				new EditUser(user.getId(), x, y);
 			}
 			
 		});
@@ -181,8 +193,12 @@ public class WindowProfile {
         logOut.addActionListener(new ActionListener() {
         	
         	public void actionPerformed(ActionEvent e) {
+        		Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
         		frame.dispose();
-        		new LogInView();
+        		
+        		new LogInView(x, y);
         	}
         	
         });
@@ -302,6 +318,27 @@ public class WindowProfile {
  			}
  		});
         panelProfile.add(buttonCloseEvent);
+
+    
+        // ---------------- Create Admin User Button ----------------
+        RoundedButton addAdminEvent = new RoundedButton("Criar Admin");
+        addAdminEvent.setBounds(990, 585, 179, 59);
+        addAdminEvent.setBackground(new Color(64, 128, 128)); 
+        addAdminEvent.setForeground(Color.WHITE);      
+        addAdminEvent.addMouseListener(new MouseAdapter() {
+ 			
+ 			@Override
+ 			public void mouseClicked(MouseEvent e) {
+ 				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
+
+ 				
+ 				new CreateAdminUser(user.getId(), x, y);
+ 			}
+ 		});
+        panelProfile.add(addAdminEvent);
+        
     }
     
  // Mostra conteudos específicos para usuários comuns
