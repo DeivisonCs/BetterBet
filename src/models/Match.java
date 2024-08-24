@@ -8,6 +8,7 @@ public class Match {
 	private Integer id;
 	
 	private Integer idEvent;
+	private String status;
 	
 	private Team teamA;
 	private Integer scoreTeamA;
@@ -27,7 +28,7 @@ public class Match {
 		
 	
 	public Match(Integer id, Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
 		this.id = id;
 		this.idEvent = idEvent;
@@ -38,6 +39,7 @@ public class Match {
 		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
+		this.status = status;
 		this.date = date;
 		this.betAmountTeamA = betAmountTeamA;
 		this.betAmountTeamB = betAmountTeamB;
@@ -46,7 +48,7 @@ public class Match {
 	
 	
 	public Match(Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
 		this.idEvent = idEvent;
 		this.teamA = teamA;
@@ -56,6 +58,7 @@ public class Match {
 		this.teamB = teamB;
 		this.scoreTeamB = scoreTeamB;
 		this.oddTeamB = oddTeamB;
+		this.status = status;
 		this.date = date;
 		this.betAmountTeamA = betAmountTeamA;
 		this.betAmountTeamB = betAmountTeamB;
@@ -177,40 +180,19 @@ public class Match {
 	public void setTeamB(Team teamB) {
 		this.teamB = teamB;
 	}
-
-
-	public float getBetAmountTeamA() {
-		return betAmountTeamA;
+	
+	public String getStatus() {
+		return this.status;
 	}
-
-
-	public void setBetAmountTeamA(float betAmountTeamA) {
-		this.betAmountTeamA = betAmountTeamA;
+	
+	public void setString(String status) {
+		this.status = status;
 	}
-
-
-	public float getBetAmountDraw() {
-		return betAmountDraw;
-	}
-
-
-	public void setBetAmountDraw(float betAmountDraw) {
-		this.betAmountDraw = betAmountDraw;
-	}
-
-
-	public float getBetAmountTeamB() {
-		return betAmountTeamB;
-	}
-
-
-	public void setBetAmountTeamB(float betAmountTeamB) {
-		this.betAmountTeamB = betAmountTeamB;
-	}
-
-
 	
 	
-	
+	@Override
+    public String toString() {
+        return getTeamA().getName() + " x " + getTeamB().getName();
+    }
 	
 }

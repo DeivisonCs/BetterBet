@@ -15,4 +15,5 @@ public interface MatchDAO {
 	public boolean editMatch()throws SQLException;
 	public void UpdateAmount(Integer id, float amount, String string) throws SQLException;
 	public void UpdateOdds(Match matchUpdatedAmount) throws SQLException;
+	public boolean finishMatch(int matchId) throws SQLException;
 }

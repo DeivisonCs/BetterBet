@@ -3,6 +3,7 @@ package app.edit;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
@@ -37,7 +38,9 @@ import service.users.UserService;
 
 
 public class EditUser{
-
+	private int positionX;
+	private int positionY;
+	
 	private JFrame frame;
 	private User user;
 	private User userEdited;
@@ -64,9 +67,10 @@ public class EditUser{
 	private RoundedPasswordFieldComponent confirmPasswordField;
 	
 	
-	public EditUser(Integer userId) {
-//		user = new CommonUser("Maria", "111.111.111-11", "2023/23/23", "teste@.com", "rua tal de tal", "sfdf", "user", (float) 0.0);
-		
+	public EditUser(Integer userId, int positionX, int positionY) {
+		this.positionX = positionX;
+    	this.positionY = positionY;
+    	
 		try {
 			User loggedUser = userService.getUser(userId);
 			
@@ -95,7 +99,7 @@ public class EditUser{
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
-		frame.setBounds(100, 100, 800, 750);
+		frame.setBounds(positionX, positionY, 800, 750);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
@@ -128,8 +132,12 @@ public class EditUser{
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
+        		Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
         		frame.dispose();
-        		new WindowProfile(user.getId());
+        		
+        		new WindowProfile(user.getId(), x, y);
         	}
         });
         returnButton.setBorderSize(0);
@@ -287,8 +295,12 @@ public class EditUser{
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
-						new WindowProfile(user.getId());
+						Point location = frame.getLocationOnScreen();
+						int x = location.x;
+						int y = location.y;
 						frame.dispose();
+						
+						new WindowProfile(user.getId(), x, y);
 					}
 				}
 				catch(SQLException | FileNotFoundException ex) {
