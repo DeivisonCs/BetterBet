@@ -20,6 +20,7 @@ import models.User;
 import service.users.UserService;
 
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -200,7 +201,13 @@ public class HistoryView {
         	@Override
         	public void mouseClicked(MouseEvent e) {
         		frame.dispose();
-        		new HomeUserUI(user.getId());
+
+						Point location = frame.getLocationOnScreen();
+						int x = location.x;
+						int y = location.y;
+						frame.dispose();
+					
+					new HomeUserUI(user.getId(), x, y);
         	}
         	
         });

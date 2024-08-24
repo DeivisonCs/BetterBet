@@ -189,6 +189,34 @@ public class Match {
 		this.status = status;
 	}
 	
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public float getBetAmountTeamA() {
+		return this.betAmountTeamA;
+	}
+
+	public void setBetAmountTeamA(float betAmountTeamA) {
+		this.betAmountTeamA = betAmountTeamA;
+	}
+
+	public float getBetAmountDraw() {
+		return this.betAmountDraw;
+	}
+
+	public void setBetAmountDraw(float betAmountDraw) {
+		this.betAmountDraw = betAmountDraw;
+	}
+
+	public float getBetAmountTeamB() {
+		return this.betAmountTeamB;
+	}
+
+	public void setBetAmountTeamB(float betAmountTeamB) {
+		this.betAmountTeamB = betAmountTeamB;
+	}
+
 	
 	@Override
     public String toString() {
