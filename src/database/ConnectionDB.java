@@ -14,7 +14,7 @@ public class ConnectionDB {
     	
     	Properties env = new Properties();
     			
-        try(InputStream input = new FileInputStream("config.properties")){
+        try(InputStream input = new FileInputStream("src/config.properties")){
         	
         	env.load(input);
         	

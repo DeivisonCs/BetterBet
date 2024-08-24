@@ -14,7 +14,7 @@ public class TransactionPostgresDAO implements TransactionDAO{
 	@Override
 	public List<Transaction> getTransactions() throws SQLException {
 		
-		String query = "SELECT * FROM transactions";
+		String query ="SELECT * FROM transactions T INNER JOIN users U ON T.user_id = U.user_id";
 		
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		
@@ -26,7 +26,7 @@ public class TransactionPostgresDAO implements TransactionDAO{
 				transactions.add(
 						new Transaction(
 								response.getInt("transaction_id"),
-							//	response.getInt("user_id"),
+								response.getInt("user_id"),
 								response.getString("type_transaction"),
 								response.getDouble("value_transaction")	
 						)
@@ -42,6 +42,24 @@ public class TransactionPostgresDAO implements TransactionDAO{
 			throw e;
 		}
 		
+		
+	}
+	
+	@Override
+	public void insertTransaction(Transaction transaction) {
+		String query = "INSERT INTO transactions (user_id, type_transaction, value_transaction) "
+				+ "VALUES (?, ?, ?);";
+		try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
+			
+			ps.setInt(1, transaction.getUserId());
+			ps.setString(2, transaction.getType());
+			ps.setDouble(3, transaction.getValue());
+
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			
+		}
 		
 	}
 

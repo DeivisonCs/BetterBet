@@ -20,6 +20,22 @@ public class InitDatabase {
 	private static String insertTeams;
 	private static String insertMatch;
 	
+	private static String dropTables;
+	private static String createTableUsers;
+	private static String createTableBetUsers;
+	private static String createTableEvent;
+	private static String createTableTeam;
+	private static String createTableMatch;
+	private static String createTableTicket;
+	private static String createTableBet;
+	private static String createTableTransactions;
+	private static String insertAdmUser;
+	private static String insertCommonUser;
+	private static String insertEvents;
+	private static String insertTeams;
+	private static String insertMatch;
+	private static String insertTransaction;
+	
 	
 	public static void initializeDatabase() {
 
@@ -35,10 +51,12 @@ public class InitDatabase {
 			statement.execute(insertAdmUser);
 			statement.execute(createTableTicket);
 			statement.execute(createTableBet);
+			statement.execute(createTableTransactions);
 			statement.execute(insertCommonUser);
 			statement.execute(insertEvents);
 			statement.execute(insertTeams);
 			statement.execute(insertMatch);
+			statement.execute(insertTransaction);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -52,8 +70,10 @@ public class InitDatabase {
 			  + "DROP TABLE IF EXISTS bet_users CASCADE;"
 			  + "DROP TABLE IF EXISTS team CASCADE;"
 			  + "DROP TABLE IF EXISTS match CASCADE;"
-			  + "DROP TABLE IF EXISTS event CASCADE;";
+			  + "DROP TABLE IF EXISTS event CASCADE;"
+			  + "DROP TABLE IF EXISTS transactions CASCADE";
 		
+		InitDatabase.createTableUsers = 
 		InitDatabase.createTableUsers = 
 				"CREATE TABLE users("
 				+ "    user_id SERIAL NOT NULL,"
@@ -67,6 +87,7 @@ public class InitDatabase {
 				+ ");";
 		
 		InitDatabase.createTableBetUsers = 
+		InitDatabase.createTableBetUsers = 
 				"CREATE TABLE bet_users("
 				+ "    bet_user_id SERIAL NOT NULL,"
 				+ "    user_id int UNIQUE,"
@@ -77,6 +98,7 @@ public class InitDatabase {
 				+ "    CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users"
 				+ ");";
 		
+		InitDatabase.createTableEvent = 
 		InitDatabase.createTableEvent = 
 				"CREATE TABLE event("
 				+ "	event_id SERIAL NOT NULL,"
@@ -89,6 +111,7 @@ public class InitDatabase {
 				+ ");";
 		
 		InitDatabase.createTableTeam = 
+		InitDatabase.createTableTeam = 
 				"CREATE TABLE team("
 				+ "	team_id SERIAL NOT NULL,"
 				+ "	name VARCHAR(50),"
@@ -97,6 +120,7 @@ public class InitDatabase {
 				+ "	CONSTRAINT pk_team PRIMARY KEY (team_id)"
 				+ ");";
 		
+		InitDatabase.createTableMatch = 
 		InitDatabase.createTableMatch = 
 				"CREATE TABLE match("
 				+ "	 match_id SERIAL NOT NULL,"
@@ -128,6 +152,7 @@ public class InitDatabase {
 				+ ");";
 		
 		InitDatabase.createTableTicket = 
+		InitDatabase.createTableTicket = 
 				"CREATE TABLE ticket("
 				+ "	ticket_id SERIAL NOT NULL,"
 				+ "	odd FLOAT NOT NULL,"
@@ -143,6 +168,7 @@ public class InitDatabase {
 				+ "		(user_id) REFERENCES bet_users (user_id)"
 				+ ");";
 
+		InitDatabase.createTableBet = 
 		InitDatabase.createTableBet = 
 				"CREATE TABLE bet("
 				+ "	bet_id SERIAL NOT NULL,"
@@ -162,6 +188,19 @@ public class InitDatabase {
 				+ "		(match_id) REFERENCES match (match_id)"
 				+ ");";
 		
+		InitDatabase.createTableTransactions = 
+				"CREATE TABLE transactions("
+				+ "	transaction_id SERIAL NOT NULL,"
+				+ "	user_id INT NOT NULL,"
+				+ "	type_transaction VARCHAR(10) NOT NULL,"
+				+ "	value_transaction FLOAT NOT NULL,"
+				+ " "
+				+ "	CONSTRAINT pk_transaction PRIMARY KEY (transaction_id),"
+				+ " "
+				+ "	CONSTRAINT fk_user_transaction FOREIGN KEY (user_id)"
+				+ "	REFERENCES users (user_id)"
+				+ ");";
+		
 		InitDatabase.insertAdmUser =	
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
@@ -171,6 +210,7 @@ public class InitDatabase {
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
 				+ " 'admin');";
 		
+		InitDatabase.insertCommonUser =
 		InitDatabase.insertCommonUser =
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('Vanessa', "
