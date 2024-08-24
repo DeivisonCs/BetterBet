@@ -3,6 +3,7 @@ package dao.event;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +15,38 @@ import models.Event;
 
 public class EventPostgresDAO implements EventDAO{
 
+	@Override
+	public Event create (Event newEvent)throws SQLException {
+		String query = "INSERT INTO event (description, sport, date_time) VALUES (?, ?, ?)";
+		
+		
+		try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+			Timestamp dateTime = Timestamp.valueOf(newEvent.getDate());
+			
+			ps.setString(1, newEvent.getName());
+			ps.setString(2, newEvent.getModality());
+//			ps.setString(3, newEvent.ge);
+			ps.setTimestamp(3, dateTime);
+			
+			ps.executeUpdate();
+			
+			ResultSet pKey = ps.getGeneratedKeys();
+			
+			if(pKey.next()) {
+				return getEventById(pKey.getInt(1));
+			}
+			else {
+				throw new SQLException();
+			}
+			
+		}
+		catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }   
+		
+	}
+	
 	@Override
 	public List<Event> getAllEvents() throws SQLException {
 		String query = "SELECT * FROM event";
@@ -111,8 +144,35 @@ public class EventPostgresDAO implements EventDAO{
 	
 	@Override
 	public Event getEventById(int id) throws SQLException {
-
-		return null;
+		String query = "SELECT * FROM event WHERE event_id=?";
+		Event event = null;
+		
+		try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
+			ps.setInt(1, id);
+			
+			ResultSet response = ps.executeQuery();
+			
+			if(response.next()) {
+				Timestamp timestamp = response.getTimestamp("date_time");
+            	LocalDateTime dateTime = timestamp.toLocalDateTime();
+            	
+				event = new Event(
+						response.getInt("event_id"),
+						dateTime,
+						response.getString("sport"),
+						response.getString("description"));
+				
+				return event;
+			}
+			else {
+				throw new SQLException();
+			}
+		}
+		catch(Exception e){
+            e.printStackTrace();
+            throw e;
+        }  
+		
 	}
 
 	@Override
@@ -164,3 +224,4 @@ public class EventPostgresDAO implements EventDAO{
 
 
 }
+	

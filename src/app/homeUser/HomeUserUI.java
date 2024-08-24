@@ -14,6 +14,8 @@ import models.Match;
 import models.Ticket;
 import models.User;
 import security.Permission;
+import service.event.EventService;
+import service.match.MatchService;
 import service.users.UserService;
 
 import java.awt.GridBagConstraints;
@@ -76,8 +78,8 @@ public class HomeUserUI {
 	
 	private  String textFieldValue;
 	
-	private MatchDAO matchDao = new MatchPostgresDAO();
-	private EventDAO eventDao = new EventPostgresDAO();
+	private MatchService matchService = new MatchService();
+	private EventService eventService = new EventService();
 	
 	/**
 	 * Create the application.
@@ -86,8 +88,8 @@ public class HomeUserUI {
 		System.out.println("UserId Home " + userId);
 		
 		try {
-			this.matches = matchDao.getAllMatches();
-			this.events = eventDao.getAllEvents();
+			setMatchesWithAllMatches();
+			setEventsWithAllEvents();
 			
 			User loggedUser = userService.getUser(userId);
 			
@@ -134,7 +136,7 @@ public class HomeUserUI {
             public void actionPerformed(ActionEvent e) {
                 textFieldValue = roundedTextField.getText();
                 List<Event> lista = null;
-                try {lista = eventDao.getEventsByName(textFieldValue);} 
+                try {lista = eventService.getEventsByName(textFieldValue);} 
                 catch (SQLException e1) {e1.printStackTrace();}
                 
                 if(lista != null && lista.size() != 0) {
@@ -368,13 +370,13 @@ public class HomeUserUI {
 	                    selectedEventComponent = eventComponent;
 	                    matches.clear();
 	                    
-	                    try {matches = matchDao.getMatchesByEvent(event.getId());} 
+	                    try {matches = matchService.getMatchesByEvent(event.getId());} 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();
 	                } else {
 	                    selectedEventComponent = null;
-	                    try {matches = matchDao.getAllMatches();} 
+	                    try {matches = matchService.getAllMatches();} 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();
@@ -420,4 +422,22 @@ public class HomeUserUI {
 	public JLabel getBalanceLabel() {
 		return this.balanceLabel;
 	}
+	
+	public List<MatchComponent> getSelectedMatches(){
+		return this.selectedMatches;
+	}
+	public void setMatches(List<Match> matches) {
+		this.matches = matches;
+	}
+	public void setEvents(List<Event> events) {
+		this.events = events;
+	}
+	public void setMatchesWithAllMatches() throws SQLException{
+		this.matches = matchService.getAllMatches();	
+	}
+	
+	public void setEventsWithAllEvents() throws SQLException{
+		this.events = eventService.getAll();	
+	}
+	
 }

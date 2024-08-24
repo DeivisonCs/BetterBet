@@ -154,15 +154,15 @@ public class ShowTicketComponent {
         switch (ticket.getStatus()) {
             case "GANHOU":
                 statusBackground = Color.GREEN;
-                statusImagePath = "/images/check.png";
+                statusImagePath = "/resources/images/check.png";
                 break;
             case "PERDEU":
                 statusBackground = Color.RED;
-                statusImagePath = "/images/fail.png";
+                statusImagePath = "/resources/images/fail.png";
                 break;
             default:
                 statusBackground = Color.YELLOW;
-                statusImagePath = "/images/pending.png";
+                statusImagePath = "/resources/images/pending.png";
                 break;
         }
     }

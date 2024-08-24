@@ -7,6 +7,7 @@ import models.Event;
 
 
 public interface EventDAO {
+	public Event create (Event newEvent)throws SQLException;
 	public List<Event> getAllEvents()throws SQLException;
 	public List<Event> getEventsBySport(String sport)throws SQLException;
 	public Event getEventById(int id)throws SQLException;

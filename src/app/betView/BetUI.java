@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 
 
 import java.sql.SQLException;
+import java.util.List;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Color;
@@ -24,9 +25,11 @@ import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import models.Bet;
 import models.CommonUser;
+import models.Match;
 import models.Ticket;
 
 import service.bets.BetService;
+import service.match.MatchService;
 import service.ticket.TicketService;
 import service.users.CommonUserService;
 
@@ -45,7 +48,7 @@ public class BetUI {
 	private TicketService ticketService= new TicketService();
 	private BetService betService = new BetService();
 	private CommonUserService userService = new CommonUserService();
-
+	private MatchService matchService = new MatchService();
 	
 	/**
 	 * Create the application.
@@ -137,25 +140,62 @@ public class BetUI {
 					
 				try {
 					float amount = Float.parseFloat(textField.getText());
+					
 					userService.updateBalance(((CommonUser)mainFrame.getUser()), amount);
 					ticket.setAmount(amount);
+					
+					
 					Ticket updatedTicket = ticketService.createTicket(ticket);
 					updatedTicket.getBets().forEach((bet) -> bet.setIdTicket(updatedTicket.getId()));
 					betService.createBets(updatedTicket.getBets());
+					
+					//Atribui os novos valores de saldo ao usuario na HOME
 					float newBalance = ((CommonUser)mainFrame.getUser()).getBalance() - amount;
 					((CommonUser)mainFrame.getUser()).setBalance(newBalance);
-					
 		            JLabel balanceLabel = mainFrame.getBalanceLabel();
 		            balanceLabel.setText("Saldo: " + newBalance);
 		            
+		            List<Match> matchesToUpdate = mainFrame.getSelectedMatches().stream()
+		            															.map(mC -> mC.getMatch())
+		            															.toList();
+		            
+		            //Atualiza o Amount e a Odd de cada time por partida apostada
+		            ticket.getBets().forEach(b -> {
+		            	for(int i = 0; i < ticket.getBets().size();i++) {
+		            		if(matchesToUpdate.get(i).getId() == b.getMatch().getId()) {
+		            			try {
+									Match matchUpdatedAmount = matchService.UpdateAmount( b, (ticket.getAmount()/ticket.getBets().size()));
+									
+									matchUpdatedAmount.calculateOdd();
+									matchService.UpdateOdds(matchUpdatedAmount);
+								} catch (Exception e1) {
+									JOptionPane.showMessageDialog(frame, "Falha no Servidor");
+									e1.printStackTrace();
+								}
+		            		}
+		            	}
+		            	
+		            	
+		            });
+		            
+		            //Aplica as modificações no Saldo e nas partidas na HOME
+		            mainFrame.getSelectedMatches().clear();
+		            
+		            mainFrame.setMatches(matchService.getAllMatches());
+		            mainFrame.setEventsWithAllEvents();
+		            
 					mainFrame.getFrame().revalidate();
 					mainFrame.getFrame().repaint();
+					
+					mainFrame.updateMatches();
+					mainFrame.updateEvents();
+					
 					frame.dispose();
 					
 				} catch (NumberFormatException e3) {
 					 JOptionPane.showMessageDialog(frame, "Por favor, insira um valor numérico válido!", "Erro", JOptionPane.ERROR_MESSAGE);
 				} catch (SQLException e1) {
-					 JOptionPane.showMessageDialog(null, "O sistema encontra-se fora do ar", "Aviso", JOptionPane.ERROR_MESSAGE);
+					 JOptionPane.showMessageDialog(null, "Falha ao realizar aposta, Tente Novamente", "Aviso", JOptionPane.ERROR_MESSAGE);
 					 e1.printStackTrace();
 				} catch (Exception e2) {
 					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);

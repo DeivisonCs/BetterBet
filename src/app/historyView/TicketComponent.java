@@ -134,6 +134,7 @@ public class TicketComponent extends JPanel {
         labelBetType.setForeground(Color.WHITE);
         labelBetType.setBounds(47, 45, 153, 14);
         this.add(labelBetType);
+        
         int radius = 50;
         RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground, radius);
         roundedImagePanel.setBounds(470, 21, 48, 49); 
@@ -158,15 +159,15 @@ public class TicketComponent extends JPanel {
         switch (ticket.getStatus()) {
             case "GANHOU":
                 statusBackground = Color.GREEN;
-                statusImagePath = "/images/check.png";
+                statusImagePath = "/resources/images/check.png";
                 break;
             case "PERDEU":
                 statusBackground = Color.RED;
-                statusImagePath = "/images/fail.png";
+                statusImagePath = "/resources/images/fail.png";
                 break;
             default:
                 statusBackground = Color.YELLOW;
-                statusImagePath = "/images/pending.png";
+                statusImagePath = "/resources/images/pending.png";
                 break;
         }
     }
