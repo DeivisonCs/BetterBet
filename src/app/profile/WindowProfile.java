@@ -378,7 +378,6 @@ public class WindowProfile {
  	        
  	        RoundedButton btnConfirmarDeposito = new RoundedButton("Confirmar Depósito");
  	        btnConfirmarDeposito.setBounds(120, 200, 150, 30);
- 	        btnConfirmarDeposito.setBackground(new Color(64, 128, 128));
  	        btnConfirmarDeposito.setForeground(Color.WHITE);
  	        btnConfirmarDeposito.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
@@ -449,7 +448,6 @@ public class WindowProfile {
          	public void actionPerformed(ActionEvent e) {
          		JDialog dialogSaque = new JDialog(frame, "Saque", true);
      	        dialogSaque.setSize(400, 300);
-     	        dialogSaque.setBackground(new Color(30, 30, 30));
      	        dialogSaque.getContentPane().setLayout(null);
      	        
      	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja sacar");
