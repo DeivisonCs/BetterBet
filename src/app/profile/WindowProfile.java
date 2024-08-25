@@ -28,7 +28,7 @@ import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
-//import database.InitDatabase;
+import components.RoundedTextFieldComponent;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
@@ -76,7 +76,6 @@ public class WindowProfile {
     public WindowProfile(Integer userId, int positionX, int positionY) {
     	this.positionX = positionX;
     	this.positionY = positionY;
-//    	this.mainFrame = mainFrame;
     	
     	try {
     		this.user = userService.getUser(userId);    		
@@ -86,7 +85,8 @@ public class WindowProfile {
 			e.printStackTrace();
 		}
     	
-    	this.userBalance = ((CommonUser) this.user).getBalance();
+    	if(this.user instanceof CommonUser)
+    		this.userBalance = ((CommonUser) this.user).getBalance();
     	
         initialize();
         updateTransactions();
@@ -110,12 +110,13 @@ public class WindowProfile {
         frame.getContentPane().add(panelProfile);
         panelProfile.setLayout(null);
         
-    	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
-	   	balanceField.setForeground(new Color(255, 255, 255));
-	   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-	   	balanceField.setBounds(49, 511, 108, 37);
-        panelProfile.add(balanceField);
-                
+        if(this.user instanceof CommonUser) {
+	    	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
+		   	balanceField.setForeground(new Color(255, 255, 255));
+		   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		   	balanceField.setBounds(49, 511, 108, 37);
+	        panelProfile.add(balanceField);
+        }
         
         if(!user.getPermission().equals("admin")) {
         	
@@ -160,10 +161,7 @@ public class WindowProfile {
         ImageUtils editButton = new ImageUtils();
         editButton.setBorder(null);
         editButton.setBorderSize(0);
-        editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));
-        
-      // int distanciaDinamica = lblNome.getWidth() + 10;
-        
+        editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));        
         editButton.setBounds(52, 190, 35, 35);
         editButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -251,8 +249,6 @@ public class WindowProfile {
         	for(Transaction transaction : transactions) {
         		
         		TransactionComponent transactionComponent = new TransactionComponent(transaction);
-        		
-        		//transactionComponents.add(transactionComponent);
         	
         		panelTransaction.add(transactionComponent);        		
         		
@@ -364,25 +360,24 @@ public class WindowProfile {
      		JDialog dialogDeposito = new JDialog(frame, "Depósito", true);
  	        dialogDeposito.setSize(400, 300);
  	        dialogDeposito.getContentPane().setLayout(null);
+ 	        dialogDeposito.setBackground(new Color(30, 30, 30));
  	        
- 	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja depositar");
- 	        lblInformeSaque.setBounds(20, 20, 200, 20);
- 	        dialogDeposito.getContentPane().add(lblInformeSaque);
+ 	        JLabel lblInformeDeposito = new JLabel("Informe quanto deseja depositar");
+ 	        lblInformeDeposito.setBounds(85, 25, 230, 25);
+ 	        lblInformeDeposito.setFont(new Font("Tahoma", Font.PLAIN, 15));
+ 	        dialogDeposito.getContentPane().add(lblInformeDeposito);
  	        
  	        JLabel lblReal = new JLabel("R$");
- 	        lblReal.setBounds(20, 60, 30, 20);
+ 	        lblReal.setBounds(100, 82, 30, 20);
+ 	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
  	        dialogDeposito.getContentPane().add(lblReal);
  	        
-// 	        JSpinner spinnerValorDeposito = new JSpinner(new SpinnerNumberModel(1.00, 1.00, 1000000.00, 1.00)); // Depois mudar o valor máx permitido
-// 	        spinnerValorDeposito.setBounds(50, 60, 100, 25);
-// 	        dialogDeposito.getContentPane().add(spinnerValorDeposito);
- 	        
- 	       JTextField textValorDeposito = new JTextField();
-	        textValorDeposito.setBounds(50, 60, 100, 25);
+ 	        RoundedTextFieldComponent textValorDeposito = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+	        textValorDeposito.setBounds(130, 80, 150, 30);
 	        dialogDeposito.getContentPane().add(textValorDeposito);	
  	        
  	        RoundedButton btnConfirmarDeposito = new RoundedButton("Confirmar Depósito");
- 	        btnConfirmarDeposito.setBounds(20, 200, 150, 30);
+ 	        btnConfirmarDeposito.setBounds(120, 200, 150, 30);
  	        btnConfirmarDeposito.setBackground(new Color(64, 128, 128));
  	        btnConfirmarDeposito.setForeground(Color.WHITE);
  	        btnConfirmarDeposito.addActionListener(new ActionListener() {
@@ -454,22 +449,21 @@ public class WindowProfile {
          	public void actionPerformed(ActionEvent e) {
          		JDialog dialogSaque = new JDialog(frame, "Saque", true);
      	        dialogSaque.setSize(400, 300);
+     	        dialogSaque.setBackground(new Color(30, 30, 30));
      	        dialogSaque.getContentPane().setLayout(null);
      	        
      	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja sacar");
-     	        lblInformeSaque.setBounds(20, 20, 200, 20);
+     	        lblInformeSaque.setBounds(95, 25, 230, 25);
+     	        lblInformeSaque.setFont(new Font("Tahoma", Font.PLAIN, 15));
      	        dialogSaque.getContentPane().add(lblInformeSaque);
      	        
      	        JLabel lblReal = new JLabel("R$");
-     	        lblReal.setBounds(20, 60, 30, 20);
+    	        lblReal.setBounds(100, 82, 30, 20);
+    	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
      	        dialogSaque.getContentPane().add(lblReal);
      	        
-//     	        JSpinner spinnerValorSaque = new JSpinner(new SpinnerNumberModel(1.00, 1.00, userBalance, 1.00)); // O valor max está 100, mas deve ser mudado depois para o valor do saldo
-//     	        spinnerValorSaque.setBounds(50, 60, 100, 25);
-//     	        dialogSaque.getContentPane().add(spinnerValorSaque);
-     	        
-     	        JTextField textValorSaque = new JTextField();
-     	        textValorSaque.setBounds(50, 60, 100, 25);
+     	        RoundedTextFieldComponent textValorSaque = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+     	        textValorSaque.setBounds(130, 80, 150, 30);
      	        dialogSaque.getContentPane().add(textValorSaque);	
      	        
      	        RoundedButton btnConfirmarSaque = new RoundedButton("Confirmar Saque");
@@ -489,9 +483,7 @@ public class WindowProfile {
 			
 		     	        		Transaction saque = new Transaction(user.getId(), "Saque", valor);
 		    	        		TransactionComponent saqueComponent = new TransactionComponent(saque); 
-		    	        		
-		    	        		//Double convertValue = (Double)spinnerValorSaque.getValue();
-		    	        		
+		    		    	        		
 		    	        		userBalance -= valor;
 		    	        		
 		    	        		//-------Atualiza no banco a nova transação 
@@ -527,7 +519,7 @@ public class WindowProfile {
      	        	}
      	        });
      	        
-     	        btnConfirmarSaque.setBounds(20, 200, 150, 30);
+     	        btnConfirmarSaque.setBounds(120, 200, 150, 30);
      	        btnConfirmarSaque.setBackground(new Color(64, 128, 128));
      	        btnConfirmarSaque.setForeground(Color.WHITE); 
      	        dialogSaque.getContentPane().add(btnConfirmarSaque);
