@@ -64,6 +64,7 @@ public class ShowTicketComponent {
 		cancelButton.setText("Voltar");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ticket.getBets().clear();
 				frame.dispose();
 			}
 		});

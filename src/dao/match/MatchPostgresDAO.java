@@ -70,7 +70,7 @@ public class MatchPostgresDAO implements MatchDAO {
 	
 	@Override
 	public List<Match> getAllMatches() throws SQLException {
-		String query = "SELECT * FROM match";
+		String query = "SELECT * FROM match WHERE status = 'pendente'";
         List<Match> matches = new ArrayList<Match>();
 
         
@@ -115,7 +115,7 @@ public class MatchPostgresDAO implements MatchDAO {
 
 	@Override
 	public List<Match> getMatchesByEvent(Integer event_id) throws SQLException {
-		String query = "SELECT * FROM match WHERE event_id = ?";
+		String query = "SELECT * FROM match WHERE event_id = ? AND status = 'pendente'";
         List<Match> matches = new ArrayList<Match>();
 
         try(

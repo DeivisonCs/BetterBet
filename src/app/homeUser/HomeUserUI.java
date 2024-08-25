@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import components.EventComponent;
@@ -57,7 +58,11 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 
 
@@ -140,8 +145,30 @@ public class HomeUserUI {
 		frame.getContentPane().add(navBarPanel);
 		navBarPanel.setLayout(null);
 		
-        RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
-        ActionListener actionListener = new ActionListener() {
+
+		JLabel searchPlaceholder = new JLabel("Pesquisar Eventos");
+        searchPlaceholder.setForeground(new Color(156, 156, 156));
+        searchPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchPlaceholder.setBounds(588, 251, 274, 14);
+		navBarPanel.add(searchPlaceholder);
+		
+		
+		RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+        
+        roundedTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				searchPlaceholder.setVisible(false);
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(roundedTextField.getText().length() == 0) {
+					searchPlaceholder.setVisible(true);
+				}
+			}
+		});
+        
+        roundedTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textFieldValue = roundedTextField.getText();
@@ -155,14 +182,13 @@ public class HomeUserUI {
                 	updateEvents();
                 }
             }
-        };
-        roundedTextField.addActionListener(actionListener);
-
-        
+        });
+        searchPlaceholder.setLabelFor(roundedTextField);
         roundedTextField.setBackground(Color.WHITE);
         roundedTextField.setBounds(389, 15, 390, 35);
         navBarPanel.add(roundedTextField);
 		
+
 		
 		if(this.user instanceof CommonUser) {
 			balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));

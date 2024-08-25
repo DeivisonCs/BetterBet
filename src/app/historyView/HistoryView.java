@@ -13,10 +13,16 @@ import app.ImageUtils;
 import app.homeUser.HomeUserUI;
 import dao.event.EventDAO;
 import dao.event.EventPostgresDAO;
+import dao.match.MatchDAO;
+import dao.match.MatchPostgresDAO;
 import dao.ticket.TicketDAO;
 import dao.ticket.TicketPostgresDAO;
+import models.Bet;
+import models.CommonUser;
+import models.Match;
 import models.Ticket;
 import models.User;
+import service.users.CommonUserService;
 import service.users.UserService;
 
 import java.awt.Insets;
@@ -29,6 +35,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.awt.GridBagLayout;
 
@@ -67,6 +74,7 @@ public class HistoryView {
 			events = eventDao.userRelatedEvents(userId);
 			user = userService.getUser(userId);
 			allTickets = ticketDAO.getTicketsByUser(userId);
+			verifyTickets();
 			ticketsDisplayed = new ArrayList<Ticket>();
 			allTickets.forEach(ticket -> ticketsDisplayed.add(ticket));
 
@@ -200,7 +208,6 @@ public class HistoryView {
         backButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		frame.dispose();
 
 						Point location = frame.getLocationOnScreen();
 						int x = location.x;
@@ -293,6 +300,79 @@ public class HistoryView {
 		if(!status.equals("----------")) {
 			filterByStatus(status);
 		}
+		
+	}
+	
+	private void verifyTickets() throws SQLException {
+		
+		List<Ticket> tickets = allTickets;
+		AtomicBoolean pendingBet = new AtomicBoolean(false);
+		CommonUserService commonUserService = new CommonUserService();
+		
+		tickets.forEach(ticket -> {
+			
+			if(ticket.getStatus().equals("PENDENTE")) {
+				
+				pendingBet.set(false);
+				//verifica se todas as partidas da bet foram finalizadas
+				ticket.getBets().forEach(bet->{
+					if(!bet.getMatch().getStatus().equals("finalizado")) {
+						pendingBet.set(true);
+						return;
+					}
+				});
+				if(pendingBet.get()) {
+					return;
+				}
+				
+				AtomicBoolean youWon = new AtomicBoolean(true);
+				//verifica se aerrou algum palpite
+				ticket.getBets().forEach(bet->{
+					if(bet.getSelectedBet().equals("TEAM_A")) {
+						if(bet.getMatch().getScoreTeamA() <= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("TEAM_B")) {
+						if(bet.getMatch().getScoreTeamA() >= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("DRAW")) {
+						if(bet.getMatch().getScoreTeamA() != bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}
+				});
+				
+				if(youWon.get()) {
+					ticket.setStatus("GANHOU");
+					
+					CommonUser commonUser = (CommonUser)user;
+
+					try {
+						ticketDAO.updateStatus(ticket);
+						commonUserService.increaseBalance(commonUser, ticket.getExpectedProfit());
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);	
+					} catch (Exception e) {
+						throw new RuntimeException("Erro ao atualizar saldo do usuário: " + user.getId(), e);	
+						
+					}
+					
+					
+				}else {
+					ticket.setStatus("PERDEU");
+					try {
+						ticketDAO.updateStatus(ticket);
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);
+					}
+				}
+			}
+			
+			ticket.getBets().clear();
+			
+		});
+		
 		
 	}
 	

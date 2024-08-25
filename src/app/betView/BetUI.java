@@ -23,12 +23,13 @@ import javax.swing.ScrollPaneConstants;
 import app.homeUser.HomeUserUI;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
+import exceptions.InsufficientBalanceException;
+import exceptions.MatchAlreadyFinishedException;
 import models.Bet;
 import models.CommonUser;
 import models.Match;
 import models.Ticket;
 
-import service.bets.BetService;
 import service.match.MatchService;
 import service.ticket.TicketService;
 import service.users.CommonUserService;
@@ -46,7 +47,6 @@ public class BetUI {
 	
 	private Ticket ticket;
 	private TicketService ticketService= new TicketService();
-	private BetService betService = new BetService();
 	private CommonUserService userService = new CommonUserService();
 	private MatchService matchService = new MatchService();
 	
@@ -141,13 +141,13 @@ public class BetUI {
 				try {
 					float amount = Float.parseFloat(textField.getText());
 					
-					userService.updateBalance(((CommonUser)mainFrame.getUser()), amount);
+					userService.decreaseBalance(((CommonUser)mainFrame.getUser()), amount);
 					ticket.setAmount(amount);
 					
 					
-					Ticket updatedTicket = ticketService.createTicket(ticket);
-					updatedTicket.getBets().forEach((bet) -> bet.setIdTicket(updatedTicket.getId()));
-					betService.createBets(updatedTicket.getBets());
+					ticketService.createTicket(ticket);
+
+
 					
 					//Atribui os novos valores de saldo ao usuario na HOME
 					float newBalance = ((CommonUser)mainFrame.getUser()).getBalance() - amount;
@@ -197,9 +197,12 @@ public class BetUI {
 				} catch (SQLException e1) {
 					 JOptionPane.showMessageDialog(null, "Falha ao realizar aposta, Tente Novamente", "Aviso", JOptionPane.ERROR_MESSAGE);
 					 e1.printStackTrace();
-				} catch (Exception e2) {
+				} catch (InsufficientBalanceException e2) {
 					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);
 					e2.printStackTrace();
+				} catch (MatchAlreadyFinishedException e3) {
+					 JOptionPane.showMessageDialog(null, "Não é possivel apostar em partidas finalizadas", "Aviso", JOptionPane.CANCEL_OPTION);
+
 				}
 				
 				

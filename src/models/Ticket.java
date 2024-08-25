@@ -18,7 +18,7 @@ public class Ticket {
 	
 	
 	//Construtor para quando traz o ticket do banco
-	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, String ticketType, String status) {
+	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, String ticketType, String status, List<Bet> bets) {
 		super();
 		this.id = id;
 		this.odd = odd;
@@ -26,12 +26,12 @@ public class Ticket {
 		this.idUser = idUser;
 		this.expectedProfit = expectedProfit;
 		this.amount = amount;
-		this.bets = new ArrayList<Bet>();
+		this.bets = bets;
 		this.ticketType = ticketType;
 		this.status = status;
 	}
 	
-	//Construtor usado para inserir o Ticket no banco(VERIFICAR SE ESTA SENDO USADO)
+	//Construtor usado para inserir o Ticket no banco
 	public Ticket(float odd, Integer idUser, float expectedProfit, float amount, String ticketType, String status) {
 		super();
 		this.bets = new ArrayList<Bet>();

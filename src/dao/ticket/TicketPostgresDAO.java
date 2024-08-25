@@ -38,8 +38,8 @@ public class TicketPostgresDAO implements TicketDAO {
 
 
 	            float expectedProfit = odd * amount;
-
-	            Ticket ticket = new Ticket(id, odd, timeStamp, userId, expectedProfit, amount, type, status);
+	            List<Bet> bets = betDao.getBetsByTicket(id);
+	            Ticket ticket = new Ticket(id, odd, timeStamp, userId, expectedProfit, amount, type, status, bets);
 	            tickets.add(ticket);
 	        }
 
@@ -120,7 +120,7 @@ public class TicketPostgresDAO implements TicketDAO {
 
 	            float expectedProfit = odd * amount;
 
-	            Ticket ticket = new Ticket(id, odd, timeStamp, idUser, expectedProfit, amount, type, status);
+	            Ticket ticket = new Ticket(id, odd, timeStamp, idUser, expectedProfit, amount, type, status, null);
 	            tickets.add(ticket);
 	        }
 
@@ -131,6 +131,28 @@ public class TicketPostgresDAO implements TicketDAO {
 
             throw e;
         }
+	}
+
+	@Override
+	public void updateStatus(Ticket ticket) throws SQLException {
+		String query = "UPDATE ticket SET status = ? WHERE ticket_id = ?";
+
+        try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query))
+        {
+
+            ps.setString(1, ticket.getStatus());
+            ps.setInt(2, ticket.getId());
+
+            ps.executeUpdate();
+            
+            
+        }
+        catch(Exception e){
+            e.printStackTrace();
+
+            throw e;
+        }
+		
 	}
 
 }

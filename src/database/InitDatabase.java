@@ -6,20 +6,7 @@ import java.sql.Statement;
 import security.PasswordHandler;
 
 public class InitDatabase {
-	private static String dropTables;
-	private static String createTableUsers;
-	private static String createTableBetUsers;
-	private static String createTableEvent;
-	private static String createTableTeam;
-	private static String createTableMatch;
-	private static String createTableTicket;
-	private static String createTableBet;
-	private static String insertAdmUser;
-	private static String insertCommonUser;
-	private static String insertEvents;
-	private static String insertTeams;
-	private static String insertMatch;
-	
+
 	private static String dropTables;
 	private static String createTableUsers;
 	private static String createTableBetUsers;
@@ -73,7 +60,7 @@ public class InitDatabase {
 			  + "DROP TABLE IF EXISTS event CASCADE;"
 			  + "DROP TABLE IF EXISTS transactions CASCADE";
 		
-		InitDatabase.createTableUsers = 
+
 		InitDatabase.createTableUsers = 
 				"CREATE TABLE users("
 				+ "    user_id SERIAL NOT NULL,"
@@ -86,7 +73,7 @@ public class InitDatabase {
 				+ "    CONSTRAINT pk_userDB PRIMARY KEY (user_id)"
 				+ ");";
 		
-		InitDatabase.createTableBetUsers = 
+
 		InitDatabase.createTableBetUsers = 
 				"CREATE TABLE bet_users("
 				+ "    bet_user_id SERIAL NOT NULL,"
@@ -98,7 +85,7 @@ public class InitDatabase {
 				+ "    CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users"
 				+ ");";
 		
-		InitDatabase.createTableEvent = 
+
 		InitDatabase.createTableEvent = 
 				"CREATE TABLE event("
 				+ "	event_id SERIAL NOT NULL,"
@@ -110,7 +97,7 @@ public class InitDatabase {
 				+ "	CONSTRAINT pk_event PRIMARY KEY (event_id)"
 				+ ");";
 		
-		InitDatabase.createTableTeam = 
+
 		InitDatabase.createTableTeam = 
 				"CREATE TABLE team("
 				+ "	team_id SERIAL NOT NULL,"
@@ -120,7 +107,7 @@ public class InitDatabase {
 				+ "	CONSTRAINT pk_team PRIMARY KEY (team_id)"
 				+ ");";
 		
-		InitDatabase.createTableMatch = 
+
 		InitDatabase.createTableMatch = 
 				"CREATE TABLE match("
 				+ "	 match_id SERIAL NOT NULL,"
@@ -151,7 +138,7 @@ public class InitDatabase {
 				+ "  	"
 				+ ");";
 		
-		InitDatabase.createTableTicket = 
+
 		InitDatabase.createTableTicket = 
 				"CREATE TABLE ticket("
 				+ "	ticket_id SERIAL NOT NULL,"
@@ -168,7 +155,7 @@ public class InitDatabase {
 				+ "		(user_id) REFERENCES bet_users (user_id)"
 				+ ");";
 
-		InitDatabase.createTableBet = 
+
 		InitDatabase.createTableBet = 
 				"CREATE TABLE bet("
 				+ "	bet_id SERIAL NOT NULL,"
@@ -210,7 +197,7 @@ public class InitDatabase {
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
 				+ " 'admin');";
 		
-		InitDatabase.insertCommonUser =
+
 		InitDatabase.insertCommonUser =
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('Vanessa', "
@@ -308,6 +295,14 @@ public class InitDatabase {
 				+ " (SELECT team_id FROM team WHERE name = 'Espanha'),"
 				+ " 2.75, 2.85, 3.05, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1);";
 		
+		InitDatabase.insertTransaction = 
+				"INSERT INTO transactions (user_id, type_transaction, value_transaction) VALUES"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0);";
 	}
 	
 }
