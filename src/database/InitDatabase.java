@@ -21,7 +21,7 @@ public class InitDatabase {
 	private static String insertTeams;
 	private static String insertMatch;
 	private static String insertTransaction;
-	
+
 	
 	public static void initializeDatabase() {
 
@@ -43,6 +43,7 @@ public class InitDatabase {
 			statement.execute(insertTeams);
 			statement.execute(insertMatch);
 			statement.execute(insertTransaction);
+
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}

@@ -3,6 +3,7 @@ package app.auth;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
@@ -33,10 +34,11 @@ public class LogInView {
 	private RoundedTextFieldComponent emailField;
 	private JPasswordField passwordField;
 	
-	public LogInView() {
+	public LogInView(int positionX, int positionY) {
+
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
-		frame.setBounds(100, 100, 1170, 699);
+		frame.setBounds(positionX, positionY, 1170, 699);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
@@ -131,8 +133,12 @@ public class LogInView {
 					Integer userId = service.loginUser(email, password);
 //					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
 					
+					Point location = frame.getLocationOnScreen();
+					int x = location.x;
+					int y = location.y;
 					frame.dispose();
-					new HomeUserUI(userId);
+					
+					new HomeUserUI(userId, x, y);
 //					new EditUser(userId);
 				}
 				catch(SQLException ex) {

@@ -3,6 +3,7 @@ package app.edit;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
@@ -13,10 +14,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.profile.WindowProfile;
 
@@ -34,7 +38,9 @@ import service.users.UserService;
 
 
 public class EditUser{
-
+	private int positionX;
+	private int positionY;
+	
 	private JFrame frame;
 	private User user;
 	private User userEdited;
@@ -61,9 +67,10 @@ public class EditUser{
 	private RoundedPasswordFieldComponent confirmPasswordField;
 	
 	
-	public EditUser(Integer userId) {
-//		user = new CommonUser("Maria", "111.111.111-11", "2023/23/23", "teste@.com", "rua tal de tal", "sfdf", "user", (float) 0.0);
-		
+	public EditUser(Integer userId, int positionX, int positionY) {
+		this.positionX = positionX;
+    	this.positionY = positionY;
+    	
 		try {
 			User loggedUser = userService.getUser(userId);
 			
@@ -90,8 +97,9 @@ public class EditUser{
 
 	private void initialize() {
 		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
-		frame.setBounds(100, 100, 800, 750);
+		frame.setBounds(positionX, positionY, 800, 750);
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
@@ -111,7 +119,7 @@ public class EditUser{
         informationIcon.setBorderSize(0);
         
         informationIcon.setBorder(null);
-        informationIcon.setImage(new ImageIcon(getClass().getResource("/public/images/help-icon.png")));
+        informationIcon.setImage(new ImageIcon(getClass().getResource("/resources/images/help-icon.png")));
         informationIcon.setBounds(538, 74, 20, 20);
         informationIcon.setToolTipText("Edite apenas os campos que deseja alterar");
         
@@ -124,14 +132,18 @@ public class EditUser{
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
+        		Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
         		frame.dispose();
-        		new WindowProfile(user.getId());
+        		
+        		new WindowProfile(user.getId(), x, y);
         	}
         });
         returnButton.setBorderSize(0);
         
         returnButton.setBorder(null);
-        returnButton.setImage(new ImageIcon(getClass().getResource("/public/images/back-arrow.jpg")));
+        returnButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
         returnButton.setBounds(24, 24, 30, 30);
         frame.getContentPane().add(returnButton);
 		
@@ -140,7 +152,7 @@ public class EditUser{
         profile_img = 
         		user.getProfileImage() != null?
         		user.getProfileImage() : 
-    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
+    			new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"));
         
         System.out.println(profile_img);
         
@@ -148,17 +160,7 @@ public class EditUser{
         profilePicture.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		JFileChooser fileChooser = new JFileChooser();
-                int result = fileChooser.showOpenDialog(null);
-                
-                if (result == JFileChooser.APPROVE_OPTION) {
-                	selectedImgFile = fileChooser.getSelectedFile();
-                    profile_img = new ImageIcon(selectedImgFile.getAbsolutePath());
-                    
-                    updateProfileImage(profile_img);
-                    
-                    System.out.println("changed: " + profile_img);
-                }
+        		editImage();
         	}
         });
         profilePicture.setBorderSize(0);
@@ -167,6 +169,21 @@ public class EditUser{
         profilePicture.setImage(profile_img);
         profilePicture.setBounds(138, 159, 147, 147);
         frame.getContentPane().add(profilePicture);
+        
+        
+        ImageUtils editButton = new ImageUtils();
+        editButton.setBorder(null);
+        editButton.setBorderSize(0);
+        editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));
+        editButton.setBounds(138, 281, 35, 35);
+        editButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				editImage();
+			}
+			
+		});
+        frame.add(editButton);
 		
 		
 		// ------------------------- Name Field -------------------------
@@ -278,8 +295,12 @@ public class EditUser{
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
-						new WindowProfile(user.getId());
+						Point location = frame.getLocationOnScreen();
+						int x = location.x;
+						int y = location.y;
 						frame.dispose();
+						
+						new WindowProfile(user.getId(), x, y);
 					}
 				}
 				catch(SQLException | FileNotFoundException ex) {
@@ -298,8 +319,49 @@ public class EditUser{
 	}
 	
 	
+	private void editImage() {
+		final String[] VALID_EXTENSIONS = {"png", "jpg", "jpeg"};
+		
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Selecione a imagem", VALID_EXTENSIONS);
+		
+		fileChooser.setFileFilter(filter);
+		
+        int result = fileChooser.showOpenDialog(null);
+        
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+        	File selectedFile = fileChooser.getSelectedFile();
+        	
+        	if(isValidExtension(VALID_EXTENSIONS, selectedFile.getName().toLowerCase())) {
+        		profile_img = new ImageIcon(selectedFile.getAbsolutePath());
+                
+        		selectedImgFile = selectedFile;
+                updateProfileImage(profile_img);
+                
+                System.out.println("changed: " + profile_img);
+        	}
+        	else {
+        		JOptionPane.showMessageDialog(null, "Por favor, selecione um arquivo de imagem válido (JPG, JPEG, PNG).", "Tipo de arquivo inválido", JOptionPane.ERROR_MESSAGE);
+        	}
+        	
+            
+        }
+	}
+	
+	
 	private void updateProfileImage(ImageIcon newImage) {
 	    profilePicture.setImage(newImage);
 	    profilePicture.repaint();
+	}
+	
+	private boolean isValidExtension(String[] validExtensions, String fileName) {
+		for(String extension : validExtensions) {
+			if(fileName.endsWith("." + extension)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

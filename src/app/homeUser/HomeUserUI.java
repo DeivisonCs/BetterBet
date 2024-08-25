@@ -19,6 +19,7 @@ import service.users.UserService;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -59,6 +60,9 @@ import java.awt.event.ActionEvent;
 
 
 public class HomeUserUI {
+	private int positionX;
+	private int positionY;
+	
 	private User user;
 	private UserService userService= new UserService();
 
@@ -73,8 +77,10 @@ public class HomeUserUI {
 	
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
+	JLabel gamesDescriptionLabel;
 	
 	private  String textFieldValue;
+	private ImageIcon profileImg;
 	
 	private MatchDAO matchDao = new MatchPostgresDAO();
 	private EventDAO eventDao = new EventPostgresDAO();
@@ -100,8 +106,11 @@ public class HomeUserUI {
 	/**
 	 * Create the application.
 	 */
-	public HomeUserUI(Integer userId) {
+	public HomeUserUI(Integer userId, int positionX, int positionY) {
 		System.out.println("UserId Home " + userId);
+		
+		this.positionX = positionX;
+		this.positionY = positionY;
 		
 		try {
 			this.matches = matchDao.getAllMatches();
@@ -136,6 +145,8 @@ public class HomeUserUI {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setVisible(true);
+		frame.setBounds(positionX, positionY, 1200, 700);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
@@ -177,14 +188,9 @@ public class HomeUserUI {
 			balanceLabel.setBounds(25, 30, 164, 14);
 			navBarPanel.add(balanceLabel);
 		}
-		
-		JLabel accountLabel = new JLabel("Conta");
-			accountLabel.setForeground(new Color(255, 255, 255));
-			accountLabel.setFont(new Font("Verdana", Font.PLAIN, 14));
-			accountLabel.setBounds(1009, 23, 59, 14);
-			navBarPanel.add(accountLabel);
+
 			
-			if(this.user instanceof CommonUser) {
+		if(this.user instanceof CommonUser) {
 			JButton makeBetButton = new RoundedButtonComponent("Fazer Aposta");
 			makeBetButton.setBackground(new Color(35, 35, 35));
 			makeBetButton.setForeground(new Color(255, 255, 255));
@@ -211,18 +217,25 @@ public class HomeUserUI {
 			navBarPanel.add(makeBetButton);
 		}
 		
+		profileImg = 
+        		user.getProfileImage() != null?
+        		user.getProfileImage() : 
+    			new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"));
 		
 		ImageUtils profilePicture = new ImageUtils();
-		profilePicture.setImage(new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg")));
+		profilePicture.setImage(profileImg);
 		profilePicture.setBounds(1100, 13, 44, 44);
 		profilePicture.setBorder(null);
 		profilePicture.setBorderSize(0);
 		profilePicture.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
 				frame.dispose();
-				new WindowProfile(user.getId());
+				
+				new WindowProfile(user.getId(), x, y);
 			}
 			
 		});
@@ -258,10 +271,10 @@ public class HomeUserUI {
 		frame.getContentPane().add(gamesDescriptionPanel);
 		gamesDescriptionPanel.setLayout(null);
 		
-		JLabel gamesDescriptionLabel = new JLabel("Jogos em Andamento:");
+		gamesDescriptionLabel = new JLabel("Todos os Jogos: ");
 		gamesDescriptionLabel.setForeground(new Color(255, 255, 255));
 		gamesDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
-		gamesDescriptionLabel.setBounds(25, 11, 264, 43);
+		gamesDescriptionLabel.setBounds(25, 11, 527, 43);
 		gamesDescriptionPanel.add(gamesDescriptionLabel);
 		
 		JScrollPane eventScrollPane = new JScrollPane();
@@ -303,10 +316,7 @@ public class HomeUserUI {
 		eventsDescriptionLabel.setForeground(new Color(255, 255, 255));
 		eventsDescriptionLabel.setFont(new Font("Verdana", Font.BOLD, 18));
 		eventsDescriptionPanel.add(eventsDescriptionLabel);
-		
-		frame.setBounds(100, 100, 1200, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+			
 	}
 	
 	
@@ -386,13 +396,19 @@ public class HomeUserUI {
 	                    selectedEventComponent = eventComponent;
 	                    matches.clear();
 	                    
-	                    try {matches = matchDao.getMatchesByEvent(event.getId());} 
+	                    try {
+	                    	gamesDescriptionLabel.setText(event.getName());
+	                    	matches = matchDao.getMatchesByEvent(event.getId());
+	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();
 	                } else {
 	                    selectedEventComponent = null;
-	                    try {matches = matchDao.getAllMatches();} 
+	                    try {
+	                    	matches = matchDao.getAllMatches();
+	                    	gamesDescriptionLabel.setText("Todos os Jogos: ");
+	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
 	                    updateMatches();

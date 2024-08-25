@@ -250,8 +250,9 @@ public class WindowProfile {
     }
     
     public void updateTransactions() {
+
         	panelTransaction.removeAll();
-        	
+	
         	for(Transaction transaction : transactions) {
         		
         		TransactionComponent transactionComponent = new TransactionComponent(transaction);
@@ -394,6 +395,7 @@ public class WindowProfile {
         		
         		
         		dialogDeposito.dispose();
+
 	    	}
  	        });
  	        
@@ -434,6 +436,7 @@ public class WindowProfile {
      	        btnConfirmarSaque.addActionListener(new ActionListener() {
      	        	public void actionPerformed(ActionEvent e) {
      	        		
+
      	        		Transaction saque = new Transaction(user.getId(), "Saque", (Double)spinnerValorSaque.getValue());
     	        		TransactionComponent saqueComponent = new TransactionComponent(saque); 
     	        		
@@ -447,7 +450,7 @@ public class WindowProfile {
     	        		panelTransaction.revalidate();
     	        		panelTransaction.repaint();
     	        		
-  	        		
+
      	        		dialogSaque.dispose();
      	        	}
      	        });
@@ -532,4 +535,6 @@ public class WindowProfile {
         lblTransaction.setBounds(0, 22, 244, 33);
         panelTransactionTxt.add(lblTransaction);  
 	}
+
 }
+
