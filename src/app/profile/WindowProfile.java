@@ -377,7 +377,7 @@ public class WindowProfile {
  	        btnConfirmarDeposito.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 
-	    		if(!inputVerifier(textValorDeposito.getText())) {
+	    		if(!inputValidator(textValorDeposito.getText())) {
 	    			JOptionPane.showMessageDialog(null, "Informe apenas números");
 	    		}else {
 	    		
@@ -464,7 +464,7 @@ public class WindowProfile {
      	        btnConfirmarSaque.addActionListener(new ActionListener() {
      	        	public void actionPerformed(ActionEvent e) {
      	        		
-     	        		if(!inputVerifier(textValorSaque.getText())) {
+     	        		if(!inputValidator(textValorSaque.getText())) {
      		    			JOptionPane.showMessageDialog(null, "Informe apenas números");
      		    		}else {
      	        		
@@ -592,15 +592,39 @@ public class WindowProfile {
         panelTransactionTxt.add(lblTransaction);  
 	}
 	
-	public boolean inputVerifier(String text) {
-		for (int i = 0; i < text.length(); i++) {
-			if(text.charAt(i) < '0' || text.charAt(i) > '9') {
+	public boolean inputValidator(String text) {
+		if (text.isEmpty()) {
+			System.out.println("1º");
+	        return false;
+	    }
 
-				return false;
-			}
-		}
-		
-		return true;
+	    // Verifica se o texto contém caracteres inválidos
+	    for (char c : text.toCharArray()) {
+	        if (!Character.isDigit(c) && c != '.') {
+	        	System.out.println("2º");
+	            return false;
+	        }
+	    }
+
+	    // Verifica se há mais de um separador decimal
+	    int commaCount = 0;
+	    for (int i = 0; i < text.length(); i++) {
+	        if (text.charAt(i) == '.') {
+	            commaCount++;
+	            // Se houver mais de um separador decimal, retorna falso
+	            if (commaCount > 1) {
+	            	System.out.println("3º");
+	                return false;
+	            }
+	            // Verifica se o separador decimal está no início ou no final
+	            if (i == 0 || i == text.length() - 1) {
+	            	System.out.println("4º");
+	                return false;
+	            }
+	        }
+	    }
+
+	    return true;
 		
 	}
 
