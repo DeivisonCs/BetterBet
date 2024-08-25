@@ -14,6 +14,8 @@ import models.Match;
 import models.Ticket;
 import models.User;
 import security.Permission;
+import service.event.EventService;
+import service.match.MatchService;
 import service.users.UserService;
 
 import java.awt.GridBagConstraints;
@@ -32,6 +34,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import components.EventComponent;
@@ -55,7 +58,11 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 
 
@@ -82,27 +89,9 @@ public class HomeUserUI {
 	private  String textFieldValue;
 	private ImageIcon profileImg;
 	
-	private MatchDAO matchDao = new MatchPostgresDAO();
-	private EventDAO eventDao = new EventPostgresDAO();
-	/**
-	 * Launch the application.
-	 */
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    SwingUtilities.invokeLater(() -> {
-//                    	CommonUser commonUser = new CommonUser(1, "John Doe", 30, "johndoe@example.com", "password123", "user", 500.0f);
-//                        HomeUserUI window = new HomeUserUI(commonUser);
-//                        window.frame.setVisible(true);
-//                    });
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
+	private MatchService matchService = new MatchService();
+	private EventService eventService = new EventService();
+	
 	/**
 	 * Create the application.
 	 */
@@ -113,8 +102,8 @@ public class HomeUserUI {
 		this.positionY = positionY;
 		
 		try {
-			this.matches = matchDao.getAllMatches();
-			this.events = eventDao.getAllEvents();
+			setMatchesWithAllMatches();
+			setEventsWithAllEvents();
 			
 			User loggedUser = userService.getUser(userId);
 			
@@ -157,13 +146,35 @@ public class HomeUserUI {
 		frame.getContentPane().add(navBarPanel);
 		navBarPanel.setLayout(null);
 		
-        RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
-        ActionListener actionListener = new ActionListener() {
+
+		JLabel searchPlaceholder = new JLabel("Pesquisar Eventos");
+        searchPlaceholder.setForeground(new Color(156, 156, 156));
+        searchPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchPlaceholder.setBounds(588, 251, 274, 14);
+		navBarPanel.add(searchPlaceholder);
+		
+		
+		RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+        
+        roundedTextField.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				searchPlaceholder.setVisible(false);
+			}
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(roundedTextField.getText().length() == 0) {
+					searchPlaceholder.setVisible(true);
+				}
+			}
+		});
+        
+        roundedTextField.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 textFieldValue = roundedTextField.getText();
                 List<Event> lista = null;
-                try {lista = eventDao.getEventsByName(textFieldValue);} 
+                try {lista = eventService.getEventsByName(textFieldValue);} 
                 catch (SQLException e1) {e1.printStackTrace();}
                 
                 if(lista != null && lista.size() != 0) {
@@ -172,14 +183,13 @@ public class HomeUserUI {
                 	updateEvents();
                 }
             }
-        };
-        roundedTextField.addActionListener(actionListener);
-
-        
+        });
+        searchPlaceholder.setLabelFor(roundedTextField);
         roundedTextField.setBackground(Color.WHITE);
         roundedTextField.setBounds(389, 15, 390, 35);
         navBarPanel.add(roundedTextField);
 		
+
 		
 		if(this.user instanceof CommonUser) {
 			balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
@@ -203,12 +213,11 @@ public class HomeUserUI {
 				         return;
 					}
 					
-					String betType = selectedMatches.size() > 1 ? "MULTIPLA" : "SIMPLES";
 					List<Bet> bets = selectedMatches.stream()
-						    .map(m -> new Bet(betType, m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), "PENDENTE", m.getBetSelectedOption()))
+						    .map(m -> new Bet(m.getMatch().getOddTeamA(), m.getMatch().getOddTeamB(), m.getMatch().getOddDraw(), m.getMatch(), m.getBetSelectedOption()))
 						    .collect(Collectors.toList());
 
-					Ticket ticket = new Ticket(user.getId(), bets);
+					Ticket ticket = new Ticket(user.getId(),"PENDENTE", bets);
 					
 					new BetUI(ticket, HomeUserUI.this);
 				}
@@ -320,7 +329,7 @@ public class HomeUserUI {
 	}
 	
 	
-	
+	//Adiciona as partidas no gridbaglayout
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
@@ -340,19 +349,19 @@ public class HomeUserUI {
         	MatchComponent matchComponent;
         	Optional<Integer> positionIfExists = positionIfExistsSelectedMatchComponent(match.getIdEvent(), match.getTeamA().getName(), match.getTeamB().getName());
         	
-        	
-        	
         	if (positionIfExists.isEmpty()) {
 				matchComponent = new MatchComponent(match);
 				matchComponent.addMouseListener(new MouseAdapter() {
+					
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB())
+						//Adiciona a partida na lista de partidas selecionadas
+						if ((matchComponent.isSelectedTeamA() || matchComponent.isSelectedTeamB() || matchComponent.isSelectedDraw())
 								&& !selectedMatches.contains(matchComponent)) {
 							selectedMatches.add(matchComponent);
 						}
-
-						if (!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB()) {
+						//Remove a partida da lista de partidas selecionadas caso seja desselecionada
+						if (!matchComponent.isSelectedTeamA() && !matchComponent.isSelectedTeamB() && !matchComponent.isSelectedDraw()) {
 							selectedMatches.remove(matchComponent);
 						}
 					}
@@ -373,6 +382,7 @@ public class HomeUserUI {
         gamesPanel.repaint();
 	}
 	
+	//Adiciona os eventos no gridbagLayout
 	public void updateEvents() {
 	    eventsPanel.removeAll();
 
@@ -428,6 +438,8 @@ public class HomeUserUI {
 	    eventsPanel.repaint();
 	}
 	
+	
+	//No momento da atualização das partidas ao clicar em um evento, verifica se a partida daquele evento ja esta selecionada e a mantém selecionada.
 	private Optional<Integer> positionIfExistsSelectedMatchComponent(Integer event_id, String team_a, String team_b) {
 		if(!selectedMatches.isEmpty()) {
 			for (MatchComponent component : selectedMatches) {
@@ -452,4 +464,22 @@ public class HomeUserUI {
 	public JLabel getBalanceLabel() {
 		return this.balanceLabel;
 	}
+	
+	public List<MatchComponent> getSelectedMatches(){
+		return this.selectedMatches;
+	}
+	public void setMatches(List<Match> matches) {
+		this.matches = matches;
+	}
+	public void setEvents(List<Event> events) {
+		this.events = events;
+	}
+	public void setMatchesWithAllMatches() throws SQLException{
+		this.matches = matchService.getAllMatches();	
+	}
+	
+	public void setEventsWithAllEvents() throws SQLException{
+		this.events = eventService.getAll();	
+	}
+	
 }

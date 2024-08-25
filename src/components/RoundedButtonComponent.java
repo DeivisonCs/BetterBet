@@ -16,8 +16,8 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class RoundedButtonComponent extends JButton{
 
-    private static final Color ENTERED_COLOR = new Color(150, 150, 150);
-    private static final Color EXITED_COLOR = new Color(40, 40, 40);
+    private Color ENTERED_COLOR = new Color(150, 150, 150);
+    private Color EXITED_COLOR = new Color(40, 40, 40);
     
     
 	
@@ -25,9 +25,15 @@ public class RoundedButtonComponent extends JButton{
 	public RoundedButtonComponent(String text) {
 		super(text);
 		initialize();
+
 	}
 	
-	
+	public RoundedButtonComponent(String text, Color entered, Color exited) {
+		super(text);
+		initialize();
+	    ENTERED_COLOR = entered;
+	    EXITED_COLOR = exited;
+	}
     private void initialize() {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));

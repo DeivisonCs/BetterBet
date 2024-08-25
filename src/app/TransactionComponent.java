@@ -20,8 +20,9 @@ public class TransactionComponent extends JPanel{
 	private static final int COMPONENT_WIDTH = 240;
 	private static final int COMPONENT_HEIGHT = 100;
 	
-	private static final Color DEFAULT_COLOR = new Color(128, 128, 128);
-	private static final Color ENTERED_COLOR = new Color(192,192,192);
+	private static final Color DEFAULT_COLOR = new Color(30, 30, 30);
+	private static final Color WITHDRAWAL_COLOR = new Color(220, 40, 40);
+	private static final Color DEPOSIT_COLOR = new Color(107, 207, 107);
 	
 	private JPanel componentTransaction;
 	
@@ -36,6 +37,7 @@ public class TransactionComponent extends JPanel{
 		
 		String lblTransactionStr = String.format("%s: R$ %.2f", transaction.getType(), transaction.getValue());
 		JLabel lblTransaction = new JLabel(lblTransactionStr);
+		lblTransaction.setForeground(new Color(255, 255, 255));
 		
 		//componentTransaction = new JPanel();
 
@@ -46,7 +48,11 @@ public class TransactionComponent extends JPanel{
 		this.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				setBackground(ENTERED_COLOR);
+				if(transaction.getType().equals("Saque")) {					
+					setBackground(WITHDRAWAL_COLOR);
+				}else {
+					setBackground(DEPOSIT_COLOR);
+				}
 			}
 
 			@Override

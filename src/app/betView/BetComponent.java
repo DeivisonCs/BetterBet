@@ -151,7 +151,7 @@ public class BetComponent extends JPanel{
         lblOddTimeB.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddTimeB.setHorizontalAlignment(SwingConstants.CENTER);
         lblOddTimeB.setForeground(DEFAULT_FONT_COLOR);
-        
+        lblOddTimeB.setForeground(fontColor);
         panelTimeB.add(lblTimeB, BorderLayout.NORTH);
         panelTimeB.add(lblOddTimeB, BorderLayout.SOUTH);
         

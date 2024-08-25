@@ -13,19 +13,22 @@ public class Match {
 	private Team teamA;
 	private Integer scoreTeamA;
 	private float oddTeamA;
+	private float betAmountTeamA;
 	
 	private float oddDraw;
+	private float betAmountDraw;
 	
 	private Team teamB;
 	private Integer scoreTeamB;
 	private float oddTeamB;
+	private float betAmountTeamB;
 	
 	private LocalDateTime date;
 	
 		
 	
 	public Match(Integer id, Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
 		this.id = id;
 		this.idEvent = idEvent;
@@ -38,11 +41,14 @@ public class Match {
 		this.oddTeamB = oddTeamB;
 		this.status = status;
 		this.date = date;
+		this.betAmountTeamA = betAmountTeamA;
+		this.betAmountTeamB = betAmountTeamB;
+		this.betAmountDraw = betAmountDraw;
 	}
 	
 	
 	public Match(Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
-			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date) {
+			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
 		this.idEvent = idEvent;
 		this.teamA = teamA;
@@ -54,10 +60,38 @@ public class Match {
 		this.oddTeamB = oddTeamB;
 		this.status = status;
 		this.date = date;
+		this.betAmountTeamA = betAmountTeamA;
+		this.betAmountTeamB = betAmountTeamB;
+		this.betAmountDraw = betAmountDraw;
 	}
 
 
+	public void calculateOdd() {
+		
+		float profit = 0.8f;
+		float totalAmount = this.betAmountDraw + this.betAmountTeamA + this.betAmountTeamB;
+		float totalAmountWithProfit = totalAmount * profit;
+		
+		if(betAmountTeamA * profit > 1) {
+			this.oddTeamA = (totalAmountWithProfit / (betAmountTeamA * profit));
+		}else {
+			this.oddTeamA = (totalAmountWithProfit / betAmountTeamA);
+		}
+		if(betAmountTeamB * profit > 1) {
+			this.oddTeamB = (totalAmountWithProfit / (betAmountTeamB * profit));
+		}else {
+			this.oddTeamB = (totalAmountWithProfit / betAmountTeamB);
+		}
+		if(betAmountDraw * profit  > 1) {
+			this.oddDraw = (totalAmountWithProfit / (betAmountDraw * profit));
+		}else {
+			this.oddDraw = (totalAmountWithProfit / betAmountDraw);
+		}
+		
+		
 
+	}
+	
 
 	public Integer getId() {
 		return id;
@@ -155,6 +189,34 @@ public class Match {
 		this.status = status;
 	}
 	
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public float getBetAmountTeamA() {
+		return this.betAmountTeamA;
+	}
+
+	public void setBetAmountTeamA(float betAmountTeamA) {
+		this.betAmountTeamA = betAmountTeamA;
+	}
+
+	public float getBetAmountDraw() {
+		return this.betAmountDraw;
+	}
+
+	public void setBetAmountDraw(float betAmountDraw) {
+		this.betAmountDraw = betAmountDraw;
+	}
+
+	public float getBetAmountTeamB() {
+		return this.betAmountTeamB;
+	}
+
+	public void setBetAmountTeamB(float betAmountTeamB) {
+		this.betAmountTeamB = betAmountTeamB;
+	}
+
 	
 	@Override
     public String toString() {

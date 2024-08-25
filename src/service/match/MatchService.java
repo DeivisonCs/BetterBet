@@ -2,10 +2,12 @@ package service.match;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.List;
 
 import dao.match.MatchDAO;
 import dao.match.MatchPostgresDAO;
 import middleware.MatchMiddleware;
+import models.Bet;
 import models.Match;
 
 public class MatchService {
@@ -30,6 +32,61 @@ public class MatchService {
 		}
 		
 		return valid;
+	}
+	
+	public Match UpdateAmount(Bet bet, float amount)  throws SQLException, Exception{
+		try {
+			switch (bet.getSelectedBet()) {
+		    case "TEAM_A":
+		        matchDB.UpdateAmount(bet.getMatch().getId(), amount, "a_team_bet_amount");
+		        break;
+		    case "TEAM_B":
+		        matchDB.UpdateAmount(bet.getMatch().getId(), amount, "b_team_bet_amount");
+		        break;
+		    case "DRAW":
+		        matchDB.UpdateAmount(bet.getMatch().getId(), amount, "draw_bet_amount");
+		        break;
+		    default:
+		        throw new Exception("Bet inválida");
+		}
+			
+		return matchDB.getMatchById(bet.getMatch().getId());
+		
+		} catch (SQLException e1) {
+			throw e1;
+		} catch (Exception e2) {
+			throw e2;
+		}
+		
+	}
+
+	public void UpdateOdds(Match matchUpdatedAmount)   throws SQLException, Exception{
+		try {
+			matchDB.UpdateOdds(matchUpdatedAmount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public List<Match> getAllMatches() throws SQLException{
+		try {
+			return matchDB.getAllMatches();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		
+	}
+
+	public List<Match> getMatchesByEvent(Integer id) throws SQLException {
+		try {
+			return matchDB.getMatchesByEvent(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	

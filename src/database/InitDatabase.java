@@ -6,6 +6,7 @@ import java.sql.Statement;
 import security.PasswordHandler;
 
 public class InitDatabase {
+
 	private static String dropTables;
 	private static String createTableUsers;
 	private static String createTableBetUsers;
@@ -14,11 +15,13 @@ public class InitDatabase {
 	private static String createTableMatch;
 	private static String createTableTicket;
 	private static String createTableBet;
+	private static String createTableTransactions;
 	private static String insertAdmUser;
 	private static String insertCommonUser;
 	private static String insertEvents;
 	private static String insertTeams;
 	private static String insertMatch;
+	private static String insertTransaction;
 	
 	
 	public static void initializeDatabase() {
@@ -35,10 +38,12 @@ public class InitDatabase {
 			statement.execute(insertAdmUser);
 			statement.execute(createTableTicket);
 			statement.execute(createTableBet);
+			statement.execute(createTableTransactions);
 			statement.execute(insertCommonUser);
 			statement.execute(insertEvents);
 			statement.execute(insertTeams);
 			statement.execute(insertMatch);
+			statement.execute(insertTransaction);
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -52,8 +57,10 @@ public class InitDatabase {
 			  + "DROP TABLE IF EXISTS bet_users CASCADE;"
 			  + "DROP TABLE IF EXISTS team CASCADE;"
 			  + "DROP TABLE IF EXISTS match CASCADE;"
-			  + "DROP TABLE IF EXISTS event CASCADE;";
+			  + "DROP TABLE IF EXISTS event CASCADE;"
+			  + "DROP TABLE IF EXISTS transactions CASCADE";
 		
+
 		InitDatabase.createTableUsers = 
 				"CREATE TABLE users("
 				+ "    user_id SERIAL NOT NULL,"
@@ -63,9 +70,10 @@ public class InitDatabase {
 				+ "    password VARCHAR(70) NOT NULL,"
 				+ "    permission VARCHAR(20) NOT NULL,"
 				+ "	   profile_image BYTEA,"
-				+ "    CONSTRAINT pk_user PRIMARY KEY (user_id)"
+				+ "    CONSTRAINT pk_userDB PRIMARY KEY (user_id)"
 				+ ");";
 		
+
 		InitDatabase.createTableBetUsers = 
 				"CREATE TABLE bet_users("
 				+ "    bet_user_id SERIAL NOT NULL,"
@@ -77,6 +85,7 @@ public class InitDatabase {
 				+ "    CONSTRAINT fk_user_bet_user FOREIGN KEY (user_id) REFERENCES users"
 				+ ");";
 		
+
 		InitDatabase.createTableEvent = 
 				"CREATE TABLE event("
 				+ "	event_id SERIAL NOT NULL,"
@@ -88,6 +97,7 @@ public class InitDatabase {
 				+ "	CONSTRAINT pk_event PRIMARY KEY (event_id)"
 				+ ");";
 		
+
 		InitDatabase.createTableTeam = 
 				"CREATE TABLE team("
 				+ "	team_id SERIAL NOT NULL,"
@@ -97,19 +107,23 @@ public class InitDatabase {
 				+ "	CONSTRAINT pk_team PRIMARY KEY (team_id)"
 				+ ");";
 		
+
 		InitDatabase.createTableMatch = 
 				"CREATE TABLE match("
-				+ "	match_id SERIAL NOT NULL,"
-				+ "	event_id INT NULL,"
-				+ "	a_team INT NOT NULL,"
-				+ "  	b_team INT NOT NULL,"
-				+ "  	date_time TIMESTAMP,"
-				+ "  	a_team_score INT,"
-				+ "  	b_team_score INT,"
-				+ "  	a_team_odd FLOAT,"
-				+ "  	b_team_odd FLOAT,"
-				+ "  	status VARCHAR(20),"
-				+ "  	draw_odd FLOAT,"
+				+ "	 match_id SERIAL NOT NULL,"
+				+ "	 event_id INT NULL,"
+				+ "	 a_team INT NOT NULL,"
+				+ "  b_team INT NOT NULL,"
+				+ "  date_time TIMESTAMP,"
+				+ "  a_team_score INT,"
+				+ "  b_team_score INT,"
+				+ "  a_team_odd FLOAT,"
+				+ "  b_team_odd FLOAT,"
+				+ "  status VARCHAR(20),"
+				+ "  draw_odd FLOAT,"
+				+ "  a_team_bet_amount FLOAT,"
+				+ "  b_team_bet_amount FLOAT,"
+				+ "	 draw_bet_amount FLOAT,"
 				+ "  	"
 				+ "  	CONSTRAINT pk_match PRIMARY KEY (match_id),"
 				+ "  	"
@@ -124,6 +138,7 @@ public class InitDatabase {
 				+ "  	"
 				+ ");";
 		
+
 		InitDatabase.createTableTicket = 
 				"CREATE TABLE ticket("
 				+ "	ticket_id SERIAL NOT NULL,"
@@ -131,6 +146,8 @@ public class InitDatabase {
 				+ "	time_stamp TIMESTAMP NOT NULL,"
 				+ "	user_id INT NOT NULL,"
 				+ "	amount FLOAT NOT NULL,"
+				+ " ticket_type VARCHAR(20),"
+				+ " status VARCHAR(20),"
 				+ "	"
 				+ "	CONSTRAINT pk_ticket PRIMARY KEY (ticket_id),"
 				+ "	"
@@ -138,12 +155,11 @@ public class InitDatabase {
 				+ "		(user_id) REFERENCES bet_users (user_id)"
 				+ ");";
 
+
 		InitDatabase.createTableBet = 
 				"CREATE TABLE bet("
 				+ "	bet_id SERIAL NOT NULL,"
 				+ "	ticket_id INT NOT NULL,"
-				+ "	bet_type VARCHAR(20),"
-				+ "	status VARCHAR(20),"
 				+ "	selected_bet VARCHAR(10),"
 				+ "	match_id INT NOT NULL,"
 				+ "	odd_draw FLOAT NOT NULL,"
@@ -159,6 +175,19 @@ public class InitDatabase {
 				+ "		(match_id) REFERENCES match (match_id)"
 				+ ");";
 		
+		InitDatabase.createTableTransactions = 
+				"CREATE TABLE transactions("
+				+ "	transaction_id SERIAL NOT NULL,"
+				+ "	user_id INT NOT NULL,"
+				+ "	type_transaction VARCHAR(10) NOT NULL,"
+				+ "	value_transaction FLOAT NOT NULL,"
+				+ " "
+				+ "	CONSTRAINT pk_transaction PRIMARY KEY (transaction_id),"
+				+ " "
+				+ "	CONSTRAINT fk_user_transaction FOREIGN KEY (user_id)"
+				+ "	REFERENCES users (user_id)"
+				+ ");";
+		
 		InitDatabase.insertAdmUser =	
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('MainAdminUser', "
@@ -168,6 +197,7 @@ public class InitDatabase {
 				+ "'" + PasswordHandler.hashPassword("adminpass") + "',"
 				+ " 'admin');";
 		
+
 		InitDatabase.insertCommonUser =
 				"INSERT INTO users (name, profile_image, cpf, email, password, permission) VALUES"
 				+ "('Vanessa', "
@@ -219,52 +249,60 @@ public class InitDatabase {
 				+ "('Espanha', 'futebol');";
 		
 		InitDatabase.insertMatch =
-				"INSERT INTO match (event_id, a_team, b_team, a_team_odd, b_team_odd, draw_odd, status, a_team_score, b_team_score, date_time) VALUES "
+				"INSERT INTO match (event_id, a_team, b_team, a_team_odd, b_team_odd, draw_odd, status, a_team_score, b_team_score, date_time, a_team_bet_amount, b_team_bet_amount, draw_bet_amount) VALUES "
 				+ "((SELECT event_id FROM event WHERE description = 'Campeonato Brasileiro Série A'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Flamengo'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Palmeiras'),"
-				+ " 2.20, 3.10, 3.00, 'finalizado', 1, 1, '2024-05-19 17:12:00'),"
+				+ " 2.20, 3.10, 3.00, 'finalizado', 1, 1, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Campeonato Brasileiro Série A'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Corinthians'),"
 				+ " (SELECT team_id FROM team WHERE name = 'São Paulo'),"
-				+ " 2.80, 2.90, 3.20, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
+				+ " 2.80, 2.90, 3.20, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Campeonato Brasileiro Série A'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Atlético Mineiro'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Internacional'),"
-				+ " 2.50, 2.95, 3.10, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
+				+ " 2.50, 2.95, 3.10, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Liga dos Campeões da UEFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Real Madrid'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Manchester City'),"
-				+ " 2.60, 2.75, 3.25, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
+				+ " 2.60, 2.75, 3.25, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Liga dos Campeões da UEFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Bayern de Munique'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Paris Saint-Germain'),"
-				+ " 2.40, 3.00, 3.20, 'finalizado', 3, 2, '2024-05-19 17:12:00'),"
+				+ " 2.40, 3.00, 3.20, 'finalizado', 3, 2, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Liga dos Campeões da UEFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Chelsea'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Barcelona'),"
-				+ " 2.85, 2.65, 3.10, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
+				+ " 2.85, 2.65, 3.10, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Copa do Mundo da FIFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Brasil'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Argentina'),"
-				+ " 2.10, 3.25, 3.00, 'pendente', 0, 0, '2024-05-19 17:12:00'),"
+				+ " 2.10, 3.25, 3.00, 'pendente', 2, 2, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Copa do Mundo da FIFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'França'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Alemanha'),"
-				+ " 2.30, 3.00, 3.12, 'finalizado', 1, 0, '2024-05-19 17:12:00'),"
+				+ " 2.30, 3.00, 3.12, 'finalizado', 1, 0, '2024-05-19 17:12:00',1,1,1),"
 				
 				+ "((SELECT event_id FROM event WHERE description = 'Copa do Mundo da FIFA'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Itália'),"
 				+ " (SELECT team_id FROM team WHERE name = 'Espanha'),"
-				+ " 2.75, 2.85, 3.05, 'pendente', 0, 0, '2024-05-19 17:12:00');";
+				+ " 2.75, 2.85, 3.05, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1);";
 		
+		InitDatabase.insertTransaction = 
+				"INSERT INTO transactions (user_id, type_transaction, value_transaction) VALUES"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0);";
 	}
 	
 }
