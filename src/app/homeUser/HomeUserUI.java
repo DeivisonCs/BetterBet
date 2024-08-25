@@ -408,7 +408,7 @@ public class HomeUserUI {
 	                    
 	                    try {
 	                    	gamesDescriptionLabel.setText(event.getName());
-	                    	matches = matchDao.getMatchesByEvent(event.getId());
+	                    	matches = matchService.getMatchesByEvent(event.getId());
 	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
 	                    
@@ -416,7 +416,7 @@ public class HomeUserUI {
 	                } else {
 	                    selectedEventComponent = null;
 	                    try {
-	                    	matches = matchDao.getAllMatches();
+	                    	matches = matchService.getAllMatches();
 	                    	gamesDescriptionLabel.setText("Todos os Jogos: ");
 	                    } 
 	                    catch (SQLException e1) {e1.printStackTrace();}
