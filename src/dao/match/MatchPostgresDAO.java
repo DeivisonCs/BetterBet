@@ -1,5 +1,6 @@
 package dao.match;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,8 +29,10 @@ public class MatchPostgresDAO implements MatchDAO {
 				+ "date_time,"
 				+ "a_team_score, b_team_score,"
 				+ "a_team_odd, b_team_odd, draw_odd,"
-				+ "status) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+				+ "status, "
+				+ "a_team_bet_amount, b_team_bet_amount, draw_bet_amount"
+				+ ") "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		try(PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
 			Timestamp dateTime = Timestamp.valueOf(newMatch.getDate());
@@ -44,6 +47,9 @@ public class MatchPostgresDAO implements MatchDAO {
 			ps.setFloat(8, newMatch.getOddTeamB());
 			ps.setFloat(9, newMatch.getOddDraw());
 			ps.setString(10, newMatch.getStatus());
+			ps.setFloat(11, newMatch.getBetAmountTeamA());
+			ps.setFloat(12, newMatch.getBetAmountTeamB());
+			ps.setFloat(13, newMatch.getBetAmountDraw());
 			
 			ps.executeUpdate();
 			
@@ -64,15 +70,16 @@ public class MatchPostgresDAO implements MatchDAO {
 	
 	@Override
 	public List<Match> getAllMatches() throws SQLException {
-		String query = "SELECT * FROM match";
+		String query = "SELECT * FROM match WHERE status = 'pendente'";
         List<Match> matches = new ArrayList<Match>();
 
+        
+
         try(
-            PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
-            ResultSet response = ps.executeQuery()
+        	PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
         ){
         	
-        	
+        	ResultSet response = ps.executeQuery();
             while(response.next()) {
             	Team teamA = teamPostgresDAO.getTeamById(response.getInt("a_team"));
             	Team teamB = teamPostgresDAO.getTeamById(response.getInt("b_team"));
@@ -91,7 +98,10 @@ public class MatchPostgresDAO implements MatchDAO {
                             response.getInt("b_team_score"),
                             response.getFloat("b_team_odd"),
                             response.getString("status"),
-                            dateTime
+                            dateTime,
+                            response.getFloat("a_team_bet_amount"),
+                            response.getFloat("b_team_bet_amount"),
+                            response.getFloat("draw_bet_amount")
                             )
                 );
             }
@@ -105,7 +115,7 @@ public class MatchPostgresDAO implements MatchDAO {
 
 	@Override
 	public List<Match> getMatchesByEvent(Integer event_id) throws SQLException {
-		String query = "SELECT * FROM match WHERE event_id = ?";
+		String query = "SELECT * FROM match WHERE event_id = ? AND status = 'pendente'";
         List<Match> matches = new ArrayList<Match>();
 
         try(
@@ -132,7 +142,11 @@ public class MatchPostgresDAO implements MatchDAO {
                             response.getInt("b_team_score"),
                             response.getFloat("b_team_odd"),
                             response.getString("status"),
-                            dateTime
+                            dateTime,
+                            response.getFloat("a_team_bet_amount"),
+                            response.getFloat("b_team_bet_amount"),
+                            response.getFloat("draw_bet_amount")
+                            
                             )
                 );
             }
@@ -147,7 +161,10 @@ public class MatchPostgresDAO implements MatchDAO {
 	public Match getMatchById(Integer matchId) throws SQLException {
 	    String query = "SELECT * FROM match WHERE match_id = ?";
 
-	    try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)) {
+	    Connection conn = ConnectionDB.getInstance().getConnection();
+
+	    try (PreparedStatement ps =conn.prepareStatement(query)) {
+	    	
 	        ps.setInt(1, matchId);
 	        ResultSet rs = ps.executeQuery();
 
@@ -163,11 +180,14 @@ public class MatchPostgresDAO implements MatchDAO {
 	            float oddTeamB = rs.getFloat("b_team_odd");
 	            String status = rs.getString("status");
 	            LocalDateTime date = rs.getTimestamp("date_time").toLocalDateTime();
+	            float betAmountTeamA = rs.getFloat("a_team_bet_amount");
+	    		float betAmountTeamB = rs.getFloat("b_team_bet_amount");
+	    		float betAmountDraw = rs.getFloat("draw_bet_amount");
 
 	            Team teamA = teamPostgresDAO.getTeamById(teamAId);
 	            Team teamB = teamPostgresDAO.getTeamById(teamBId);
 
-	            return new Match(id, idEvent, teamA, scoreTeamA, oddTeamA, oddDraw, teamB, scoreTeamB, oddTeamB, status, date);
+	            return new Match(id, idEvent, teamA, scoreTeamA, oddTeamA, oddDraw, teamB, scoreTeamB, oddTeamB, status, date, betAmountTeamA, betAmountTeamB, betAmountDraw);
 	        }
 
 	        return null;
@@ -214,5 +234,54 @@ public class MatchPostgresDAO implements MatchDAO {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public void UpdateAmount(Integer id, float amount, String teamBetAmount) throws SQLException {
+
+	    String query = String.format(
+	        "UPDATE MATCH " +
+	        "SET %s = %s + ? " +
+	        "WHERE match_id = ?", teamBetAmount, teamBetAmount);
+	    
+	    try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)) {
+
+	    	ps.setFloat(1, amount);
+	        ps.setInt(2, id);
+
+	        ps.executeUpdate();
+
+	    } catch (SQLException e) {
+
+	        e.printStackTrace();
+	        throw e;
+	    }
+	}
+
+
+	@Override
+	public void UpdateOdds(Match matchUpdatedAmount) throws SQLException {
+		String query = "UPDATE MATCH " +
+				        "SET a_team_odd = ?, b_team_odd = ?, draw_odd = ? " +
+				        "WHERE match_id = ?";
+
+		    
+        try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)) {
+
+            ps.setFloat(1, matchUpdatedAmount.getOddTeamA());
+            ps.setFloat(2, matchUpdatedAmount.getOddTeamB());
+            ps.setFloat(3, matchUpdatedAmount.getOddDraw());
+            ps.setInt(4, matchUpdatedAmount.getId());
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+        	System.out.println("testando update de odd");
+            e.printStackTrace();
+            throw e;
+        }
+		    
+		
+	}
+
 
 }

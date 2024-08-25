@@ -31,4 +31,14 @@ public class EventService {
 			throw ex;
 		}
 	}
+
+	public List<Event> getEventsByName(String eventName) throws SQLException {
+		try {
+			return this.eventDB.getEventsByName(eventName);
+		}
+		catch (Exception ex) {
+			throw ex;
+		}
+	}
+
 }

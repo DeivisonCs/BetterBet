@@ -7,6 +7,6 @@ import models.Bet;
 import models.Event;
 
 public interface BetDAO {
-	public List<Bet> getBetsByTicket()throws SQLException;
+	public List<Bet> getBetsByTicket(Integer ticketId)throws SQLException;
 	public int createBet(Bet bet)throws SQLException;
 }

@@ -24,6 +24,7 @@ import app.RoundedButton;
 import app.TransactionComponent;
 import app.auth.LogInView;
 import app.edit.EditUser;
+import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
@@ -57,7 +58,7 @@ public class WindowProfile {
     private ImageIcon profileImg;
     
     private List<Transaction> transactions = new ArrayList<Transaction>();
-    //private List<TransactionComponent> transactionComponents = new ArrayList<TransactionComponent>();
+    private List<TransactionComponent> transactionComponents = new ArrayList<TransactionComponent>();
     
     private User user;
     private UserService userService = new UserService();
@@ -343,6 +344,16 @@ public class WindowProfile {
 		buttonHistApostas.setBounds(737, 568, 179, 59);
 		buttonHistApostas.setBackground(new Color(64, 128, 128)); // Example color
 		buttonHistApostas.setForeground(Color.WHITE);
+		buttonHistApostas.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new HistoryView(user.getId());
+				
+			}
+			
+		});
 		panelProfile.add(buttonHistApostas);        
 		
 //------------------------- Deposit button -------------------------------------
@@ -419,6 +430,7 @@ public class WindowProfile {
 	        		dialogDeposito.dispose();
         		
 	    		}
+
 
 	    	}
  	        });
@@ -511,6 +523,7 @@ public class WindowProfile {
 		     	        		dialogSaque.dispose();
 	     		    		}
 	     	        	}
+
      	        	}
      	        });
      	        
@@ -594,14 +607,13 @@ public class WindowProfile {
 	
 	public boolean inputValidator(String text) {
 		if (text.isEmpty()) {
-			System.out.println("1º");
+
 	        return false;
 	    }
 
 	    // Verifica se o texto contém caracteres inválidos
 	    for (char c : text.toCharArray()) {
 	        if (!Character.isDigit(c) && c != '.') {
-	        	System.out.println("2º");
 	            return false;
 	        }
 	    }
@@ -613,12 +625,10 @@ public class WindowProfile {
 	            commaCount++;
 	            // Se houver mais de um separador decimal, retorna falso
 	            if (commaCount > 1) {
-	            	System.out.println("3º");
 	                return false;
 	            }
 	            // Verifica se o separador decimal está no início ou no final
 	            if (i == 0 || i == text.length() - 1) {
-	            	System.out.println("4º");
 	                return false;
 	            }
 	        }
@@ -629,4 +639,5 @@ public class WindowProfile {
 	}
 
 }
+
 

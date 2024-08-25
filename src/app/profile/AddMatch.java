@@ -183,7 +183,10 @@ public class AddMatch {
 								0,
 								(float) 1.8,
 								"pendente",
-								LocalDateTime.now());
+								LocalDateTime.now(),
+								1,
+								1,
+								1);
 						
 						try {
 							String valid = matchService.save(newMatch);

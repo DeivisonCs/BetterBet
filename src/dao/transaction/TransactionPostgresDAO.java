@@ -50,7 +50,7 @@ public class TransactionPostgresDAO implements TransactionDAO{
 	}
 	
 	@Override
-	public void insertTransaction(Transaction transaction) {
+	public void insertTransaction(Transaction transaction) throws SQLException{
 		String query = "INSERT INTO transactions (user_id, type_transaction, value_transaction) "
 				+ "VALUES (?, ?, ?);";
 		try (PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)){
@@ -62,7 +62,8 @@ public class TransactionPostgresDAO implements TransactionDAO{
 			ps.executeUpdate();
 			
 		} catch (Exception e) {
-			
+			e.printStackTrace();
+			throw e;
 		}
 		
 	}
