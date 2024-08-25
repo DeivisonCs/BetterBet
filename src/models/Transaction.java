@@ -5,9 +5,9 @@ public class Transaction {
 	private Integer id;
 	private Integer userId;
 	private String type;
-	private double value;
+	private Double value;
 	
-	public Transaction (Integer id, Integer userId, String type, double value) {
+	public Transaction (Integer id, Integer userId, String type, Double value) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -16,7 +16,7 @@ public class Transaction {
 		
 	}
 	
-	public Transaction (Integer userId, String type, double value) {
+	public Transaction (Integer userId, String type, Double value) {
 		super();
 		this.userId = userId;
 		this.type = type;
@@ -52,7 +52,7 @@ public class Transaction {
 	}
 
 	
-	public void setValue(double value) {
+	public void setValue(Double value) {
 		this.value = value;
 	}
 	

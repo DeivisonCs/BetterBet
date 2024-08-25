@@ -8,27 +8,31 @@ import java.util.List;
 
 import database.ConnectionDB;
 import models.Transaction;
+import models.User;
 
 public class TransactionPostgresDAO implements TransactionDAO{
 
 	@Override
-	public List<Transaction> getTransactions() throws SQLException {
+	public List<Transaction> getTransactions(int userId) throws SQLException {
 		
-		String query ="SELECT * FROM transactions T INNER JOIN users U ON T.user_id = U.user_id";
+		String query ="SELECT * FROM transactions WHERE user_id = ?";
 		
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		
 		try( 
 			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query);
-			ResultSet response = ps.executeQuery();				
 		){
+			
+			ps.setInt(1, userId);
+			ResultSet response = ps.executeQuery();				
+			
 			while(response.next()) {
 				transactions.add(
 						new Transaction(
 								response.getInt("transaction_id"),
 								response.getInt("user_id"),
 								response.getString("type_transaction"),
-								response.getDouble("value_transaction")	
+								response.getDouble("value_transaction")
 						)
 						
 						
@@ -59,6 +63,23 @@ public class TransactionPostgresDAO implements TransactionDAO{
 			
 		} catch (Exception e) {
 			
+		}
+		
+	}
+	
+	@Override
+	public void updateBalance(User user, float newBalance)  throws SQLException{
+		String query = "UPDATE BET_USERS SET BALANCE =? WHERE USER_ID =?";
+		
+		try(
+			PreparedStatement ps = ConnectionDB.getInstance().getConnection().prepareStatement(query)
+		){
+			ps.setFloat(1, newBalance);
+			ps.setInt(2, user.getId());
+			ps.executeUpdate();
+			
+		}catch (SQLException ex) {
+			throw ex;
 		}
 		
 	}
