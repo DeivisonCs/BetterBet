@@ -109,6 +109,7 @@ public class HomeUserUI {
 			
 			if(loggedUser.getPermission().equals("user")) {
 				this.user = (CommonUser) loggedUser;
+				verifyTickets(loggedUser);
 				System.out.println("Home user: " + user.toString());
 			}
 			else {			
@@ -453,7 +454,78 @@ public class HomeUserUI {
 		}
 		return Optional.empty();
 	}
-	
+	private void verifyTickets(User userToVerify) throws SQLException {
+		TicketService ticketService = new TicketService();
+		List<Ticket> tickets = ticketService.getTicketsByUser(userToVerify.getId());
+		AtomicBoolean pendingBet = new AtomicBoolean(false);
+		CommonUserService commonUserService = new CommonUserService();
+		
+		tickets.forEach(ticket -> {
+			
+			if(ticket.getStatus().equals("PENDENTE")) {
+				
+				pendingBet.set(false);
+				//verifica se todas as partidas da bet foram finalizadas
+				ticket.getBets().forEach(bet->{
+					if(!bet.getMatch().getStatus().equals("finalizado")) {
+						pendingBet.set(true);
+						return;
+					}
+				});
+				if(pendingBet.get()) {
+					return;
+				}
+				
+				AtomicBoolean youWon = new AtomicBoolean(true);
+				//verifica se aerrou algum palpite
+				ticket.getBets().forEach(bet->{
+					if(bet.getSelectedBet().equals("TEAM_A")) {
+						if(bet.getMatch().getScoreTeamA() <= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("TEAM_B")) {
+						if(bet.getMatch().getScoreTeamA() >= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("DRAW")) {
+						if(bet.getMatch().getScoreTeamA() != bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}
+				});
+				
+				if(youWon.get()) {
+					ticket.setStatus("GANHOU");
+					
+					CommonUser commonUser = (CommonUser)userToVerify;
+
+					try {
+						ticketService.updateStatus(ticket);
+						commonUserService.increaseBalance(commonUser, ticket.getExpectedProfit());
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);	
+					} catch (Exception e) {
+						throw new RuntimeException("Erro ao atualizar saldo do usuário: " + userToVerify.getId(), e);	
+						
+					}
+					
+					
+				}else {
+					ticket.setStatus("PERDEU");
+					try {
+						ticketService.updateStatus(ticket);
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);
+					}
+				}
+			}
+			
+			ticket.getBets().clear();
+			
+		});
+		tickets.clear();
+		
+	}
 	public User getUser() {
 		return this.user;
 	}
