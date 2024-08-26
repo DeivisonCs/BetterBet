@@ -48,7 +48,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 
 public class HistoryView {
-	
+	private int positionX;
+	private int positionY;
 	
 	private JPanel ticketsPanel;
 	private EventDAO eventDao = new EventPostgresDAO();
@@ -68,8 +69,10 @@ public class HistoryView {
 	/**
 	 * Create the application.
 	 */
-	public HistoryView(Integer userId) {
-		
+	public HistoryView(Integer userId, int positionX, int positionY) {
+		this.positionX = positionX;
+    	this.positionY = positionY;
+    	
 		try {
 			events = eventDao.userRelatedEvents(userId);
 			user = userService.getUser(userId);
@@ -95,11 +98,13 @@ public class HistoryView {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.getContentPane().setLayout(null);
+		frame.setBounds(positionX, positionY, 1200, 700);
 		
 		JPanel navPanel = new JPanel();
-		navPanel.setBackground(new Color(0, 0, 0));
+		navPanel.setBackground(new Color(40, 40, 40));
 		navPanel.setBounds(0, 0, 1184, 65);
 		frame.getContentPane().add(navPanel);
 		
@@ -202,9 +207,11 @@ public class HistoryView {
 		frame.getContentPane().add(statusLabel);
 		frame.setResizable(false);
 		
-		int radius = 50;
-        JPanel backButton = new RoundedImagePanel("/resources/images/back-arrow.jpg", new Color(255,255,255), radius);
-        backButton.setBounds(10, 11, 50, 54);
+		ImageUtils backButton = new ImageUtils();
+        backButton.setBorder(null);
+        backButton.setBorderSize(0);
+        backButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
+        backButton.setBounds(5, 5, 30, 30);
         backButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
@@ -220,10 +227,6 @@ public class HistoryView {
         });
         navPanel.setLayout(null);
         navPanel.add(backButton);
-		
-		frame.setBounds(100, 100, 1200, 700);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 	}
 	
 	public void updateTickets() {

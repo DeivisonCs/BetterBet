@@ -353,8 +353,12 @@ public class WindowProfile {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
+				
 				frame.dispose();
-				new HistoryView(user.getId());
+				new HistoryView(user.getId(), x, y);
 				
 			}
 			
