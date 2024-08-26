@@ -11,6 +11,8 @@ import javax.swing.ScrollPaneConstants;
 
 import app.ImageUtils;
 import app.homeUser.HomeUserUI;
+import components.RoundedImagePanel;
+import components.TicketComponent;
 import dao.event.EventDAO;
 import dao.event.EventPostgresDAO;
 import dao.match.MatchDAO;
@@ -22,6 +24,8 @@ import models.CommonUser;
 import models.Match;
 import models.Ticket;
 import models.User;
+import service.event.EventService;
+import service.ticket.TicketService;
 import service.users.CommonUserService;
 import service.users.UserService;
 
@@ -52,8 +56,8 @@ public class HistoryView {
 	private int positionY;
 	
 	private JPanel ticketsPanel;
-	private EventDAO eventDao = new EventPostgresDAO();
-	private TicketDAO ticketDAO = new TicketPostgresDAO();
+	private EventService eventService = new EventService();
+	private TicketService ticketService = new TicketService();
 	private UserService userService = new UserService();
 	private User user;
 	private List<Ticket> allTickets;
@@ -61,9 +65,9 @@ public class HistoryView {
 	private List<String> events;
 	private String[] status =  {"----------","PENDENTE", "GANHOU", "PERDEU"};
 	private String[] types = {"----------","SIMPLES", "MULTIPLA"};
-	JComboBox<String> typeComboBox;
-	JComboBox<String> eventsComboBox;
-	JComboBox<String> statusComboBox;
+	private JComboBox<String> typeComboBox;
+	private JComboBox<String> eventsComboBox;
+	private JComboBox<String> statusComboBox;
 	private JFrame frame;
 
 	/**
@@ -74,9 +78,9 @@ public class HistoryView {
     	this.positionY = positionY;
     	
 		try {
-			events = eventDao.userRelatedEvents(userId);
+			events = eventService.getUserRelatedEvents(userId);
 			user = userService.getUser(userId);
-			allTickets = ticketDAO.getTicketsByUser(userId);
+			allTickets = ticketService.getTicketsByUser(userId);
 			verifyTickets();
 			ticketsDisplayed = new ArrayList<Ticket>();
 			allTickets.forEach(ticket -> ticketsDisplayed.add(ticket));
@@ -276,7 +280,7 @@ public class HistoryView {
 	
 	private void filterByEvent(String description) throws SQLException{
 		
-		ticketsDisplayed = ticketDAO.getTicketsByEventAndUser(description, user.getId());
+		ticketsDisplayed = ticketService.getTicketsByEventAndUser(description, user.getId());
 		
 	}
 	
@@ -352,7 +356,7 @@ public class HistoryView {
 					CommonUser commonUser = (CommonUser)user;
 
 					try {
-						ticketDAO.updateStatus(ticket);
+						ticketService.updateStatus(ticket);
 						commonUserService.increaseBalance(commonUser, ticket.getExpectedProfit());
 					} catch (SQLException e) {
 						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);	
@@ -365,7 +369,7 @@ public class HistoryView {
 				}else {
 					ticket.setStatus("PERDEU");
 					try {
-						ticketDAO.updateStatus(ticket);
+						ticketService.updateStatus(ticket);
 					} catch (SQLException e) {
 						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);
 					}

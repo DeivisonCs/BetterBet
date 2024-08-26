@@ -1,4 +1,4 @@
-package app.historyView;
+package components;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import app.ImageUtils;
+import app.historyView.ShowTicketComponent;
 import models.Ticket;
 import service.bets.BetService;
 

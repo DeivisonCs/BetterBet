@@ -74,7 +74,7 @@ public class HomeUserUI {
 	private UserService userService= new UserService();
 
 	private JFrame frame;
-	JLabel balanceLabel;
+	private JLabel balanceLabel;
 	
 	private List<Match> matches = new ArrayList<Match>();
 	private List<MatchComponent> selectedMatches = new ArrayList<MatchComponent>();
@@ -84,7 +84,7 @@ public class HomeUserUI {
 	
 	private JPanel gamesPanel;
 	private JPanel eventsPanel;
-	JLabel gamesDescriptionLabel;
+	private JLabel gamesDescriptionLabel;
 	
 	private  String textFieldValue;
 	private ImageIcon profileImg;
@@ -140,22 +140,22 @@ public class HomeUserUI {
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
 		
+		
+		// ------------------------- Nav Bar ------------------------- 
 		JPanel navBarPanel = new JPanel();
 		navBarPanel.setBackground(new Color(0, 0, 0));
 		navBarPanel.setBounds(0, 0, 1184, 70);
 		frame.getContentPane().add(navBarPanel);
 		navBarPanel.setLayout(null);
 		
-
+		// Configuracoes do textfield
 		JLabel searchPlaceholder = new JLabel("Pesquisar Eventos");
         searchPlaceholder.setForeground(new Color(156, 156, 156));
         searchPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
         searchPlaceholder.setBounds(588, 251, 274, 14);
 		navBarPanel.add(searchPlaceholder);
 		
-		
 		RoundedTextFieldComponent roundedTextField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
-        
         roundedTextField.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -190,7 +190,7 @@ public class HomeUserUI {
         navBarPanel.add(roundedTextField);
 		
 
-		
+		//------------Configurações para usuário comum------------------
 		if(this.user instanceof CommonUser) {
 			balanceLabel = new JLabel(String.format("Saldo: R$ %.2f ", ((CommonUser) user).getBalance()));
 			balanceLabel.setForeground(new Color(255, 255, 255));
@@ -226,6 +226,7 @@ public class HomeUserUI {
 			navBarPanel.add(makeBetButton);
 		}
 		
+		//-------------Configurações da imagem de perfil ------------------
 		profileImg = 
         		user.getProfileImage() != null?
         		user.getProfileImage() : 

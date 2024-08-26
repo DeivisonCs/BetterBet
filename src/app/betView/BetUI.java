@@ -21,9 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import app.homeUser.HomeUserUI;
+import components.BetComponent;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import exceptions.InsufficientBalanceException;
+import exceptions.InvalidNumberException;
 import exceptions.MatchAlreadyFinishedException;
 import models.Bet;
 import models.CommonUser;
@@ -194,15 +196,19 @@ public class BetUI {
 					
 				} catch (NumberFormatException e3) {
 					 JOptionPane.showMessageDialog(frame, "Por favor, insira um valor numérico válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+					 e3.printStackTrace();
 				} catch (SQLException e1) {
 					 JOptionPane.showMessageDialog(null, "Falha ao realizar aposta, Tente Novamente", "Aviso", JOptionPane.ERROR_MESSAGE);
 					 e1.printStackTrace();
 				} catch (InsufficientBalanceException e2) {
 					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);
 					e2.printStackTrace();
-				} catch (MatchAlreadyFinishedException e3) {
+				} catch (MatchAlreadyFinishedException e4) {
 					 JOptionPane.showMessageDialog(null, "Não é possivel apostar em partidas finalizadas", "Aviso", JOptionPane.CANCEL_OPTION);
-
+					 e4.printStackTrace();
+				} catch (InvalidNumberException e5) {
+					 JOptionPane.showMessageDialog(null, "Valor de aposta inválido", "Aviso", JOptionPane.CANCEL_OPTION);
+					e5.printStackTrace();
 				}
 				
 				
