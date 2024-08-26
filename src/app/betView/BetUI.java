@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import app.homeUser.HomeUserUI;
+import components.BetComponent;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import exceptions.InsufficientBalanceException;

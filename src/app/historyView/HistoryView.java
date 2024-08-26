@@ -11,6 +11,8 @@ import javax.swing.ScrollPaneConstants;
 
 import app.ImageUtils;
 import app.homeUser.HomeUserUI;
+import components.RoundedImagePanel;
+import components.TicketComponent;
 import dao.event.EventDAO;
 import dao.event.EventPostgresDAO;
 import dao.match.MatchDAO;

@@ -1,4 +1,4 @@
-package app.betView;
+package components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
