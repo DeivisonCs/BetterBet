@@ -21,9 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import app.homeUser.HomeUserUI;
+import components.BetComponent;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import exceptions.InsufficientBalanceException;
+import exceptions.InvalidNumberException;
 import exceptions.MatchAlreadyFinishedException;
 import models.Bet;
 import models.CommonUser;
@@ -84,6 +86,7 @@ public class BetUI {
 			}
 		});
 		cancelButton.setBounds(239, 397, 100, 29);
+		cancelButton.setBackground(new Color(220,220,220));
 		panel.add(cancelButton);
 		
 		JScrollPane betScrollPane = new JScrollPane();
@@ -133,6 +136,7 @@ public class BetUI {
 		panel_1.add(lblNewLabel_1);
 		
 		JButton betButton = new RoundedButtonComponent("Apostar", new Color(170,170,170) , new Color(220,220,220));
+		betButton.setBackground(new Color(220,220,220));
 		betButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -194,15 +198,19 @@ public class BetUI {
 					
 				} catch (NumberFormatException e3) {
 					 JOptionPane.showMessageDialog(frame, "Por favor, insira um valor numérico válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+					 e3.printStackTrace();
 				} catch (SQLException e1) {
 					 JOptionPane.showMessageDialog(null, "Falha ao realizar aposta, Tente Novamente", "Aviso", JOptionPane.ERROR_MESSAGE);
 					 e1.printStackTrace();
 				} catch (InsufficientBalanceException e2) {
 					 JOptionPane.showMessageDialog(null, "Saldo Insuficiente", "Aviso", JOptionPane.CANCEL_OPTION);
 					e2.printStackTrace();
-				} catch (MatchAlreadyFinishedException e3) {
+				} catch (MatchAlreadyFinishedException e4) {
 					 JOptionPane.showMessageDialog(null, "Não é possivel apostar em partidas finalizadas", "Aviso", JOptionPane.CANCEL_OPTION);
-
+					 e4.printStackTrace();
+				} catch (InvalidNumberException e5) {
+					 JOptionPane.showMessageDialog(null, "Valor de aposta inválido", "Aviso", JOptionPane.CANCEL_OPTION);
+					e5.printStackTrace();
 				}
 				
 				

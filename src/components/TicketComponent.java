@@ -1,4 +1,4 @@
-package app.historyView;
+package components;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -11,11 +11,14 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import components.ImageUtils;
+import app.historyView.ShowTicketComponent;
 import models.Ticket;
 import service.bets.BetService;
 
@@ -24,7 +27,7 @@ public class TicketComponent extends JPanel {
 
     private Ticket ticket;
     private Color statusBackground;
-    private String statusImagePath;
+    private ImageIcon statusImagePath;
     private BetService betService = new BetService();
 
 
@@ -135,10 +138,17 @@ public class TicketComponent extends JPanel {
         labelBetType.setBounds(47, 45, 153, 14);
         this.add(labelBetType);
         
-        int radius = 50;
-        RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground, radius);
-        roundedImagePanel.setBounds(470, 21, 48, 49); 
-        this.add(roundedImagePanel);
+//        int radius = 50;
+//        RoundedImagePanel roundedImagePanel = new RoundedImagePanel(statusImagePath, statusBackground, radius);
+//        roundedImagePanel.setBounds(470, 21, 48, 49); 
+//        this.add(roundedImagePanel);
+//        
+        ImageUtils profilePicture = new ImageUtils();
+		profilePicture.setImage(statusImagePath);
+		profilePicture.setBounds(500, 21, 35, 35);
+		profilePicture.setBorder(null);
+		profilePicture.setBorderSize(0);
+		this.add(profilePicture);
 
     }
     
@@ -156,19 +166,19 @@ public class TicketComponent extends JPanel {
 
 
     private void setTicketStatus() {
-        switch (ticket.getStatus()) {
-            case "GANHOU":
-                statusBackground = Color.GREEN;
-                statusImagePath = "/resources/images/check.png";
-                break;
-            case "PERDEU":
-                statusBackground = Color.RED;
-                statusImagePath = "/resources/images/fail.png";
-                break;
-            default:
-                statusBackground = Color.YELLOW;
-                statusImagePath = "/resources/images/pending.png";
-                break;
-        }
+    	switch (ticket.getStatus()) {
+        case "GANHOU":
+//            statusBackground = Color.GREEN;
+            statusImagePath = new ImageIcon(getClass().getResource("/resources/images/win_icon.png"));
+            break;
+        case "PERDEU":
+//            statusBackground = Color.RED;
+            statusImagePath = new ImageIcon(getClass().getResource("/resources/images/loss_icon.png"));
+            break;
+        default:
+//            statusBackground = Color.YELLOW;
+            statusImagePath = new ImageIcon(getClass().getResource("/resources/images/pending_icon.png"));
+            break;
+    }
     }
 }

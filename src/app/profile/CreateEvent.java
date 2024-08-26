@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import database.InitDatabase;
 import models.Event;
@@ -136,16 +136,14 @@ public class CreateEvent {
 		
 		
 		// ------------------------- Create Button -------------------------
-		RoundedButton button = new RoundedButton("Criar Evento");
+		RoundedButtonComponent button = new RoundedButtonComponent("Criar Evento", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 			@Override

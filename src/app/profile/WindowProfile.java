@@ -19,17 +19,18 @@ import javax.swing.ScrollPaneConstants;
 
 import javax.swing.SwingConstants;
 
-import app.ImageUtils;
-import app.RoundedButton;
+import components.ImageUtils;
+import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
+import components.TransactionComponent;
+import components.BetComponent;
+
 import app.auth.LogInView;
-import app.betView.BetComponent;
 import app.edit.EditUser;
 import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
-import components.RoundedTextFieldComponent;
-import components.TransactionComponent;
 import models.Bet;
 import models.CommonUser;
 import models.Transaction;
@@ -75,7 +76,7 @@ public class WindowProfile {
     
     private TransactionDAO transactionDAO = new TransactionPostgresDAO();
     
-    private RoundedButton logOut;
+    private RoundedButtonComponent logOut;
     private JScrollPane scrollPane;
     private JPanel panelProfile;
     private JLabel balanceField;
@@ -187,9 +188,9 @@ public class WindowProfile {
       
 //--------------- Log Out ---------------------------------------------
         
-        logOut = new RoundedButton("LogOut");
+        logOut = new RoundedButtonComponent("LogOut", new Color(50, 50, 50), new Color(150, 150, 150));
         logOut.setBounds(785, 10, 120, 30);
-        logOut.setBackground(new Color(64, 128, 128));
+        logOut.setBackground(new Color(150, 150, 150));
         logOut.setForeground(Color.WHITE); 
         logOut.addActionListener(new ActionListener() {
         	
@@ -288,11 +289,10 @@ public class WindowProfile {
 		panelProfile.setBounds(0, 0, 1185, 661); 
 		
 		// ---------------- Create Event Button ----------------
-		RoundedButton buttonCreateEvent = new RoundedButton("Criar Evento");
+		RoundedButtonComponent buttonCreateEvent = new RoundedButtonComponent("Criar Evento", new Color(150, 150, 150), new Color(64, 128, 128));
 		buttonCreateEvent.setBounds(990, 140, 179, 59);
-		buttonCreateEvent.setBackground(new Color(64, 128, 128)); 
+		buttonCreateEvent.setBackground(new Color(64, 128, 128));
 		buttonCreateEvent.setForeground(Color.WHITE);
-		
 		buttonCreateEvent.addMouseListener(new MouseAdapter() {
 			
 			@Override
@@ -304,25 +304,24 @@ public class WindowProfile {
         
         
      // ---------------- Add Match Button ----------------
-     		RoundedButton buttonAddMatch = new RoundedButton("Criar Partida");
-     		buttonAddMatch.setBounds(990, 210, 179, 59);
-     		buttonAddMatch.setBackground(new Color(64, 128, 128)); 
-     		buttonAddMatch.setForeground(Color.WHITE);
-     		
-     		buttonAddMatch.addMouseListener(new MouseAdapter() {
-     			
-     			@Override
-     			public void mouseClicked(MouseEvent e) {
-     				new AddMatch(user.getId());
-     			}
-     		});
-            panelProfile.add(buttonAddMatch);
+    	RoundedButtonComponent buttonAddMatch = new RoundedButtonComponent("Criar Partida", new Color(150, 150, 150), new Color(64, 128, 128));
+ 		buttonAddMatch.setBounds(990, 210, 179, 59);
+ 		buttonAddMatch.setBackground(new Color(64, 128, 128));
+ 		buttonAddMatch.setForeground(Color.WHITE);
+ 		buttonAddMatch.addMouseListener(new MouseAdapter() {
+ 			
+ 			@Override
+ 			public void mouseClicked(MouseEvent e) {
+ 				new AddMatch(user.getId());
+ 			}
+ 		});
+        panelProfile.add(buttonAddMatch);
         
         
      // ---------------- Close Event Button ----------------
-        RoundedButton buttonCloseEvent = new RoundedButton("Finalizar Partida");
-        buttonCloseEvent.setBounds(990, 280, 179, 59);
-        buttonCloseEvent.setBackground(new Color(64, 128, 128)); 
+        RoundedButtonComponent buttonCloseEvent = new RoundedButtonComponent("Finalizar Partida", new Color(150, 150, 150), new Color(64, 128, 128));
+        buttonCloseEvent.setBackground(new Color(64, 128, 128));
+        buttonCloseEvent.setBounds(990, 280, 179, 59); 
         buttonCloseEvent.setForeground(Color.WHITE);      
         buttonCloseEvent.addMouseListener(new MouseAdapter() {
  			
@@ -335,7 +334,7 @@ public class WindowProfile {
 
     
         // ---------------- Create Admin User Button ----------------
-        RoundedButton addAdminEvent = new RoundedButton("Criar Admin");
+        RoundedButtonComponent addAdminEvent = new RoundedButtonComponent("Criar Admin", new Color(150, 150, 150), new Color(64, 128, 128));
         addAdminEvent.setBounds(990, 585, 179, 59);
         addAdminEvent.setBackground(new Color(64, 128, 128)); 
         addAdminEvent.setForeground(Color.WHITE);      
@@ -357,7 +356,7 @@ public class WindowProfile {
     
  // Mostra conteudos específicos para usuários comuns
 	public void placeUserContents() {
-		RoundedButton buttonHistApostas = new RoundedButton("Histórico de Apostas");
+		RoundedButtonComponent buttonHistApostas = new RoundedButtonComponent("Histórico de Apostas", new Color(150, 150, 150), new Color(64, 128, 128));
 		buttonHistApostas.setText("Histórico de Apostas");
 		buttonHistApostas.setBounds(737, 568, 179, 59);
 		buttonHistApostas.setBackground(new Color(64, 128, 128)); // Example color
@@ -366,8 +365,12 @@ public class WindowProfile {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Point location = frame.getLocationOnScreen();
+				int x = location.x;
+				int y = location.y;
+				
 				frame.dispose();
-				new HistoryView(user.getId());
+				new HistoryView(user.getId(), x, y);
 				
 			}
 			
@@ -375,8 +378,9 @@ public class WindowProfile {
 		panelProfile.add(buttonHistApostas);        
 		
 //------------------------- Deposit button -------------------------------------
-		
-     	RoundedButton buttonDepositar = new RoundedButton("Depositar");
+     
+		RoundedButtonComponent buttonDepositar = new RoundedButtonComponent("Depositar", new Color(150, 150, 150), new Color(64, 128, 128));
+
 	    buttonDepositar.addActionListener(new ActionListener() {
      	public void actionPerformed(ActionEvent e) {
      		JDialog dialogDeposito = new JDialog(frame, "Depósito", true);
@@ -398,7 +402,7 @@ public class WindowProfile {
 	        textValorDeposito.setBounds(130, 80, 150, 30);
 	        dialogDeposito.getContentPane().add(textValorDeposito);	
  	        
- 	        RoundedButton btnConfirmarDeposito = new RoundedButton("Confirmar Depósito");
+ 	        RoundedButtonComponent btnConfirmarDeposito = new RoundedButtonComponent("Confirmar Depósito", new Color(150, 150, 150), new Color(64, 128, 128));
  	        btnConfirmarDeposito.setBounds(120, 200, 150, 30);
  	        btnConfirmarDeposito.setBackground(new Color(64, 128, 128));
  	        btnConfirmarDeposito.setForeground(Color.WHITE);
@@ -457,15 +461,15 @@ public class WindowProfile {
  	        dialogDeposito.setVisible(true); // Exibe o pop-up
          	}
          });
-         buttonDepositar.setBounds(737, 210, 179, 59);
+         buttonDepositar.setBounds(737, 140, 179, 59);
          buttonDepositar.setBackground(new Color(64, 128, 128)); // Example color
          buttonDepositar.setForeground(Color.WHITE);
          panelProfile.add(buttonDepositar);
      
 //--------------------- Withdrawal button -----------------------------        
      
-     	RoundedButton buttonSacar = new RoundedButton("Sacar");
-                 
+         RoundedButtonComponent buttonSacar = new RoundedButtonComponent("Sacar", new Color(150, 150, 150), new Color(255, 58, 58));
+         
          buttonSacar.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
          		JDialog dialogSaque = new JDialog(frame, "Saque", true);
@@ -486,7 +490,7 @@ public class WindowProfile {
      	        textValorSaque.setBounds(130, 80, 150, 30);
      	        dialogSaque.getContentPane().add(textValorSaque);	
      	        
-     	        RoundedButton btnConfirmarSaque = new RoundedButton("Confirmar Saque");
+     	       RoundedButtonComponent btnConfirmarSaque = new RoundedButtonComponent("Confirmar Saque");
      	        btnConfirmarSaque.addActionListener(new ActionListener() {
      	        	public void actionPerformed(ActionEvent e) {
      	        		
@@ -545,11 +549,12 @@ public class WindowProfile {
      	        dialogSaque.setLocationRelativeTo(frame); 
      	        dialogSaque.setVisible(true); 
          	}
-         	});
+
+         });
          
-         
-         buttonSacar.setBounds(737, 140, 179, 59);
-         buttonSacar.setBackground(new Color(64, 128, 128)); // Example color
+         buttonSacar.setBounds(737, 210, 179, 59);
+         buttonSacar.setBackground(new Color(255, 58, 58)); // Example color
+
          buttonSacar.setForeground(Color.WHITE);       
          panelProfile.add(buttonSacar);
     	
@@ -567,7 +572,7 @@ public class WindowProfile {
         addressLabel.setBounds(39, 436, 138, 14);
         panelProfile.add(addressLabel);
         
-        JLabel addressField = new JLabel("vdvvv");
+        JLabel addressField = new JLabel(((CommonUser)user).getAddress());
         addressField.setForeground(Color.WHITE);
         addressField.setFont(new Font("Tahoma", Font.PLAIN, 12));
         addressField.setBounds(52, 461, 267, 14);

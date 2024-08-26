@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import database.InitDatabase;
 import models.CommonUser;
 import models.Event;
@@ -155,63 +155,61 @@ public class AddMatch {
 		
 		
 		// ------------------------- Save Button -------------------------
-				RoundedButton button = new RoundedButton("Adicionar Partida");
-				button.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseEntered(MouseEvent e) {
-						button.setBackground(new Color(255, 215, 0));
-						button.setFont(new Font("Tahoma", Font.PLAIN, 19));
-					}
-					@Override
-					public void mouseExited(MouseEvent e) {
-						button.setBackground(new Color(102, 203, 102));
-						button.setFont(new Font("Tahoma", Font.PLAIN, 24));
-					}
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						Event event = (Event) eventComboBox.getSelectedItem();
-						Team teamA = (Team) teamAComboBox.getSelectedItem();
-						Team teamB = (Team) teamBComboBox.getSelectedItem();
-						
-						Match newMatch = new Match(
-								event.getId(),
-								teamA,
-								0,
-								(float) 1.8,
-								(float) 1.8,
-								teamB,
-								0,
-								(float) 1.8,
-								"pendente",
-								LocalDateTime.now(),
-								1,
-								1,
-								1);
-						
-						try {
-							String valid = matchService.save(newMatch);
-							
-							if(valid.equals("200")) {
-								JOptionPane.showMessageDialog(null, "Partida adicionada com sucesso");
-							}
-							else {
-								JOptionPane.showMessageDialog(null, valid, "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
-							}
-						}
-						catch (SQLException ex) {
-							JOptionPane.showMessageDialog(null, "Algo inesperado aconteceu :(", "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
-							ex.printStackTrace();
-						}
-					}
+		RoundedButtonComponent button = new RoundedButtonComponent("Adicionar Partida", new Color(255, 215, 0), new Color(102, 203, 102));
+		button.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Event event = (Event) eventComboBox.getSelectedItem();
+				Team teamA = (Team) teamAComboBox.getSelectedItem();
+				Team teamB = (Team) teamBComboBox.getSelectedItem();
+				
+				Match newMatch = new Match(
+						event.getId(),
+						teamA,
+						0,
+						(float) 1.8,
+						(float) 1.8,
+						teamB,
+						0,
+						(float) 1.8,
+						"pendente",
+						LocalDateTime.now(),
+						1,
+						1,
+						1);
+				
+				try {
+					String valid = matchService.save(newMatch);
 					
-					
-					
-				});
-				button.setFont(new Font("Tahoma", Font.PLAIN, 22));
-		        button.setBounds(236, 600, 261, 59);
-		        button.setBackground(new Color(102, 203, 102));
-		        button.setForeground(Color.WHITE);
-		        frame.getContentPane().add(button);
+					if(valid.equals("200")) {
+						JOptionPane.showMessageDialog(null, "Partida adicionada com sucesso");
+					}
+					else {
+						JOptionPane.showMessageDialog(null, valid, "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				catch (SQLException ex) {
+					JOptionPane.showMessageDialog(null, "Algo inesperado aconteceu :(", "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
+					ex.printStackTrace();
+				}
+			}
+			
+			
+			
+		});
+		button.setFont(new Font("Tahoma", Font.PLAIN, 22));
+        button.setBounds(236, 600, 261, 59);
+        button.setBackground(new Color(102, 203, 102));
+        button.setForeground(Color.WHITE);
+        frame.getContentPane().add(button);
 		        
 	}
 

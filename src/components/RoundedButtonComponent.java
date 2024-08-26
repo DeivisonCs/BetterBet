@@ -37,7 +37,7 @@ public class RoundedButtonComponent extends JButton{
     private void initialize() {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
-        setBackground(Color.WHITE);
+        setBackground(EXITED_COLOR);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         setText(getText());
         addMouseListener(new MouseAdapter() {
