@@ -42,6 +42,7 @@ public class CommonUserService extends UserService{
 		float newBalance = user.getBalance() + expectedProfit;
 		
 		userDao.updateBalance(user, newBalance);
+		user.setBalance(user.getBalance()+ expectedProfit);
 
 	}
 	
