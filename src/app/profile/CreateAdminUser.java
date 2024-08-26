@@ -92,7 +92,7 @@ public class CreateAdminUser {
         returnButton.setBorderSize(0);
         
         returnButton.setBorder(null);
-        returnButton.setImage(new ImageIcon(getClass().getResource("/public/images/back-arrow.jpg")));
+        returnButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
         returnButton.setBounds(24, 24, 30, 30);
         frame.getContentPane().add(returnButton);
         

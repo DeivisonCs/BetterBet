@@ -119,7 +119,7 @@ public class EditUser{
         informationIcon.setBorderSize(0);
         
         informationIcon.setBorder(null);
-        informationIcon.setImage(new ImageIcon(getClass().getResource("/public/images/help-icon.png")));
+        informationIcon.setImage(new ImageIcon(getClass().getResource("/resources/images/help-icon.png")));
         informationIcon.setBounds(538, 74, 20, 20);
         informationIcon.setToolTipText("Edite apenas os campos que deseja alterar");
         
@@ -143,7 +143,7 @@ public class EditUser{
         returnButton.setBorderSize(0);
         
         returnButton.setBorder(null);
-        returnButton.setImage(new ImageIcon(getClass().getResource("/public/images/back-arrow.jpg")));
+        returnButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
         returnButton.setBounds(24, 24, 30, 30);
         frame.getContentPane().add(returnButton);
 		
@@ -152,7 +152,7 @@ public class EditUser{
         profile_img = 
         		user.getProfileImage() != null?
         		user.getProfileImage() : 
-    			new ImageIcon(getClass().getResource("/public/images/Profile-Icon.jpg"));
+    			new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"));
         
         System.out.println(profile_img);
         

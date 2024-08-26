@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 import models.Bet;
 import models.Match;
 
+@SuppressWarnings("serial")
 public class BetComponent extends JPanel{
 	
 	private Bet bet;
@@ -27,7 +28,7 @@ public class BetComponent extends JPanel{
 	private static final int PANEL_X_WIDTH = 44; 
 	private static final int PANEL_X_HEIGHT = 50; 
 
-	private static final Color DEFAULT_COLOR_MATCH_COMPONENT = new Color(40, 40, 40); 
+	private static final Color DEFAULT_COLOR_BET_COMPONENT = new Color(40, 40, 40); 
 	
 	private static final Color SELECTED_FONT_COLOR =  new Color(30, 30, 30); 
 	private static final Color DEFAULT_FONT_COLOR =  new Color(234, 217, 0);
@@ -54,7 +55,7 @@ public class BetComponent extends JPanel{
 
     private void initialize() {
     	setLayout(new GridBagLayout());
-        setBackground(DEFAULT_COLOR_MATCH_COMPONENT);
+        setBackground(DEFAULT_COLOR_BET_COMPONENT);
         
         //DEFINIÇÃO DA LARGURA DOS GRIDS DO MATCH COMPONENT
         GridBagLayout layout = (GridBagLayout) getLayout();
@@ -85,7 +86,7 @@ public class BetComponent extends JPanel{
         Color fontColor = isSelectedTeamA ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
         lblTimeA.setForeground(fontColor);
         
-        JLabel lblOddTimeA =  new JLabel(String.format("(%.1f)", bet.getOddTeamA()));
+        JLabel lblOddTimeA =  new JLabel(String.format("(%.2f)", bet.getOddTeamA()));
         lblOddTimeA.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblOddTimeA.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddTimeA.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,7 +104,7 @@ public class BetComponent extends JPanel{
         backgroundColor = isSelectedDraw ? SELECTED_COLOR : DEFAULT_COLOR;
         panelDraw.setBackground(backgroundColor);
         
-        JLabel lblOddDraw =  new JLabel(String.format("(%.1f)", bet.getOddDraw()));
+        JLabel lblOddDraw =  new JLabel(String.format("(%.2f)", bet.getOddDraw()));
         lblOddDraw.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblOddDraw.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddDraw.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,7 +119,7 @@ public class BetComponent extends JPanel{
         panelX.setBackground(DEFAULT_COLOR);
         panelX.setLayout(new BorderLayout());
         
-        JLabel lblX = new JLabel("X");
+        JLabel lblX = new JLabel(String.format("%d X %d", bet.getMatch().getScoreTeamA(), bet.getMatch().getScoreTeamB()));
         lblX.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblX.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblX.setHorizontalAlignment(SwingConstants.CENTER);
@@ -138,7 +139,7 @@ public class BetComponent extends JPanel{
         panelTimeB.setBackground(backgroundColor);
         panelTimeB.setLayout(new BorderLayout());
         
-        String lblTimeBStr = String.format("%s", bet.getMatch().getTeamB().getName());
+        String lblTimeBStr = String.format("%s",bet.getMatch().getTeamB().getName());
         JLabel lblTimeB = new JLabel(lblTimeBStr);
         lblTimeB.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblTimeB.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -146,7 +147,7 @@ public class BetComponent extends JPanel{
         fontColor = isSelectedTeamB ? SELECTED_FONT_COLOR : DEFAULT_FONT_COLOR;
         lblTimeB.setForeground(fontColor);
 
-        JLabel lblOddTimeB =  new JLabel(String.format("(%.1f)", bet.getOddTeamB()));
+        JLabel lblOddTimeB =  new JLabel(String.format("(%.2f)", bet.getOddTeamB()));
         lblOddTimeB.setBorder(new EmptyBorder(5, 0, 5, 0));
         lblOddTimeB.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblOddTimeB.setHorizontalAlignment(SwingConstants.CENTER);
