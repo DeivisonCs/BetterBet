@@ -40,5 +40,14 @@ public class EventService {
 			throw ex;
 		}
 	}
+	
+	public List<String> getUserRelatedEvents(int userId) throws SQLException {
+		try {
+			return this.eventDB.userRelatedEvents(userId);
+		}
+		catch (SQLException ex) {
+			throw ex;
+		}
+	}
 
 }

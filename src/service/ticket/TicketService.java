@@ -1,6 +1,7 @@
 package service.ticket;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import dao.ticket.TicketDAO;
 import dao.ticket.TicketPostgresDAO;
@@ -30,4 +31,37 @@ public class TicketService {
 		throw new MatchAlreadyFinishedException(valid);
 	}
 	
+	public List<Ticket> getTicketsByUser(Integer userId) throws SQLException {
+
+		try {
+			return ticketDao.getTicketsByUser(userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+	
+	
+	public List<Ticket> getTicketsByEventAndUser(String EventDescription, Integer userId) throws SQLException{
+
+		try {
+			return ticketDao.getTicketsByEventAndUser(EventDescription, userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+	
+	public void updateStatus(Ticket ticket) throws SQLException{
+
+		try {
+			ticketDao.updateStatus(ticket);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
 }

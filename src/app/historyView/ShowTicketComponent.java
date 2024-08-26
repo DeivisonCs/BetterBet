@@ -105,17 +105,17 @@ public class ShowTicketComponent {
 		
 		String finalOddValue = String.format("Odd: %.2f", ticket.getOdd());
 		JLabel lblNewLabel = new JLabel(finalOddValue);
-		lblNewLabel.setBounds(29, 15, 84, 14);
+		lblNewLabel.setBounds(10, 15, 84, 14);
 		panel_1.add(lblNewLabel);
 		
 		String value = String.format("Valor apostado: %.2f", ticket.getAmount());
 		JLabel lblNewLabel_1 = new JLabel(value);
-		lblNewLabel_1.setBounds(113, 15, 121, 14);
+		lblNewLabel_1.setBounds(104, 15, 137, 14);
 		panel_1.add(lblNewLabel_1);
 		
 		String expectedProfit = String.format("Ganhos: %.2f", ticket.getExpectedProfit());
 		JLabel lblNewLabel_2 = new JLabel(expectedProfit);
-		lblNewLabel_2.setBounds(260, 15, 78, 14);
+		lblNewLabel_2.setBounds(260, 15, 104, 14);
 		panel_1.add(lblNewLabel_2);
 		
 		int radius = 50;

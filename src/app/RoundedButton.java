@@ -37,7 +37,7 @@ public class RoundedButton extends JButton {
         graphics.fillRoundRect(0, 0, getWidth(), getHeight(), ARC_WIDTH, ARC_HEIGHT);
 
         // Borda
-        graphics.setColor(Color.GRAY); // Border color
+        graphics.setColor(Color.GRAY); 
         graphics.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, ARC_WIDTH, ARC_HEIGHT);
 
         // Texto do botão
