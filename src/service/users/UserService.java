@@ -23,7 +23,7 @@ public class UserService {
 
 	public String createUser(User newUser, String confirmPassword) throws SQLException, IOException{
 		
-		String validField = middleware.verifyNewUser((CommonUser)newUser, confirmPassword);
+		String validField = middleware.verifyNewUser(newUser, confirmPassword);
 		
 		if(validField.equals("200")) {
 			try {

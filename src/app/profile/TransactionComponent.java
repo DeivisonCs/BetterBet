@@ -1,4 +1,4 @@
-package app;
+package app.profile;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

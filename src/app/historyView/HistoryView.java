@@ -9,7 +9,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import app.ImageUtils;
+import components.ImageUtils;
 import app.homeUser.HomeUserUI;
 import app.profile.WindowProfile;
 import components.RoundedImagePanel;

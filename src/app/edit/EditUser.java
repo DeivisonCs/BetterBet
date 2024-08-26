@@ -28,7 +28,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
 import models.AdminUser;
@@ -261,16 +261,14 @@ public class EditUser{
 		
 		
 		// ------------------------- Save Button -------------------------
-		RoundedButton button = new RoundedButton("Salvar");
+		RoundedButtonComponent button = new RoundedButtonComponent("Salvar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 			@Override

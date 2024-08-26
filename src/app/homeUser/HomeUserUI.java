@@ -42,7 +42,7 @@ import components.MatchComponent;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 
-import app.ImageUtils;
+import components.ImageUtils;
 import app.betView.BetUI;
 import app.profile.WindowProfile;
 import dao.event.EventDAO;

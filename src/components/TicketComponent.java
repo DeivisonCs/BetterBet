@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import app.ImageUtils;
+import components.ImageUtils;
 import app.historyView.ShowTicketComponent;
 import models.Ticket;
 import service.bets.BetService;

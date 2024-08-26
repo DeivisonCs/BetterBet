@@ -86,6 +86,7 @@ public class BetUI {
 			}
 		});
 		cancelButton.setBounds(239, 397, 100, 29);
+		cancelButton.setBackground(new Color(220,220,220));
 		panel.add(cancelButton);
 		
 		JScrollPane betScrollPane = new JScrollPane();
@@ -135,6 +136,7 @@ public class BetUI {
 		panel_1.add(lblNewLabel_1);
 		
 		JButton betButton = new RoundedButtonComponent("Apostar", new Color(170,170,170) , new Color(220,220,220));
+		betButton.setBackground(new Color(220,220,220));
 		betButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				

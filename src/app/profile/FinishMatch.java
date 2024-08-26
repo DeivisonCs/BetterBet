@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import database.InitDatabase;
 import models.Event;
 import models.Match;
@@ -159,17 +159,15 @@ public class FinishMatch {
 		
 		
 		// ------------------------- Create Button -------------------------
-		RoundedButton button = new RoundedButton("Finalizar Partida");
+		RoundedButtonComponent button = new RoundedButtonComponent("Finalizar Partida", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 			
