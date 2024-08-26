@@ -1,0 +1,30 @@
+services:
+  # better_bet:
+  #   build: .
+  #   container_name: BetterBet_App
+  #   environment:
+  #     - DISPLAY=${DISPLAY}
+  #     - DB_NAME=postgres
+  #     - DB_URL=jdbc:postgresql://db:5432/betterbetdb
+  #     - DB_PASSWORD=postgres
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  #   network_mode: "host"
+  #   privileged: true
+  #   depends_on:
+  #     - db
+
+  db:
+    image: postgres
+    container_name: BetterBetDB
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+
+volumes:
+  db-datas-betterbet:

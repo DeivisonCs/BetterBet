@@ -486,7 +486,7 @@ public class WindowProfile {
         addressLabel.setBounds(39, 436, 138, 14);
         panelProfile.add(addressLabel);
         
-        JLabel addressField = new JLabel("vdvvv");
+        JLabel addressField = new JLabel(((CommonUser)user).getAddress());
         addressField.setForeground(Color.WHITE);
         addressField.setFont(new Font("Tahoma", Font.PLAIN, 12));
         addressField.setBounds(52, 461, 267, 14);

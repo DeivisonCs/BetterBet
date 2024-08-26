@@ -11,6 +11,7 @@ import javax.swing.ScrollPaneConstants;
 
 import app.ImageUtils;
 import app.homeUser.HomeUserUI;
+import app.profile.WindowProfile;
 import components.RoundedImagePanel;
 import components.TicketComponent;
 import dao.event.EventDAO;
@@ -225,7 +226,7 @@ public class HistoryView {
 						int y = location.y;
 						frame.dispose();
 					
-					new HomeUserUI(user.getId(), x, y);
+					new WindowProfile(user.getId(), x, y);
         	}
         	
         });
