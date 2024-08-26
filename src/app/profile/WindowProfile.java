@@ -1,6 +1,6 @@
 package app.profile;
 
-import java.awt.EventQueue;
+//import java.awt.EventQueue;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -16,42 +16,51 @@ import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerNumberModel;
 
 import javax.swing.SwingConstants;
 
 import components.ImageUtils;
 import components.RoundedButtonComponent;
+import components.RoundedTextFieldComponent;
+import components.TransactionComponent;
+import components.BetComponent;
+
 import app.auth.LogInView;
 import app.edit.EditUser;
 import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
-import database.InitDatabase;
+import models.Bet;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
 import service.users.UserService;
 
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
-import javax.swing.JSpinner;
+import javax.swing.JTextField;
 
 public class WindowProfile {
 	private int positionX;
 	private int positionY;
-	
+
     private JFrame frame;
     private final JPanel panelTransaction = new JPanel();
     
@@ -63,41 +72,30 @@ public class WindowProfile {
     private User user;
     private UserService userService = new UserService();
     
+    private float userBalance;
+    
     private TransactionDAO transactionDAO = new TransactionPostgresDAO();
     
     private RoundedButtonComponent logOut;
     private JScrollPane scrollPane;
     private JPanel panelProfile;
+    private JLabel balanceField;
     
-    /**
-     * Launch the application.
-     */
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(() -> {
-//            try {
-//            	InitDatabase.initializeDatabase();
-//                WindowProfile window = new WindowProfile(1);
-//                window.frame.setVisible(true);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//    }
 
-    /**
-     * Create the application.
-     */
     public WindowProfile(Integer userId, int positionX, int positionY) {
     	this.positionX = positionX;
     	this.positionY = positionY;
     	
     	try {
     		this.user = userService.getUser(userId);    		
-    		this.transactions = transactionDAO.getTransactions();
+    		this.transactions = transactionDAO.getTransactions(userId);
     		
     	}catch (Exception e) {
 			e.printStackTrace();
 		}
+    	
+    	if(this.user instanceof CommonUser)
+    		this.userBalance = ((CommonUser) this.user).getBalance();
     	
         initialize();
         updateTransactions();
@@ -121,6 +119,13 @@ public class WindowProfile {
         frame.getContentPane().add(panelProfile);
         panelProfile.setLayout(null);
         
+        if(this.user instanceof CommonUser) {
+	    	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
+		   	balanceField.setForeground(new Color(255, 255, 255));
+		   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		   	balanceField.setBounds(49, 511, 108, 37);
+	        panelProfile.add(balanceField);
+        }
         
         if(!user.getPermission().equals("admin")) {
         	
@@ -165,10 +170,7 @@ public class WindowProfile {
         ImageUtils editButton = new ImageUtils();
         editButton.setBorder(null);
         editButton.setBorderSize(0);
-        editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));
-        
-      // int distanciaDinamica = lblNome.getWidth() + 10;
-        
+        editButton.setImage(new ImageIcon(getClass().getResource("/resources/images/edit-pencil.jpg")));        
         editButton.setBounds(52, 190, 35, 35);
         editButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -250,21 +252,34 @@ public class WindowProfile {
     }
     
     public void updateTransactions() {
-        	//panelTransaction.removeAll();
+    	
+        	panelTransaction.removeAll();
+
+        	  	
+        	GridBagConstraints gbc = new GridBagConstraints();
+    	    gbc.gridx = 0;
+    	    gbc.gridy = 0;
+    	    gbc.fill = GridBagConstraints.HORIZONTAL;
+    	    gbc.anchor = GridBagConstraints.NORTH;  
+    	    gbc.weightx = 1.0;
+    	    gbc.insets = new Insets(5, 0, 10, 0);
+    	    
+    	    for (Transaction transaction : transactions) {
+
+    	    	TransactionComponent transactionComponent = new TransactionComponent(transaction);
+    	        panelTransaction.add(transactionComponent, gbc);
+    	        gbc.gridy++;
+    	    }
         	
-        	for(Transaction transaction : transactions) {
-        		
-        		TransactionComponent transactionComponent = new TransactionComponent(transaction);
-        		
-        		//transactionComponents.add(transactionComponent);
-        	
-        		panelTransaction.add(transactionComponent);        		
-        		
-        	}
-        	
-        	panelTransaction.revalidate();
-    		panelTransaction.repaint();
-        	
+    	    
+    	    gbc.weighty = 1.0;
+    	    JPanel filler = new JPanel();
+    	    filler.setBackground(new Color(128, 128, 128));
+    	    panelTransaction.add(filler, gbc);
+
+    	    panelTransaction.revalidate();
+    	    panelTransaction.repaint();
+    	            	
         }
     
     
@@ -361,44 +376,82 @@ public class WindowProfile {
 			
 		});
 		panelProfile.add(buttonHistApostas);        
-     
+		
 //------------------------- Deposit button -------------------------------------
      
 		RoundedButtonComponent buttonDepositar = new RoundedButtonComponent("Depositar", new Color(150, 150, 150), new Color(64, 128, 128));
+
 	    buttonDepositar.addActionListener(new ActionListener() {
      	public void actionPerformed(ActionEvent e) {
      		JDialog dialogDeposito = new JDialog(frame, "Depósito", true);
  	        dialogDeposito.setSize(400, 300);
  	        dialogDeposito.getContentPane().setLayout(null);
+ 	        dialogDeposito.setBackground(new Color(30, 30, 30));
  	        
- 	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja depositar");
- 	        lblInformeSaque.setBounds(20, 20, 200, 20);
- 	        dialogDeposito.getContentPane().add(lblInformeSaque);
+ 	        JLabel lblInformeDeposito = new JLabel("Informe quanto deseja depositar");
+ 	        lblInformeDeposito.setBounds(85, 25, 230, 25);
+ 	        lblInformeDeposito.setFont(new Font("Tahoma", Font.PLAIN, 15));
+ 	        dialogDeposito.getContentPane().add(lblInformeDeposito);
  	        
  	        JLabel lblReal = new JLabel("R$");
- 	        lblReal.setBounds(20, 60, 30, 20);
+ 	        lblReal.setBounds(100, 82, 30, 20);
+ 	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
  	        dialogDeposito.getContentPane().add(lblReal);
  	        
- 	        JSpinner spinnerValorDeposito = new JSpinner(new SpinnerNumberModel(0.00, 0.00, 1000.00, 1.00)); // Depois mudar o valor máx permitido
- 	        spinnerValorDeposito.setBounds(50, 60, 100, 25);
- 	        dialogDeposito.getContentPane().add(spinnerValorDeposito);
+ 	        RoundedTextFieldComponent textValorDeposito = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+	        textValorDeposito.setBounds(130, 80, 150, 30);
+	        dialogDeposito.getContentPane().add(textValorDeposito);	
  	        
  	        RoundedButtonComponent btnConfirmarDeposito = new RoundedButtonComponent("Confirmar Depósito", new Color(150, 150, 150), new Color(64, 128, 128));
- 	        btnConfirmarDeposito.setBounds(20, 200, 150, 30);
+ 	        btnConfirmarDeposito.setBounds(120, 200, 150, 30);
  	        btnConfirmarDeposito.setBackground(new Color(64, 128, 128));
  	        btnConfirmarDeposito.setForeground(Color.WHITE);
  	        btnConfirmarDeposito.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
+
+	    		if(!inputValidator(textValorDeposito.getText())) {
+	    			
+	    			JOptionPane.showMessageDialog(null, "Valor ou entrada inválidos");
+    			
+	    		}else {
+	    		
+		    		Double valor = Double.parseDouble(textValorDeposito.getText());
 	
-	    		Transaction deposito = new Transaction(user.getId(),"Deposito", (Double)spinnerValorDeposito.getValue());
-	    		TransactionComponent depositoComponent = new TransactionComponent(deposito);;
-	    		
-	    		panelTransaction.add(depositoComponent);
-	    		panelTransaction.revalidate();
-	    		panelTransaction.repaint();
-	    		
-	    		
-	    		dialogDeposito.dispose();
+		    		Transaction deposito = new Transaction(user.getId(), "Deposito", valor, LocalDateTime.now());
+	        		transactions.add(0, deposito);
+	        		
+	     		
+	        		userBalance += valor;
+	        		
+	        		//-------Atualiza no banco a nova transação 
+	        		try {
+						transactionDAO.insertTransaction(deposito);
+						transactionDAO.updateBalance(user, userBalance);
+					} catch (SQLException e1) {
+	
+						e1.printStackTrace();
+					}
+	        		
+	        		//----- Instancia novamente o usuário com o saldo atualizado
+	        		try {
+						user = userService.getUser(user.getId());
+					} catch (SQLException e1) {
+	
+						e1.printStackTrace();
+					} catch (IOException e1) {
+	
+						e1.printStackTrace();
+					}
+	        		
+	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));	        		
+	        		updateTransactions();
+	        		
+	        		
+	        		dialogDeposito.dispose();
+        		
+	    		}
+
+
 	    	}
  	        });
  	        
@@ -416,7 +469,7 @@ public class WindowProfile {
 //--------------------- Withdrawal button -----------------------------        
      
          RoundedButtonComponent buttonSacar = new RoundedButtonComponent("Sacar", new Color(150, 150, 150), new Color(255, 58, 58));
-                 
+         
          buttonSacar.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
          		JDialog dialogSaque = new JDialog(frame, "Saque", true);
@@ -424,58 +477,94 @@ public class WindowProfile {
      	        dialogSaque.getContentPane().setLayout(null);
      	        
      	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja sacar");
-     	        lblInformeSaque.setBounds(20, 20, 200, 20);
+     	        lblInformeSaque.setBounds(95, 25, 230, 25);
+     	        lblInformeSaque.setFont(new Font("Tahoma", Font.PLAIN, 15));
      	        dialogSaque.getContentPane().add(lblInformeSaque);
      	        
      	        JLabel lblReal = new JLabel("R$");
-     	        lblReal.setBounds(20, 60, 30, 20);
+    	        lblReal.setBounds(100, 82, 30, 20);
+    	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
      	        dialogSaque.getContentPane().add(lblReal);
      	        
-     	        JSpinner spinnerValorSaque = new JSpinner(new SpinnerNumberModel(0.00, 0.00, 1000.00, 1.00)); // O valor max está 100, mas deve ser mudado depois para o valor do saldo
-     	        spinnerValorSaque.setBounds(50, 60, 100, 25);
-     	        dialogSaque.getContentPane().add(spinnerValorSaque);
+     	        RoundedTextFieldComponent textValorSaque = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+     	        textValorSaque.setBounds(130, 80, 150, 30);
+     	        dialogSaque.getContentPane().add(textValorSaque);	
      	        
      	       RoundedButtonComponent btnConfirmarSaque = new RoundedButtonComponent("Confirmar Saque");
      	        btnConfirmarSaque.addActionListener(new ActionListener() {
      	        	public void actionPerformed(ActionEvent e) {
      	        		
-     	        		Transaction saque = new Transaction(user.getId(),"Saque", (Double)spinnerValorSaque.getValue());
-     	        		TransactionComponent saqueComponent = new TransactionComponent(saque);
-     	        		panelTransaction.add(saqueComponent);
-     	        		panelTransaction.revalidate();
-     	        		panelTransaction.repaint();
+     	        		if(!inputValidator(textValorSaque.getText())) {
+     		    			JOptionPane.showMessageDialog(null, "Valor ou entrada inválidos");
+     		    		}else {
      	        		
-     	        		
-     	        		dialogSaque.dispose();
+	     	        		Double valor = Double.parseDouble(textValorSaque.getText());
+	     	        		
+	     		    		if(valor > userBalance) {
+	     		    			JOptionPane.showMessageDialog(null, "Valor superior ao saldo disponível!");
+
+	     		    		}else {
+
+		     	        		Transaction saque = new Transaction(user.getId(), "Saque", valor, LocalDateTime.now());
+		     	        		transactions.add(0, saque);
+		     	        		
+		    	        		userBalance -= valor;
+		    	        		
+		    	        		//-------Atualiza no banco a nova transação 
+		    	        		try {
+									transactionDAO.insertTransaction(saque);
+									transactionDAO.updateBalance(user, userBalance);
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								}
+		    	        		
+		    	        		//----- Instancia novamente o usuário com o saldo atualizado
+		    	        		try {
+		    						user = userService.getUser(user.getId());
+		    					} catch (SQLException e1) {
+	
+		    						e1.printStackTrace();
+		    					} catch (IOException e1) {
+	
+		    						e1.printStackTrace();
+		    					}
+		    	        		
+		    	        		
+		    	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));		    	        		
+		    	        		updateTransactions();
+
+
+		     	        		dialogSaque.dispose();
+	     		    		}
+	     	        	}
+
      	        	}
      	        });
-     	        btnConfirmarSaque.setBounds(20, 200, 150, 30);
+     	        
+     	        btnConfirmarSaque.setBounds(120, 200, 150, 30);
      	        btnConfirmarSaque.setBackground(new Color(64, 128, 128));
      	        btnConfirmarSaque.setForeground(Color.WHITE); 
      	        dialogSaque.getContentPane().add(btnConfirmarSaque);
      	        
-     	        dialogSaque.setLocationRelativeTo(frame); // Centraliza em relação à janela principal
-     	        dialogSaque.setVisible(true); // Exibe o pop-up
+     	        dialogSaque.setLocationRelativeTo(frame); 
+     	        dialogSaque.setVisible(true); 
          	}
+
          });
+         
          buttonSacar.setBounds(737, 210, 179, 59);
          buttonSacar.setBackground(new Color(255, 58, 58)); // Example color
+
          buttonSacar.setForeground(Color.WHITE);       
          panelProfile.add(buttonSacar);
     	
 		logOut.setBounds(785, 10, 120, 30);
 		
-		JLabel balanceField = new JLabel("Saldo");
-	  	balanceField.setForeground(new Color(156, 156, 156));
-	  	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-	    balanceField.setBounds(39, 486, 108, 37);
-        panelProfile.add(balanceField);
-   
-	   	balanceField = new JLabel(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
-	   	balanceField.setForeground(new Color(255, 255, 255));
-	   	balanceField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-	   	balanceField.setBounds(49, 511, 108, 37);
-        panelProfile.add(balanceField);
+		JLabel balanceLabel = new JLabel("Saldo");
+	  	balanceLabel.setForeground(new Color(156, 156, 156));
+	  	balanceLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+	    balanceLabel.setBounds(39, 486, 108, 37);
+        panelProfile.add(balanceLabel);
 		
 		JLabel addressLabel = new JLabel("Endereço");
         addressLabel.setForeground(new Color(156, 156, 156));
@@ -496,10 +585,11 @@ public class WindowProfile {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(945, 66, 240, 595);
+        scrollPane.setBorder(null);
         scrollPane.addMouseWheelListener(new MouseWheelListener() {
 	  		@Override
 	  		public void mouseWheelMoved(MouseWheelEvent e) {
-	  			// TODO Auto-generated method stub
+
 	  			JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
 	  			int unitsToScroll = e.getWheelRotation() * 20;
 	  			verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
@@ -509,16 +599,15 @@ public class WindowProfile {
         frame.getContentPane().add(scrollPane);
         panelTransaction.setBorder(null);
 
-        panelTransaction.setBackground(new Color(30, 30, 30));
-        panelTransaction.setPreferredSize(new Dimension(240, 1000));
+        panelTransaction.setBackground(new Color(35, 35, 35));
+        panelTransaction.setLayout(new GridBagLayout());
  
         scrollPane.setViewportView(panelTransaction);
 
-        panelTransaction.setLayout(new BoxLayout(panelTransaction, BoxLayout.Y_AXIS));
         
         JPanel panelTransactionTxt = new JPanel();
         panelTransactionTxt.setBorder(null);
-        panelTransactionTxt.setBackground(new Color(30, 30, 30));
+        panelTransactionTxt.setBackground(new Color(35, 35, 35));
         panelTransactionTxt.setBounds(945, 0, 239, 66);
         frame.getContentPane().add(panelTransactionTxt);
         panelTransactionTxt.setLayout(null);
@@ -530,4 +619,48 @@ public class WindowProfile {
         lblTransaction.setBounds(0, 22, 244, 33);
         panelTransactionTxt.add(lblTransaction);  
 	}
+	
+	public boolean inputValidator(String text) {
+		if (text.isEmpty()) {
+
+	        return false;
+	    }
+
+	    // Verifica se o texto contém caracteres inválidos
+	    for (char c : text.toCharArray()) {
+	        if (!Character.isDigit(c) && c != '.') {
+	            return false;
+	        }
+	    }
+	    	    
+
+	    // Verifica se há mais de um separador decimal
+	    int commaCount = 0;
+	    for (int i = 0; i < text.length(); i++) {
+	        if (text.charAt(i) == '.') {
+	            commaCount++;
+	            
+	            // Se houver mais de um separador decimal, retorna falso
+	            if (commaCount > 1) {
+	                return false;
+	            }
+	            // Verifica se o separador decimal está no início ou no final
+	            if (i == 0 || i == text.length() - 1) {
+	                return false;
+	            }
+	        }
+	    }
+	    
+	    Double zeroVerifier = Double.parseDouble(text);
+	    
+	    if (zeroVerifier <= 0.0) {
+	    	return false;
+	    }
+
+	    return true;
+		
+	}
+
 }
+
+
