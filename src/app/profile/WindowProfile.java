@@ -21,7 +21,6 @@ import javax.swing.SwingConstants;
 
 import app.ImageUtils;
 import app.RoundedButton;
-import app.TransactionComponent;
 import app.auth.LogInView;
 import app.betView.BetComponent;
 import app.edit.EditUser;
@@ -30,6 +29,7 @@ import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
 import components.RoundedTextFieldComponent;
+import components.TransactionComponent;
 import models.Bet;
 import models.CommonUser;
 import models.Transaction;
