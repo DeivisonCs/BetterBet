@@ -1,26 +1,31 @@
 package models;
 
+import java.time.LocalDateTime;
+
 public class Transaction {
 	
 	private Integer id;
 	private Integer userId;
 	private String type;
 	private Double value;
+	private LocalDateTime date; 
 	
-	public Transaction (Integer id, Integer userId, String type, Double value) {
+	public Transaction (Integer id, Integer userId, String type, Double value, LocalDateTime date) {
 		super();
 		this.id = id;
 		this.userId = userId;
 		this.type = type;
 		this.value = value;
+		this.date = date;
 		
 	}
 	
-	public Transaction (Integer userId, String type, Double value) {
+	public Transaction (Integer userId, String type, Double value, LocalDateTime date) {
 		super();
 		this.userId = userId;
 		this.type = type;
 		this.value = value;
+		this.date = date;
 	}
 	
 	
@@ -41,6 +46,14 @@ public class Transaction {
 		return value;
 	}
 	
+	
+	public LocalDateTime getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
 
 	public void setId(Integer id) {
 		this.id = id;

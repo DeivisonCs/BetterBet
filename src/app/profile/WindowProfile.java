@@ -23,25 +23,33 @@ import app.ImageUtils;
 import app.RoundedButton;
 import app.TransactionComponent;
 import app.auth.LogInView;
+import app.betView.BetComponent;
 import app.edit.EditUser;
 import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
 import components.RoundedTextFieldComponent;
+import models.Bet;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
 import service.users.UserService;
 
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -243,20 +251,34 @@ public class WindowProfile {
     }
     
     public void updateTransactions() {
-
+    	
         	panelTransaction.removeAll();
-	
-        	for(Transaction transaction : transactions) {
-        		
-        		TransactionComponent transactionComponent = new TransactionComponent(transaction);
+
+        	  	
+        	GridBagConstraints gbc = new GridBagConstraints();
+    	    gbc.gridx = 0;
+    	    gbc.gridy = 0;
+    	    gbc.fill = GridBagConstraints.HORIZONTAL;
+    	    gbc.anchor = GridBagConstraints.NORTH;  
+    	    gbc.weightx = 1.0;
+    	    gbc.insets = new Insets(5, 0, 10, 0);
+    	    
+    	    for (Transaction transaction : transactions) {
+
+    	    	TransactionComponent transactionComponent = new TransactionComponent(transaction);
+    	        panelTransaction.add(transactionComponent, gbc);
+    	        gbc.gridy++;
+    	    }
         	
-        		panelTransaction.add(transactionComponent);        		
-        		
-        	}
-        	
-        	panelTransaction.revalidate();
-    		panelTransaction.repaint();
-        	
+    	    
+    	    gbc.weighty = 1.0;
+    	    JPanel filler = new JPanel();
+    	    filler.setBackground(new Color(128, 128, 128));
+    	    panelTransaction.add(filler, gbc);
+
+    	    panelTransaction.revalidate();
+    	    panelTransaction.repaint();
+    	            	
         }
     
     
@@ -378,18 +400,21 @@ public class WindowProfile {
  	        
  	        RoundedButton btnConfirmarDeposito = new RoundedButton("Confirmar Depósito");
  	        btnConfirmarDeposito.setBounds(120, 200, 150, 30);
+ 	        btnConfirmarDeposito.setBackground(new Color(64, 128, 128));
  	        btnConfirmarDeposito.setForeground(Color.WHITE);
  	        btnConfirmarDeposito.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e) {
 
 	    		if(!inputValidator(textValorDeposito.getText())) {
-	    			JOptionPane.showMessageDialog(null, "Informe apenas números");
+	    			
+	    			JOptionPane.showMessageDialog(null, "Valor ou entrada inválidos");
+    			
 	    		}else {
 	    		
 		    		Double valor = Double.parseDouble(textValorDeposito.getText());
 	
-		    		Transaction deposito = new Transaction(user.getId(), "Deposito", valor);
-	        		TransactionComponent depositoComponent = new TransactionComponent(deposito);
+		    		Transaction deposito = new Transaction(user.getId(), "Deposito", valor, LocalDateTime.now());
+	        		transactions.add(0, deposito);
 	        		
 	     		
 	        		userBalance += valor;
@@ -414,11 +439,8 @@ public class WindowProfile {
 						e1.printStackTrace();
 					}
 	        		
-	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
-	        		
-	        		panelTransaction.add(depositoComponent);
-	        		panelTransaction.revalidate();
-	        		panelTransaction.repaint();
+	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));	        		
+	        		updateTransactions();
 	        		
 	        		
 	        		dialogDeposito.dispose();
@@ -469,19 +491,19 @@ public class WindowProfile {
      	        	public void actionPerformed(ActionEvent e) {
      	        		
      	        		if(!inputValidator(textValorSaque.getText())) {
-     		    			JOptionPane.showMessageDialog(null, "Informe apenas números");
+     		    			JOptionPane.showMessageDialog(null, "Valor ou entrada inválidos");
      		    		}else {
      	        		
 	     	        		Double valor = Double.parseDouble(textValorSaque.getText());
 	     	        		
 	     		    		if(valor > userBalance) {
 	     		    			JOptionPane.showMessageDialog(null, "Valor superior ao saldo disponível!");
-	     		    			System.out.println("Entrou no if");
+
 	     		    		}else {
-			
-		     	        		Transaction saque = new Transaction(user.getId(), "Saque", valor);
-		    	        		TransactionComponent saqueComponent = new TransactionComponent(saque); 
-		    		    	        		
+
+		     	        		Transaction saque = new Transaction(user.getId(), "Saque", valor, LocalDateTime.now());
+		     	        		transactions.add(0, saque);
+		     	        		
 		    	        		userBalance -= valor;
 		    	        		
 		    	        		//-------Atualiza no banco a nova transação 
@@ -503,13 +525,11 @@ public class WindowProfile {
 		    						e1.printStackTrace();
 		    					}
 		    	        		
-		    	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));
 		    	        		
-		    	        		panelTransaction.add(saqueComponent);
-		    	        		panelTransaction.revalidate();
-		    	        		panelTransaction.repaint();
-		    	        		
-		
+		    	        		balanceField.setText(String.format("R$ %.2f", ((CommonUser) user).getBalance()));		    	        		
+		    	        		updateTransactions();
+
+
 		     	        		dialogSaque.dispose();
 	     		    		}
 	     	        	}
@@ -522,10 +542,10 @@ public class WindowProfile {
      	        btnConfirmarSaque.setForeground(Color.WHITE); 
      	        dialogSaque.getContentPane().add(btnConfirmarSaque);
      	        
-     	        dialogSaque.setLocationRelativeTo(frame); // Centraliza em relação à janela principal
-     	        dialogSaque.setVisible(true); // Exibe o pop-up
+     	        dialogSaque.setLocationRelativeTo(frame); 
+     	        dialogSaque.setVisible(true); 
          	}
-         });
+         	});
          
          
          buttonSacar.setBounds(737, 140, 179, 59);
@@ -560,10 +580,11 @@ public class WindowProfile {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(945, 66, 240, 595);
+        scrollPane.setBorder(null);
         scrollPane.addMouseWheelListener(new MouseWheelListener() {
 	  		@Override
 	  		public void mouseWheelMoved(MouseWheelEvent e) {
-	  			// TODO Auto-generated method stub
+
 	  			JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
 	  			int unitsToScroll = e.getWheelRotation() * 20;
 	  			verticalScrollBar.setValue(verticalScrollBar.getValue() + unitsToScroll);
@@ -573,16 +594,15 @@ public class WindowProfile {
         frame.getContentPane().add(scrollPane);
         panelTransaction.setBorder(null);
 
-        panelTransaction.setBackground(new Color(30, 30, 30));
-        panelTransaction.setPreferredSize(new Dimension(240, 1000));
+        panelTransaction.setBackground(new Color(35, 35, 35));
+        panelTransaction.setLayout(new GridBagLayout());
  
         scrollPane.setViewportView(panelTransaction);
 
-        panelTransaction.setLayout(new BoxLayout(panelTransaction, BoxLayout.Y_AXIS));
         
         JPanel panelTransactionTxt = new JPanel();
         panelTransactionTxt.setBorder(null);
-        panelTransactionTxt.setBackground(new Color(30, 30, 30));
+        panelTransactionTxt.setBackground(new Color(35, 35, 35));
         panelTransactionTxt.setBounds(945, 0, 239, 66);
         frame.getContentPane().add(panelTransactionTxt);
         panelTransactionTxt.setLayout(null);
@@ -607,12 +627,14 @@ public class WindowProfile {
 	            return false;
 	        }
 	    }
+	    	    
 
 	    // Verifica se há mais de um separador decimal
 	    int commaCount = 0;
 	    for (int i = 0; i < text.length(); i++) {
 	        if (text.charAt(i) == '.') {
 	            commaCount++;
+	            
 	            // Se houver mais de um separador decimal, retorna falso
 	            if (commaCount > 1) {
 	                return false;
@@ -622,6 +644,12 @@ public class WindowProfile {
 	                return false;
 	            }
 	        }
+	    }
+	    
+	    Double zeroVerifier = Double.parseDouble(text);
+	    
+	    if (zeroVerifier <= 0.0) {
+	    	return false;
 	    }
 
 	    return true;
