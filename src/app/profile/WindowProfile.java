@@ -274,7 +274,7 @@ public class WindowProfile {
     	    
     	    gbc.weighty = 1.0;
     	    JPanel filler = new JPanel();
-    	    filler.setBackground(new Color(128, 128, 128));
+    	    filler.setBackground(new Color(35, 35, 35));
     	    panelTransaction.add(filler, gbc);
 
     	    panelTransaction.revalidate();
