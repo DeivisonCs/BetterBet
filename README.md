@@ -1,4 +1,4 @@
-# Better Bet
+ Better Bet
 
 ## 1. Visão Geral
 **Better Bet** é uma aplicação de casa de apostas desenvolvida em Java (JDK 21) usando Swing para a interface gráfica e PostgreSQL para o banco de dados. A aplicação permite aos usuários realizar apostas em eventos esportivos e gerenciar suas contas.
@@ -86,12 +86,6 @@ betterBet_build_and_run.bat
     - Senha: `van123`
 - **Banco de Dados**: As tabelas necessárias são criadas automaticamente no banco de dados `betterbetdb`, mas é necessário garantir que o banco de dados já exista, seguindo os passos `3.3.1` ou `3.3.2`.
 
-### Diagrama de Classes
-![Diagrama Classes](docs/images/UML-Diagram.png)
-
-### Modelagem Banco de Dados
-![Modelagem do Banco](docs/images/DatabaseDiagram.png)
-
 ## 5. Funcionalidades
 - **Cadastro e Login de Usuários**: Os usuários podem se registrar e fazer login na plataforma.
 - **Gerenciamento de Apostas**: Permite aos usuários fazer apostas em eventos esportivos com diferentes valores.
@@ -114,3 +108,8 @@ betterBet_build_and_run.bat
 2. Na tela de apostas, escolha o evento desejado e insira o valor a ser apostado.
 3. Visualize o histórico de apostas a qualquer momento na tela dedicada.
 
+### Diagrama de Classes
+![Diagrama Classes](docs/images/UML-Diagram.png)
+
+### Modelagem Banco de Dados
+![Modelagem do Banco](docs/images/DatabaseDiagram.png)
