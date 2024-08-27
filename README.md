@@ -12,12 +12,12 @@
 
 ### 3.1 Clonar o repositório
 ```bash
-git clone https://github.com/exemplo/better-bet.git
+git clone https://github.com/DeivisonCs/BetterBet.git
 ```
 
 ### 3.2 Navegar até o diretório do projeto
 ```bash
-cd better-bet
+cd BetterBet
 ```
 
 ### 3.3 Configurar o banco de dados
