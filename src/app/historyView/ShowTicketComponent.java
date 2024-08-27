@@ -30,6 +30,10 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
+/**
+ * A classe `ShowTicketComponent` é responsável por exibir os detalhes de um ticket específico,
+ * incluindo as apostas associadas, a odd, o valor apostado e os ganhos esperados.
+ */
 public class ShowTicketComponent {
 	private JFrame frame;
 	private JPanel betsPanel;
@@ -39,7 +43,7 @@ public class ShowTicketComponent {
     
 	
 	/**
-	 * Create the application.
+	 * Cria a Janela
 	 */
 	public ShowTicketComponent(Ticket ticket) {
 		this.ticket = ticket;
@@ -50,7 +54,7 @@ public class ShowTicketComponent {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa os conteúdos da Janela
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -150,15 +154,16 @@ public class ShowTicketComponent {
 		frame.setVisible(true);
 	}
 	
+    /**
+     * Atualiza a lista de apostas exibidas no painel.
+     */
 	public void updatebets() {
 	    betsPanel.removeAll();
 	    
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;  
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
 	    for (Bet bet : ticket.getBets()) {
@@ -176,6 +181,9 @@ public class ShowTicketComponent {
 	    betsPanel.repaint();
 	}
 	
+    /**
+     * Define o ícone de status com base no status do ticket.
+     */
     private void setTicketStatus() {
         switch (ticket.getStatus()) {
             case "GANHOU":

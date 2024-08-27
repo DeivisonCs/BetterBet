@@ -52,6 +52,11 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 
+/**
+ * A classe `HistoryView` é responsável por exibir o histórico de tickets de um usuário específico.
+ * Ela cria uma interface gráfica onde os tickets podem ser filtrados por tipo, evento e status.
+
+ */
 public class HistoryView {
 	private int positionX;
 	private int positionY;
@@ -71,9 +76,13 @@ public class HistoryView {
 	private JComboBox<String> statusComboBox;
 	private JFrame frame;
 
-	/**
-	 * Create the application.
-	 */
+    /**
+     * Construtor da classe HistoryView. Inicializa a visualização do histórico de tickets do usuário.
+     * 
+     * @param userId ID do usuário cujos tickets serão exibidos.
+     * @param positionX Posição X da janela na tela.
+     * @param positionY Posição Y da janela na tela.
+     */
 	public HistoryView(Integer userId, int positionX, int positionY) {
 		this.positionX = positionX;
     	this.positionY = positionY;
@@ -82,15 +91,12 @@ public class HistoryView {
 			events = eventService.getUserRelatedEvents(userId);
 			user = userService.getUser(userId);
 			allTickets = ticketService.getTicketsByUser(userId);
-			verifyTickets();
 			ticketsDisplayed = new ArrayList<Ticket>();
 			allTickets.forEach(ticket -> ticketsDisplayed.add(ticket));
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		initialize();
@@ -240,9 +246,7 @@ public class HistoryView {
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;  
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
 	    for (Ticket ticket : ticketsDisplayed) {
@@ -261,7 +265,11 @@ public class HistoryView {
 	    ticketsPanel.repaint();
 	}
 	
-
+    /**
+     * Filtra os tickets exibidos com base no status selecionado.
+     * 
+     * @param status Status para filtrar os tickets.
+     */
 	private void filterByStatus(String status) {
 		
 		ticketsDisplayed = ticketsDisplayed.stream()
@@ -271,6 +279,11 @@ public class HistoryView {
 		
 	}
 	
+    /**
+     * Filtra os tickets exibidos com base no tipo selecionado.
+     * 
+     * @param type Tipo para filtrar os tickets.
+     */
 	private void filterByType(String type) {
 		
 		ticketsDisplayed = ticketsDisplayed.stream()
@@ -279,12 +292,23 @@ public class HistoryView {
 		
 	}
 	
+    /**
+     * Filtra os tickets exibidos com base no evento selecionado.
+     * 
+     * @param description Descrição do evento para filtrar os tickets.
+     * @throws SQLException Se houver um erro ao acessar os dados do banco de dados.
+     */
 	private void filterByEvent(String description) throws SQLException{
 		
 		ticketsDisplayed = ticketService.getTicketsByEventAndUser(description, user.getId());
 		
 	}
 	
+    /**
+     * Aplica os filtros selecionados e atualiza a lista de tickets exibidos.
+     * 
+     * @throws SQLException Se houver um erro ao acessar os dados do banco de dados.
+     */
 	private void ticketsFilter() throws SQLException {
 		
 		final String type = (String)typeComboBox.getSelectedItem();
@@ -308,79 +332,6 @@ public class HistoryView {
 		if(!status.equals("----------")) {
 			filterByStatus(status);
 		}
-		
-	}
-	
-	private void verifyTickets() throws SQLException {
-		
-		List<Ticket> tickets = allTickets;
-		AtomicBoolean pendingBet = new AtomicBoolean(false);
-		CommonUserService commonUserService = new CommonUserService();
-		
-		tickets.forEach(ticket -> {
-			
-			if(ticket.getStatus().equals("PENDENTE")) {
-				
-				pendingBet.set(false);
-				//verifica se todas as partidas da bet foram finalizadas
-				ticket.getBets().forEach(bet->{
-					if(!bet.getMatch().getStatus().equals("finalizado")) {
-						pendingBet.set(true);
-						return;
-					}
-				});
-				if(pendingBet.get()) {
-					return;
-				}
-				
-				AtomicBoolean youWon = new AtomicBoolean(true);
-				//verifica se aerrou algum palpite
-				ticket.getBets().forEach(bet->{
-					if(bet.getSelectedBet().equals("TEAM_A")) {
-						if(bet.getMatch().getScoreTeamA() <= bet.getMatch().getScoreTeamB()) {
-							youWon.set(false);
-						}
-					}else if(bet.getSelectedBet().equals("TEAM_B")) {
-						if(bet.getMatch().getScoreTeamA() >= bet.getMatch().getScoreTeamB()) {
-							youWon.set(false);
-						}
-					}else if(bet.getSelectedBet().equals("DRAW")) {
-						if(bet.getMatch().getScoreTeamA() != bet.getMatch().getScoreTeamB()) {
-							youWon.set(false);
-						}
-					}
-				});
-				
-				if(youWon.get()) {
-					ticket.setStatus("GANHOU");
-					
-					CommonUser commonUser = (CommonUser)user;
-
-					try {
-						ticketService.updateStatus(ticket);
-						commonUserService.increaseBalance(commonUser, ticket.getExpectedProfit());
-					} catch (SQLException e) {
-						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);	
-					} catch (Exception e) {
-						throw new RuntimeException("Erro ao atualizar saldo do usuário: " + user.getId(), e);	
-						
-					}
-					
-					
-				}else {
-					ticket.setStatus("PERDEU");
-					try {
-						ticketService.updateStatus(ticket);
-					} catch (SQLException e) {
-						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);
-					}
-				}
-			}
-			
-			ticket.getBets().clear();
-			
-		});
-		
 		
 	}
 	

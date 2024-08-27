@@ -12,8 +12,18 @@ import database.ConnectionDB;
 import models.Transaction;
 import models.User;
 
+/**
+ * Implementação da interface TransactionDAO para realizar operações com a tabela de transações no banco de dados.
+ */
 public class TransactionPostgresDAO implements TransactionDAO{
 
+	/**
+     * Recupera uma lista de transações associadas a um determinado usuário.
+     * 
+     * @param userId O ID do usuário cujas transações serão recuperadas.
+     * @return Uma lista de objetos `Transaction` que pertencem ao usuário.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Transaction> getTransactions(int userId) throws SQLException {
 		
@@ -55,7 +65,12 @@ public class TransactionPostgresDAO implements TransactionDAO{
 		
 		
 	}
-	
+	/**
+     * Insere uma nova transação no banco de dados.
+     * 
+     * @param transaction O objeto `Transaction` contendo os detalhes da nova transação.
+     * @throws SQLException Se houver um erro ao inserir a transação no banco de dados.
+     */
 	@Override
 	public void insertTransaction(Transaction transaction) throws SQLException{
 		String query = "INSERT INTO transactions (user_id, type_transaction, value_transaction, date_transaction) "
@@ -77,7 +92,13 @@ public class TransactionPostgresDAO implements TransactionDAO{
 		}
 		
 	}
-	
+	 /**
+     * Atualiza o saldo de um usuário no banco de dados.
+     * 
+     * @param user O objeto `User` cujo saldo será atualizado.
+     * @param newBalance O novo saldo a ser atribuído ao usuário.
+     * @throws SQLException Se houver um erro ao atualizar o saldo no banco de dados.
+     */
 	@Override
 	public void updateBalance(User user, float newBalance)  throws SQLException{
 		String query = "UPDATE BET_USERS SET BALANCE =? WHERE USER_ID =?";

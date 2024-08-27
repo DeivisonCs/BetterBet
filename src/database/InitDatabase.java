@@ -5,6 +5,9 @@ import java.sql.Statement;
 
 import security.PasswordHandler;
 
+/**
+ * Classe responsável por inicializar o banco de dados com as tabelas e dados iniciais.
+ */
 public class InitDatabase {
 
 	private static String dropTables;
@@ -25,7 +28,9 @@ public class InitDatabase {
 
 	
 
-	
+    /**
+     * Inicializa o banco de dados criando as tabelas e inserindo os dados iniciais.
+     */
 	public static void initializeDatabase() {
 
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
@@ -53,6 +58,9 @@ public class InitDatabase {
 		}
 	}
 	
+    /**
+     * Adiciona as consultas SQL para criar e popular as tabelas do banco de dados.
+     */
 	private static void addQueries() {
 		InitDatabase.dropTables = 
 			    "DROP TABLE IF EXISTS bet CASCADE;"

@@ -17,10 +17,21 @@ import database.ConnectionDB;
 import models.Match;
 import models.Team;
 
+/**
+ * Implementação da interface MatchDAO para realizar operações com a tabela de partidas no banco de dados.
+ */
 public class MatchPostgresDAO implements MatchDAO {
 
 	private TeamDAO teamPostgresDAO = new TeamPostgresDAO();
 	
+	
+	/**
+     * Cria uma nova partida no banco de dados e retorna o objeto Match com o ID gerado.
+     * 
+     * @param newMatch O objeto `Match` a ser inserido.
+     * @return O objeto `Match` com o ID gerado pela inserção.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public Match create(Match newMatch) throws SQLException{
 		String query = "INSERT INTO match ("
@@ -67,7 +78,13 @@ public class MatchPostgresDAO implements MatchDAO {
             throw e;
         }   
 	}
-	
+	 
+    /**
+     * Recupera todas as partidas com o status 'pendente'.
+     * 
+     * @return Uma lista de objetos `Match` representando todas as partidas pendentes.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Match> getAllMatches() throws SQLException {
 		String query = "SELECT * FROM match WHERE status = 'pendente'";
@@ -112,7 +129,13 @@ public class MatchPostgresDAO implements MatchDAO {
         }   
 		
 	}
-
+	 /**
+     * Recupera todas as partidas de um evento específico com o status 'pendente'.
+     * 
+     * @param event_id O ID do evento para filtrar as partidas.
+     * @return Uma lista de objetos `Match` representando as partidas pendentes do evento especificado.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Match> getMatchesByEvent(Integer event_id) throws SQLException {
 		String query = "SELECT * FROM match WHERE event_id = ? AND status = 'pendente'";
@@ -156,7 +179,14 @@ public class MatchPostgresDAO implements MatchDAO {
             throw e;
         }   
 	}
-
+	
+	/**
+     * Recupera uma partida específica pelo ID.
+     * 
+     * @param matchId O ID da partida a ser recuperada.
+     * @return O objeto `Match` representando a partida com o ID especificado, ou `null` se não for encontrada.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public Match getMatchById(Integer matchId) throws SQLException {
 	    String query = "SELECT * FROM match WHERE match_id = ?";
@@ -197,6 +227,13 @@ public class MatchPostgresDAO implements MatchDAO {
 	    }
 	}
 	
+	/**
+     * Finaliza uma partida, atualizando seu status e atribuindo pontuações aleatórias para os times.
+     * 
+     * @param matchId O ID da partida a ser finalizada.
+     * @return `true` se a atualização for bem-sucedida, `false` caso contrário.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public boolean finishMatch(int matchId) throws SQLException{
 		String query = "UPDATE match SET status='finalizado', a_team_score=?, b_team_score=?  WHERE match_id = ?";
@@ -235,6 +272,14 @@ public class MatchPostgresDAO implements MatchDAO {
 		return false;
 	}
 
+	/**
+     * Atualiza o valor das apostas para um time específico em uma partida.
+     * 
+     * @param id O ID da partida.
+     * @param amount O valor a ser adicionado à aposta.
+     * @param teamBetAmount O campo da tabela a ser atualizado (e.g., 'a_team_bet_amount').
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public void UpdateAmount(Integer id, float amount, String teamBetAmount) throws SQLException {
 
@@ -257,7 +302,12 @@ public class MatchPostgresDAO implements MatchDAO {
 	    }
 	}
 
-
+	 /**
+     * Atualiza as odds para uma partida específica.
+     * 
+     * @param matchUpdatedAmount O objeto `Match` com as novas odds a serem atualizadas.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public void UpdateOdds(Match matchUpdatedAmount) throws SQLException {
 		String query = "UPDATE MATCH " +

@@ -18,6 +18,13 @@ public class TicketPostgresDAO implements TicketDAO {
 
 	BetDAO betDao = new BetPostgresDAO();
 	
+	/**
+     * Recupera uma lista de tickets associados a um determinado usuário.
+     * 
+     * @param userId O ID do usuário cujos tickets serão recuperados.
+     * @return Uma lista de objetos `Ticket` que pertencem ao usuário.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Ticket> getTicketsByUser(Integer userId) throws SQLException {
 	    String query = "SELECT * FROM TICKET WHERE user_id = ?";
@@ -50,6 +57,13 @@ public class TicketPostgresDAO implements TicketDAO {
 	    }
 	}
 	
+    /**
+     * Cria um novo ticket no banco de dados.
+     * 
+     * @param ticket O objeto `Ticket` que será inserido.
+     * @return O ID gerado para o ticket inserido.
+     * @throws SQLException Se houver um erro ao inserir o ticket no banco de dados.
+     */
 	@Override
 	public int createTicket(Ticket ticket) throws SQLException {
 		String query = "INSERT INTO TICKET (odd, time_stamp, user_id, amount, ticket_type, status) VALUES (?, ?, ?, ?, ?, ?)";
@@ -82,6 +96,14 @@ public class TicketPostgresDAO implements TicketDAO {
         }
 	}
 
+	 /**
+     * Recupera uma lista de tickets de um usuário associados a um determinado evento, usando a descrição do evento.
+     * 
+     * @param description A descrição do evento para filtrar os tickets.
+     * @param userId O ID do usuário cujos tickets serão recuperados.
+     * @return Uma lista de objetos `Ticket` associados ao evento e usuário.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Ticket> getTicketsByEventAndUser(String description, Integer userId) throws SQLException {
 		
@@ -132,7 +154,13 @@ public class TicketPostgresDAO implements TicketDAO {
             throw e;
         }
 	}
-
+	
+	  /**
+     * Atualiza o status de um ticket no banco de dados.
+     * 
+     * @param ticket O objeto `Ticket` cujo status será atualizado.
+     * @throws SQLException Se houver um erro ao atualizar o status no banco de dados.
+     */
 	@Override
 	public void updateStatus(Ticket ticket) throws SQLException {
 		String query = "UPDATE ticket SET status = ? WHERE ticket_id = ?";

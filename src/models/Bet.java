@@ -1,5 +1,9 @@
 package models;
 
+/**
+ * A classe Bet representa uma aposta em um evento esportivo.
+ * Ela armazena as odds para os diferentes resultados de um jogo no momento da aposta e as informações sobre o ticket e a aposta selecionada.
+ */
 public class Bet {
 	private Integer id;
 	private float oddTeamA;
@@ -9,7 +13,17 @@ public class Bet {
 	private Integer idTicket;
 	private String selectedBet;
 	
-	
+    /**
+     * Construtor da classe Bet que inicializa todos os atributos.
+     * 
+     * @param id Identificador único da aposta.
+     * @param oddTeamA Odds para o time A vencer.
+     * @param oddTeamB Odds para o time B vencer.
+     * @param oddDraw Odds para um empate.
+     * @param match Jogo ao qual a aposta está associada.
+     * @param idTicket Identificador do ticket associado à aposta.
+     * @param selectedBet Resultado selecionado para a aposta.
+     */
 	public Bet(Integer id, float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String selectedBet) {
 		super();
 		this.id = id;
@@ -21,7 +35,16 @@ public class Bet {
 		this.selectedBet = selectedBet;
 	}
 
-
+    /**
+     * Construtor da classe Bet sem o atributo id.
+     * 
+     * @param oddTeamA Odds para o time A vencer.
+     * @param oddTeamB Odds para o time B vencer.
+     * @param oddDraw Odds para um empate.
+     * @param match Jogo ao qual a aposta está associada.
+     * @param idTicket Identificador do ticket associado à aposta.
+     * @param selectedBet Resultado selecionado para a aposta.
+     */
 	public Bet(float oddTeamA, float oddTeamB,float oddDraw, Match match, Integer idTicket, String selectedBet) {
 		super();
 		this.oddTeamA = oddTeamA;
@@ -32,6 +55,15 @@ public class Bet {
 		this.selectedBet = selectedBet;
 	}
 
+    /**
+     * Construtor da classe Bet sem os atributos id e idTicket.
+     * 
+     * @param oddTeamA Odds para o time A vencer.
+     * @param oddTeamB Odds para o time B vencer.
+     * @param oddDraw Odds para um empate.
+     * @param match Jogo ao qual a aposta está associada.
+     * @param selectedBet Resultado selecionado para a aposta.
+     */
 	public Bet(float oddTeamA, float oddTeamB,float oddDraw, Match match, String selectedBet) {
 		super();
 		this.oddTeamA = oddTeamA;
@@ -40,6 +72,9 @@ public class Bet {
 		this.match = match;
 		this.selectedBet = selectedBet;
 	}
+	
+	
+	//Getters e Setters
 	
 	public Integer getId() {
 		return id;

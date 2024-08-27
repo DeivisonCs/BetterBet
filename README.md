@@ -12,12 +12,12 @@
 
 ### 3.1 Clonar o repositório
 ```bash
-git clone https://github.com/exemplo/better-bet.git
+git clone https://github.com/DeivisonCs/BetterBet.git
 ```
 
 ### 3.2 Navegar até o diretório do projeto
 ```bash
-cd better-bet
+cd BetterBet
 ```
 
 ### 3.3 Configurar o banco de dados
@@ -55,12 +55,13 @@ java -cp bin Main
 
 ### Pacotes
 - **Pacote `app`**: Contém as classes com as interfaces gráficas.
+- **Pacote `components`**: Contém componentes de tela utilizados nas interfaces gráficas.
 - **Pacote `dao`**: Contém as classes de acesso a dados.
 - **Pacote `database`**: Contém as classes relacionadas ao banco de dados.
 - **Pacote `exceptions`**: Contém classes para tratamento de exceções.
 - **Pacote `middleware`**: Contém classes para a lógica intermediária entre a GUI e o banco de dados.
 - **Pacote `models`**: Contém as classes que representam os modelos de dados.
-- **Pacote `resources`**: Contém as imagens e outros recursos da aplicação.
+- **Pacote `resources`**: Contém as imagens da aplicação.
 - **Pacote `security`**: Contém a parte de segurança relacionada à encriptação de senhas.
 - **Pacote `services`**: Contém serviços e lógica de negócio.
 
@@ -77,12 +78,19 @@ java -cp bin Main
 ## 5. Funcionalidades
 - **Cadastro e Login de Usuários**: Os usuários podem se registrar e fazer login na plataforma.
 - **Gerenciamento de Apostas**: Permite aos usuários fazer apostas em eventos esportivos com diferentes valores.
+- **Cadastro de Partidas**: Permite aos usuários do tipo Admin criar novas partidas.
+- **Cadastro de Eventos**: Permite aos usuários do tipo Admin criar novos eventos.
 - **Histórico de Apostas**: Os usuários podem visualizar o histórico completo de suas apostas.
 
 ## 6. Interface Gráfica (GUI)
-- **Janela Principal**: Tela inicial que permite o login e registro de usuários.
+- **Tela de Login**: Tela que permite o login de um usuário cadastrado.
+- **Tela de Cadastro**: Tela que permite o registro de novos usuários.
 - **Tela de Apostas**: Interface para selecionar eventos e realizar apostas.
+- **Tela de Perfil**: Exibe as informações do usuário e permite fazer transações.
 - **Tela de Histórico**: Exibe as apostas anteriores do usuário.
+- **Tela de Cadastro de Partida**: Interface para cadastro de novas partidas.
+- **Tela de Eventos**: Interface para cadastro de novos eventos(campeonatos, ligas, etc).
+- **Tela de Cadastro de Admin**: Interface para cadastro de novos administradores.
 
 ## 7. Como Usar
 1. Abra a aplicação e faça login ou crie uma nova conta.

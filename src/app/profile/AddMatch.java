@@ -27,6 +27,11 @@ import service.team.TeamService;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
+/**
+ * Classe para adicionar uma nova partida.
+ * Esta classe cria uma interface gráfica para que o usuário possa
+ * adicionar uma nova partida ao sistema, selecionando um evento e dois times.
+ */
 public class AddMatch {
 	
 	private int userId;

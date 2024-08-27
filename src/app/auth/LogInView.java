@@ -22,6 +22,11 @@ import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
 import service.users.UserService;
 
+/**
+ * Classe responsável pela interface gráfica de login do usuário.
+ * Esta classe cria e gerencia a janela de login, onde o usuário pode inserir seu email e senha para autenticação.
+ * Inclui a lógica para validar as credenciais do usuário e gerenciar a navegação para a tela inicial ou a página de cadastro.
+ */
 public class LogInView {
 	private UserService service = new UserService();
 	private JFrame frame;

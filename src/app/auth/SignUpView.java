@@ -34,6 +34,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import service.users.CommonUserService;
 
+/**
+ * Classe que representa a tela de cadastro de novos usuários.
+ */
 public class SignUpView {
 	private CommonUserService userService = new CommonUserService();
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");

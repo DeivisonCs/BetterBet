@@ -68,7 +68,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 
-
+/**
+ * A classe HomeUserUI representa a interface do usuário para a tela inicial do usuário.
+ * Ela gerencia a exibição de partidas, eventos e informações do usuário na interface gráfica.
+ * Ela é se materializa de forma diferente a depender do tipo de usuário(Admin, Comum)
+ */
 public class HomeUserUI {
 	private int positionX;
 	private int positionY;
@@ -95,9 +99,13 @@ public class HomeUserUI {
 	private MatchService matchService = new MatchService();
 	private EventService eventService = new EventService();
 	
-	/**
-	 * Create the application.
-	 */
+    /**
+     * Construtor da classe HomeUserUI.
+     * 
+     * @param userId ID do usuário
+     * @param positionX Posição X da janela
+     * @param positionY Posição Y da janela
+     */
 	public HomeUserUI(Integer userId, int positionX, int positionY) {
 		System.out.println("UserId Home " + userId);
 		
@@ -131,10 +139,10 @@ public class HomeUserUI {
 		updateEvents();
 		
 	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
+    /**
+     * Inicializa o conteúdo da janela.
+     */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setVisible(true);
@@ -334,18 +342,17 @@ public class HomeUserUI {
 	}
 	
 	
-	//Adiciona as partidas no gridbaglayout
+    /**
+     * Atualiza a lista de partidas na interface gráfica.
+     */
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		
 	        gbc.gridx = 0;
 	        gbc.gridy = 0;
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.anchor = GridBagConstraints.NORTH;  
-	        gbc.weightx = 1.0;
 	        gbc.insets.bottom = 10;
 	        gbc.insets.top = 5;
         
@@ -387,16 +394,16 @@ public class HomeUserUI {
         gamesPanel.repaint();
 	}
 	
-	//Adiciona os eventos no gridbagLayout
+    /**
+     * Atualiza a lista de eventos na interface gráfica.
+     */
 	public void updateEvents() {
 	    eventsPanel.removeAll();
 
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 5, 5, 5);
 
 	    for (Event event : events) {
@@ -444,7 +451,17 @@ public class HomeUserUI {
 	}
 	
 	
-	//No momento da atualização das partidas ao clicar em um evento, verifica se a partida daquele evento ja esta selecionada e a mantém selecionada.
+    /**
+     * Verifica se uma partida já está selecionada na lista de partidas selecionadas, para não alterá-la
+     * em caso de atualização da lista(ao selecionar um evento por exemplo)
+     * com base no ID do evento, nome das equipes A e B.
+     * 
+     * @param event_id ID do evento associado à partida
+     * @param team_a Nome da equipe A
+     * @param team_b Nome da equipe B
+     * @return Um Optional contendo o índice da partida selecionada se ela já estiver na lista,
+     *         ou Optional.empty() se não estiver.
+     */
 	private Optional<Integer> positionIfExistsSelectedMatchComponent(Integer event_id, String team_a, String team_b) {
 		if(!selectedMatches.isEmpty()) {
 			for (MatchComponent component : selectedMatches) {
@@ -457,6 +474,13 @@ public class HomeUserUI {
 		}
 		return Optional.empty();
 	}
+	
+    /**
+     * Verifica os tickets pendentes do usuário, e atualiza seus status e o saldo do usuario, caso a(s) partida(s)
+     * da aposta já tenham sido finalizadas.
+     * 
+     * @param user Usuário a ser verificado
+     */
 	private void verifyTickets(User userToVerify) throws SQLException {
 		TicketService ticketService = new TicketService();
 		List<Ticket> tickets = ticketService.getTicketsByUser(userToVerify.getId());
@@ -529,6 +553,8 @@ public class HomeUserUI {
 		tickets.clear();
 		
 	}
+	
+	//Getters e Setters
 	public User getUser() {
 		return this.user;
 	}

@@ -27,9 +27,23 @@ import models.CommonUser;
 import models.User;
 import security.PasswordHandler;
 
+
+/**
+ * Classe responsável pela implementação de operações relacionadas ao usuário no banco de dados PostgreSQL.
+ * Utiliza as tabelas 'users' e 'bet_users' para armazenar informações gerais e específicas de usuários apostadores.
+ */
 public class UserPostgresDAO implements UserDAO {
+	
+	// Instância da classe de utilitários para manipulação de imagens
 	private ImageUtils imgUtils = new ImageUtils();
 
+	
+	 /**
+     * Cria um novo usuário no banco de dados.
+     * @param newUser O objeto do tipo User contendo os dados do novo usuário.
+     * @return O usuário criado.
+     * @throws SQLException Se ocorrer algum erro durante a operação de inserção.
+     */
 	@Override
 	public User create(User newUser) throws SQLException {
 		String query = "INSERT INTO users (name, cpf, email, password, permission) VALUES (?, ?, ?, ?, ?)";
@@ -104,6 +118,14 @@ public class UserPostgresDAO implements UserDAO {
 	    }
 	}
 	
+	
+	 /**
+     * Autentica o usuário com base no email e senha fornecidos.
+     * @param email O email do usuário.
+     * @param password A senha do usuário.
+     * @return O ID do usuário autenticado.
+     * @throws SQLException Se o email ou senha forem inválidos.
+     */
 	@Override
 	public Integer login(String email, String password) throws SQLException{
 		String query1 = "SELECT user_id, password FROM users WHERE email = ?";
@@ -132,6 +154,14 @@ public class UserPostgresDAO implements UserDAO {
 		}
 	}
 
+	
+
+    /**
+     * Recupera todos os usuários do banco de dados.
+     * @return Uma lista contendo todos os usuários.
+     * @throws SQLException Se ocorrer algum erro ao buscar os dados.
+     * @throws IOException Se ocorrer algum erro na leitura da imagem de perfil.
+     */
 	@Override
 	public List<User> getAll() throws SQLException, IOException {
 		String query = "SELECT * FROM users";
@@ -170,6 +200,14 @@ public class UserPostgresDAO implements UserDAO {
         return users;
 	}
 
+	
+	 /**
+     * Recupera um usuário pelo seu ID.
+     * @param id O ID do usuário.
+     * @return O objeto User contendo os dados do usuário.
+     * @throws SQLException Se ocorrer algum erro na consulta.
+     * @throws IOException Se ocorrer algum erro na leitura da imagem de perfil.
+     */
 	@Override
 	public User getById(Integer id) throws SQLException, IOException {
 		String query1 = "SELECT * FROM users WHERE user_id = ?";
@@ -229,6 +267,14 @@ public class UserPostgresDAO implements UserDAO {
 		}
 	}
 
+	
+	/**
+     * Exclui um usuário do banco de dados com base no ID.
+     * 
+     * @param id O ID do usuário a ser excluído.
+     * @return `true` se o usuário foi excluído com sucesso, `false` caso contrário.
+     * @throws SQLException Se houver um erro ao executar a exclusão no banco de dados.
+     */
 	@Override
 	public boolean deleteById(int id) throws SQLException {
 		String query = "DELETE FROM users WHERE user_id=?";
@@ -246,6 +292,16 @@ public class UserPostgresDAO implements UserDAO {
         }
 	}
 
+	
+	/**
+     * Edita as informações de um usuário existente no banco de dados.
+     * 
+     * @param user O objeto `User` com as novas informações.
+     * @param selectedImgFile Um arquivo de imagem de perfil atualizado, se houver.
+     * @return `true` se a edição foi bem-sucedida, `false` caso contrário.
+     * @throws SQLException Se houver um erro ao atualizar as informações no banco de dados.
+     * @throws FileNotFoundException Se o arquivo de imagem não for encontrado.
+     */
 	@Override
 	public boolean edit(User user, File selectedImgFile) throws SQLException, FileNotFoundException {
 		String query1 = "UPDATE users SET name=?, email=?, password=? WHERE user_id=?";
@@ -311,6 +367,14 @@ public class UserPostgresDAO implements UserDAO {
 	    }
 	}
 	
+	/**
+     * Atualiza a imagem de perfil de um usuário no banco de dados.
+     * 
+     * @param userId O ID do usuário.
+     * @param selectedImgFile O arquivo de imagem a ser definido como a nova imagem de perfil.
+     * @throws SQLException Se houver um erro ao atualizar a imagem no banco de dados.
+     * @throws FileNotFoundException Se o arquivo de imagem não for encontrado.
+     */
 	public void updateProfileImage(int userId, File selectedImgFile) throws SQLException, FileNotFoundException{
 		String query = "UPDATE users SET profile_image=? WHERE user_id=?";
 		
@@ -332,7 +396,13 @@ public class UserPostgresDAO implements UserDAO {
 		
 	}
 
-
+	 /**
+     * Adiciona um depósito ao saldo do usuário.
+     * 
+     * @param userId O ID do usuário que receberá o depósito.
+     * @param depositAmount O valor a ser depositado na conta do usuário.
+     * @throws SQLException Se houver um erro ao atualizar o saldo no banco de dados.
+     */
 	public boolean addDepositUser(int id, float amount) throws SQLException {
 		String query = "UPDATE users SET deposit=? WHERE user_id=?";
 
@@ -349,7 +419,15 @@ public class UserPostgresDAO implements UserDAO {
             throw e;
         }
 	}
-
+	
+	/**
+     * Recupera um usuário pelo email informado.
+     * 
+     * @param email O email do usuário a ser recuperado.
+     * @return O objeto `User` correspondente ao email fornecido ou `null` se o usuário não for encontrado.
+     * @throws SQLException Se houver um erro ao consultar o banco de dados.
+     * @throws IOException Se houver um erro ao processar a imagem do perfil do usuário.
+     */
 	@Override
 	public User getUserByEmail(String email) throws SQLException{
 		String query = "SELECT * FROM users WHERE email=?";
@@ -381,6 +459,13 @@ public class UserPostgresDAO implements UserDAO {
 		}
 	}
 	
+	/**
+     * Verifica se um CPF já está registrado no banco de dados.
+     * 
+     * @param cpf O CPF a ser verificado.
+     * @return `true` se o CPF estiver registrado, `false` caso contrário.
+     * @throws SQLException Se houver um erro ao consultar o banco de dados.
+     */
 	@Override
 	public boolean isCpfRegistered(String cpf) throws SQLException{
 		String query = "SELECT COUNT(*) FROM users WHERE cpf=?";
@@ -404,7 +489,14 @@ public class UserPostgresDAO implements UserDAO {
 			throw ex;
 		}
 	}
-
+	
+	 /**
+     * Atualiza o saldo de um usuário.
+     * 
+     * @param userId O ID do usuário cujo saldo será atualizado.
+     * @param newBalance O novo saldo a ser atribuído ao usuário.
+     * @throws SQLException Se houver um erro ao atualizar o saldo no banco de dados.
+     */
 	@Override
 	public void updateBalance(User user, float newBalance)  throws SQLException{
 		String query = "UPDATE BET_USERS SET BALANCE =? WHERE USER_ID =?";

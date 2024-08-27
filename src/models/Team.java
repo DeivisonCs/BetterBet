@@ -1,12 +1,23 @@
 package models;
 
+
+/**
+ * A classe Team representa um time ou equipe no sistema.
+ * Ela contém informações básicas sobre o time, como o nome e o esporte ao qual pertence.
+ */
 public class Team {
 	
 	private Integer id;
 	private String name;
 	private String sport;
 	
-	
+    /**
+     * Construtor da classe Team que inicializa todos os atributos.
+     * 
+     * @param id Identificador único do time.
+     * @param name Nome do time.
+     * @param sport Esporte ao qual o time pertence.
+     */
 	public Team(Integer id, String name, String sport) {
 		super();
 		this.id = id;
@@ -15,12 +26,20 @@ public class Team {
 	}
 	
 	
+	/**
+     * Construtor da classe Team sem o atributo id.
+     * 
+     * @param name Nome do time.
+     * @param sport Esporte ao qual o time pertence.
+     */
 	public Team(String name, String sport) {
 		super();
 		this.name = name;
 		this.sport = sport;
 	}
 	
+	
+	//Getters e Setters
 	public Integer getId() {
 		return id;
 	}

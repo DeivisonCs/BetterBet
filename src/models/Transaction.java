@@ -10,6 +10,15 @@ public class Transaction {
 	private Double value;
 	private LocalDateTime date; 
 	
+	 /**
+     * Construtor da classe Transaction que inicializa todos os atributos.
+     * 
+     * @param id Identificador único da transação.
+     * @param userId Identificador do usuário associado à transação.
+     * @param type Tipo de transação.
+     * @param value Valor da transação.
+     * @param date Data e hora da transação.
+     */
 	public Transaction (Integer id, Integer userId, String type, Double value, LocalDateTime date) {
 		super();
 		this.id = id;
@@ -20,6 +29,14 @@ public class Transaction {
 		
 	}
 	
+	/**
+     * Construtor da classe Transaction sem o atributo id, para criação.
+     * 
+     * @param userId Identificador do usuário associado à transação.
+     * @param type Tipo de transação.
+     * @param value Valor da transação.
+     * @param date Data e hora da transação.
+     */
 	public Transaction (Integer userId, String type, Double value, LocalDateTime date) {
 		super();
 		this.userId = userId;

@@ -41,6 +41,11 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * BetUI é a classe responsável pela interface gráfica do usuário para a tela de apostas.
+ * Esta classe permite ao usuário visualizar as apostas no bilhete atual, inserir um valor de aposta,
+ * e confirmar ou cancelar a aposta.
+ */
 public class BetUI {
 	private HomeUserUI mainFrame;
 	private JFrame frame;
@@ -53,7 +58,7 @@ public class BetUI {
 	private MatchService matchService = new MatchService();
 	
 	/**
-	 * Create the application.
+	 * Cria a janela
 	 */
 	public BetUI(Ticket ticket, HomeUserUI mainFrame) {
 		this.ticket = ticket;
@@ -64,7 +69,7 @@ public class BetUI {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa o conteúdo da Janela
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -115,25 +120,25 @@ public class BetUI {
 		gbl_betsPanel.rowWeights = new double[]{Double.MIN_VALUE};
 		betsPanel.setLayout(gbl_betsPanel);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(128, 128, 128));
-		panel_1.setBounds(10, 328, 374, 47);
-		panel.add(panel_1);
-		panel_1.setLayout(null);
+		JPanel betInformationsPanel = new JPanel();
+		betInformationsPanel.setBackground(new Color(128, 128, 128));
+		betInformationsPanel.setBounds(10, 328, 374, 47);
+		panel.add(betInformationsPanel);
+		betInformationsPanel.setLayout(null);
 		
 		String finalOddValue = String.format("Odd: %.2f", ticket.getOdd());
 		JLabel lblNewLabel = new JLabel(finalOddValue);
 		lblNewLabel.setBounds(280, 15, 84, 14);
-		panel_1.add(lblNewLabel);
+		betInformationsPanel.add(lblNewLabel);
 		
 		textField = new RoundedTextFieldComponent(10, 20, 20, 10, 20);
 		textField.setBounds(49, 8, 155, 28);
-		panel_1.add(textField);
+		betInformationsPanel.add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblNewLabel_1 = new JLabel("Valor: ");
 		lblNewLabel_1.setBounds(10, 15, 46, 14);
-		panel_1.add(lblNewLabel_1);
+		betInformationsPanel.add(lblNewLabel_1);
 		
 		JButton betButton = new RoundedButtonComponent("Apostar", new Color(170,170,170) , new Color(220,220,220));
 		betButton.setBackground(new Color(220,220,220));
@@ -222,15 +227,16 @@ public class BetUI {
 		frame.setVisible(true);
 	}
 	
-	public void updatebets() {
+    /**
+     * Atualiza o painel de apostas com os componentes de aposta correspondentes ao bilhete atual.
+     */
+	private void updatebets() {
 	    betsPanel.removeAll();
 	    
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;  
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
 	    for (Bet bet : ticket.getBets()) {

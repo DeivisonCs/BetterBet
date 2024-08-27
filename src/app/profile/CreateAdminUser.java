@@ -27,6 +27,9 @@ import exceptions.InvalidPasswordException;
 import models.AdminUser;
 import service.users.UserService;
 
+/**
+ * Classe responsável pela criação da interface gráfica para o cadastro de um administrador.
+ */
 public class CreateAdminUser {
 	private int positionX;
 	private int positionY;
@@ -49,7 +52,7 @@ public class CreateAdminUser {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa o conteúdo da janela.
 	 */
 	private void initialize() {
 		frame = new JFrame();

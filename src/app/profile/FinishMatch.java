@@ -59,9 +59,9 @@ public class FinishMatch {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	   /**
+     * Inicializa o conteúdo da janela.
+     */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -194,9 +194,10 @@ public class FinishMatch {
         frame.getContentPane().add(button);
 	}
 	
-	/**
-	* Atualiza a lista de partidas pendentes no ComboBox de partidas
-	*/ 
+    /**
+     * Atualiza os itens da ComboBox de partidas.
+     * @param matchs Lista de partidas a serem exibidas
+     */
 	private void updateItens(List<Match> matchs) {
 		matchComboBox.removeAllItems();
 		

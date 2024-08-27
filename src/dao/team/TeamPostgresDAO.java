@@ -13,6 +13,12 @@ import models.Team;
 
 public class TeamPostgresDAO implements TeamDAO{
 
+    /**
+     * Recupera uma lista de todos os times disponíveis no banco de dados.
+     * 
+     * @return Uma lista de objetos `Team` representando todos os times.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Team> getAllTeams() throws SQLException {
 		String query = "SELECT * FROM team";
@@ -40,7 +46,13 @@ public class TeamPostgresDAO implements TeamDAO{
         return teams;
 		
 	}
-
+    /**
+     * Recupera um time do banco de dados com base no seu ID.
+     * 
+     * @param id O ID do time que será recuperado.
+     * @return Um objeto `Team` representando o time encontrado, ou `null` se não for encontrado.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public Team getTeamById(int id) throws SQLException {
 	    String query = "SELECT * FROM team WHERE team_id = ?";

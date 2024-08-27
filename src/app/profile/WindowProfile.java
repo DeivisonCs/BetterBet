@@ -29,6 +29,7 @@ import app.auth.LogInView;
 import app.edit.EditUser;
 import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
+import components.RoundedButton;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
 import models.Bet;
@@ -57,6 +58,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
+/**
+ * Classe que representa a janela de perfil do usuário.
+ * Permite visualizar e editar informações do perfil, realizar transações.
+ * Ela é materializada de forma diferente a depender do tipo de usuário(Admin, Comum)
+ */
 public class WindowProfile {
 	private int positionX;
 	private int positionY;
@@ -81,7 +87,12 @@ public class WindowProfile {
     private JPanel panelProfile;
     private JLabel balanceField;
     
-
+    /**
+     * Construtor da classe. Inicializa o perfil do usuário e carrega suas informações e transações.
+     * @param userId ID do usuário
+     * @param positionX Posição X da janela
+     * @param positionY Posição Y da janela
+     */
     public WindowProfile(Integer userId, int positionX, int positionY) {
     	this.positionX = positionX;
     	this.positionY = positionY;
@@ -102,7 +113,7 @@ public class WindowProfile {
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Inicializa o conteúdo da janela.
      */
     private void initialize() {
         frame = new JFrame();
@@ -251,6 +262,9 @@ public class WindowProfile {
         }
     }
     
+    /**
+     * Atualiza a lista de transações na interface.
+     */
     public void updateTransactions() {
     	
         	panelTransaction.removeAll();
@@ -259,9 +273,7 @@ public class WindowProfile {
         	GridBagConstraints gbc = new GridBagConstraints();
     	    gbc.gridx = 0;
     	    gbc.gridy = 0;
-    	    gbc.fill = GridBagConstraints.HORIZONTAL;
     	    gbc.anchor = GridBagConstraints.NORTH;  
-    	    gbc.weightx = 1.0;
     	    gbc.insets = new Insets(5, 0, 10, 0);
     	    
     	    for (Transaction transaction : transactions) {
@@ -282,10 +294,9 @@ public class WindowProfile {
     	            	
         }
     
-    
     /**
-	* Mostra conteúdos específicos para a tela do usuário administradores
-	*/
+     * Mostra conteudos específicos para usuários adm
+     */
     public void placeAdmContents() {
     	logOut.setBounds(1050, 10, 120, 30);
 		panelProfile.setBounds(0, 0, 1185, 661); 
@@ -621,6 +632,12 @@ public class WindowProfile {
         panelTransactionTxt.add(lblTransaction);  
 	}
 	
+	/**
+	 * Valida a entrada de texto para garantir que seja um número decimal positivo.
+	 * 
+	 * @param text O texto a ser validado.
+	 * @return true se o texto for um número decimal positivo válido, caso contrário, false.
+	 */
 	public boolean inputValidator(String text) {
 		if (text.isEmpty()) {
 

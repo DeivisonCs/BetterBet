@@ -22,6 +22,9 @@ import service.event.EventService;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 
+/**
+ * Classe responsável pela criação da interface gráfica para o cadastro de um evento.
+ */
 public class CreateEvent {
 	private String[] sports = {"futebol"};
 	private int userId;
@@ -41,7 +44,7 @@ public class CreateEvent {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa o conteúdo da janela.
 	 */
 	private void initialize() {
 		frame = new JFrame();
