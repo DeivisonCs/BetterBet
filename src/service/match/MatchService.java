@@ -6,6 +6,7 @@ import java.util.List;
 
 import dao.match.MatchDAO;
 import dao.match.MatchPostgresDAO;
+import exceptions.InvalidMatchException;
 import middleware.MatchMiddleware;
 import models.Bet;
 import models.Match;
@@ -19,19 +20,14 @@ public class MatchService {
 		this.middleware = new MatchMiddleware();
 	}
 	
-	public String save(Match newMatch) throws SQLException{
-		String valid = middleware.verifyNewMatch(newMatch);
-		
-		if(valid.equals("200")) {
-			try {
-				matchDB.create(newMatch);
-			}
-			catch (SQLException ex) {
-				throw new SQLException();
-			}
+	public void save(Match newMatch) throws SQLException, InvalidMatchException{
+		try {
+			matchDB.create(newMatch);
+			middleware.verifyNewMatch(newMatch);
 		}
-		
-		return valid;
+		catch (SQLException ex) {
+			throw new SQLException();
+		}
 	}
 	
 	public Match UpdateAmount(Bet bet, float amount)  throws SQLException, Exception{

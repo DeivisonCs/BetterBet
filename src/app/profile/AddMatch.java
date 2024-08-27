@@ -2,11 +2,9 @@ package app.profile;
 
 import java.awt.Color;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,8 +16,7 @@ import javax.swing.JOptionPane;
 
 import components.ImageUtils;
 import components.RoundedButtonComponent;
-import database.InitDatabase;
-import models.CommonUser;
+import exceptions.InvalidMatchException;
 import models.Event;
 import models.Match;
 import models.Team;
@@ -29,7 +26,6 @@ import service.team.TeamService;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 public class AddMatch {
 	
@@ -42,26 +38,13 @@ public class AddMatch {
 
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-////					InitDatabase.initializeDatabase();
-//					AddMatch window = new AddMatch();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
-	 * Create the application.
-	 */
+	* Interface de cadastro de partidas (acessível apenas para usuários administradores).
+	* Após o usuário ser validado ele é redirecionado para a tela home do site (src/app/homeUser/HomeUserUI)
+	* 
+	* @param userId Id do usuário logado
+	*/
 	public AddMatch(int userId) {
 		this.userId = userId;
 		
@@ -90,7 +73,9 @@ public class AddMatch {
 		
 		
 		// ------------------------- Return Button -------------------------        
-        
+		/**
+    	* Fecha a tela atual.
+    	*/
         ImageUtils returnButton = new ImageUtils();
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
@@ -155,6 +140,13 @@ public class AddMatch {
 		
 		
 		// ------------------------- Save Button -------------------------
+		/**
+		* Ao ser clicado, o button cria uma instância de Match,
+		* chama o matchService para verificar os dados inseridos e fazer a  inserção no banco.
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		* @throws InvalidMatchException Caso haja algum erro relacionado aos times escolhidos
+		*/ 
 		RoundedButtonComponent button = new RoundedButtonComponent("Adicionar Partida", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -187,23 +179,15 @@ public class AddMatch {
 						1);
 				
 				try {
-					String valid = matchService.save(newMatch);
+					 matchService.save(newMatch);
 					
-					if(valid.equals("200")) {
-						JOptionPane.showMessageDialog(null, "Partida adicionada com sucesso");
-					}
-					else {
-						JOptionPane.showMessageDialog(null, valid, "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
-					}
+					JOptionPane.showMessageDialog(null, "Partida adicionada com sucesso");
+
 				}
-				catch (SQLException ex) {
-					JOptionPane.showMessageDialog(null, "Algo inesperado aconteceu :(", "Erro adicionar partida", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
+				catch (SQLException | InvalidMatchException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro ao adicionar partida", JOptionPane.ERROR_MESSAGE);
 				}
-			}
-			
-			
-			
+			}	
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 22));
         button.setBounds(236, 600, 261, 59);

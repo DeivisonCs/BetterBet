@@ -1,14 +1,12 @@
 package app.profile;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +18,6 @@ import javax.swing.JOptionPane;
 
 import components.ImageUtils;
 import components.RoundedButtonComponent;
-import database.InitDatabase;
 import models.Event;
 import models.Match;
 import service.event.EventService;
@@ -40,25 +37,10 @@ public class FinishMatch {
 	private JFrame frame;
 
 	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					InitDatabase.initializeDatabase();
-//					FinishMatch window = new FinishMatch(1);
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 */
+	* Interface de finalização de partidas (acessível apenas para usuários administradores).
+	* 
+	* @param userId Id do usuário logado
+	*/
 	public FinishMatch(int userId) {
 		this.userId = userId;
 		
@@ -91,7 +73,9 @@ public class FinishMatch {
 	
 		
 		// ------------------------- Return Button -------------------------        
-        
+		/**
+    	* Fecha a tela atual.
+    	*/
         ImageUtils returnButton = new ImageUtils();
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
@@ -159,6 +143,12 @@ public class FinishMatch {
 		
 		
 		// ------------------------- Create Button -------------------------
+		/**
+		* Ao ser clicado, o button chama o matchService para finalizar a partida.
+		* Os resultados dos jogos são gerados de forma aleatória
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		*/ 
 		RoundedButtonComponent button = new RoundedButtonComponent("Finalizar Partida", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -204,6 +194,9 @@ public class FinishMatch {
         frame.getContentPane().add(button);
 	}
 	
+	/**
+	* Atualiza a lista de partidas pendentes no ComboBox de partidas
+	*/ 
 	private void updateItens(List<Match> matchs) {
 		matchComboBox.removeAllItems();
 		

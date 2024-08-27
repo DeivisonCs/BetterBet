@@ -283,7 +283,9 @@ public class WindowProfile {
         }
     
     
-    // Mostra conteudos específicos para usuários adm
+    /**
+	* Mostra conteúdos específicos para a tela do usuário administradores
+	*/
     public void placeAdmContents() {
     	logOut.setBounds(1050, 10, 120, 30);
 		panelProfile.setBounds(0, 0, 1185, 661); 
@@ -354,7 +356,9 @@ public class WindowProfile {
         
     }
     
- // Mostra conteudos específicos para usuários comuns
+    /**
+	* Mostra conteúdos específicos para a tela do usuário comun
+	*/ 
 	public void placeUserContents() {
 		RoundedButtonComponent buttonHistApostas = new RoundedButtonComponent("Histórico de Apostas", new Color(150, 150, 150), new Color(64, 128, 128));
 		buttonHistApostas.setText("Histórico de Apostas");
@@ -448,10 +452,7 @@ public class WindowProfile {
 	        		
 	        		
 	        		dialogDeposito.dispose();
-        		
 	    		}
-
-
 	    	}
  	        });
  	        
@@ -472,25 +473,25 @@ public class WindowProfile {
          
          buttonSacar.addActionListener(new ActionListener() {
          	public void actionPerformed(ActionEvent e) {
-         		JDialog dialogSaque = new JDialog(frame, "Saque", true);
-     	        dialogSaque.setSize(400, 300);
-     	        dialogSaque.getContentPane().setLayout(null);
-     	        
-     	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja sacar");
-     	        lblInformeSaque.setBounds(95, 25, 230, 25);
-     	        lblInformeSaque.setFont(new Font("Tahoma", Font.PLAIN, 15));
-     	        dialogSaque.getContentPane().add(lblInformeSaque);
-     	        
-     	        JLabel lblReal = new JLabel("R$");
-    	        lblReal.setBounds(100, 82, 30, 20);
-    	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
-     	        dialogSaque.getContentPane().add(lblReal);
-     	        
-     	        RoundedTextFieldComponent textValorSaque = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
-     	        textValorSaque.setBounds(130, 80, 150, 30);
-     	        dialogSaque.getContentPane().add(textValorSaque);	
-     	        
-     	       RoundedButtonComponent btnConfirmarSaque = new RoundedButtonComponent("Confirmar Saque");
+     		JDialog dialogSaque = new JDialog(frame, "Saque", true);
+ 	        dialogSaque.setSize(400, 300);
+ 	        dialogSaque.getContentPane().setLayout(null);
+ 	        
+ 	        JLabel lblInformeSaque = new JLabel("Informe quanto deseja sacar");
+ 	        lblInformeSaque.setBounds(95, 25, 230, 25);
+ 	        lblInformeSaque.setFont(new Font("Tahoma", Font.PLAIN, 15));
+ 	        dialogSaque.getContentPane().add(lblInformeSaque);
+ 	        
+ 	        JLabel lblReal = new JLabel("R$");
+	        lblReal.setBounds(100, 82, 30, 20);
+	        lblReal.setFont(new Font("Tahoma", Font.PLAIN, 15));
+ 	        dialogSaque.getContentPane().add(lblReal);
+ 	        
+ 	        RoundedTextFieldComponent textValorSaque = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
+ 	        textValorSaque.setBounds(130, 80, 150, 30);
+ 	        dialogSaque.getContentPane().add(textValorSaque);	
+ 	        
+     	    RoundedButtonComponent btnConfirmarSaque = new RoundedButtonComponent("Confirmar Saque");
      	        btnConfirmarSaque.addActionListener(new ActionListener() {
      	        	public void actionPerformed(ActionEvent e) {
      	        		

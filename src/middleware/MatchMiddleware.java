@@ -1,17 +1,13 @@
 package middleware;
 
+import exceptions.InvalidMatchException;
 import models.Match;
 
 public class MatchMiddleware {
-	private final String VALIDATED = "200";
 	
-	public String verifyNewMatch(Match match) {
+	public void verifyNewMatch(Match match) throws InvalidMatchException {
 		if(match.getTeamA() == match.getTeamB()) {
-			System.out.println("Match Middleware: " + match.getTeamA() + " " + match.getTeamB());
-			
-			return "OS times não podem ser iguais!";
+			throw new InvalidMatchException("OS times não podem ser iguais!");
 		}
-		
-		return VALIDATED;
 	}
 }

@@ -53,18 +53,12 @@ public class SignUpView {
 	private JLabel addressPlaceholder;
 	private JLabel cpfPlaceholder;
 	
-
 	/**
-	 * Create the application.
-	 */
-	public SignUpView() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {	
+	* Interface de cadastro de usuário.
+	* Os campos são verificados para garantir a integridade dos dados.
+	* Após validação dos dados o usuário é redirecionado para a tela home do site (src/app/homeUser/HomeUserUI.java)
+	*/
+	public SignUpView() {	
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(40, 40, 40));
 		frame.setBounds(100, 100, 1170, 699);
@@ -118,18 +112,11 @@ public class SignUpView {
 		nameField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
 		namePlaceholder.setLabelFor(nameField);
 		nameField.addFocusListener(new FocusAdapter() {
-			
-			/**
-			* Tira o placeholder quando o usuário clicar no campo
-			*/
 			@Override
 			public void focusGained(FocusEvent e) {
 				namePlaceholder.setVisible(false);
 			}
 			
-			/**
-			* Coloca o placeholder quando o usuário sair do campo e não tiver texto
-			*/
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(nameField.getText().length() == 0) {
@@ -275,14 +262,23 @@ public class SignUpView {
 		
 		
 		// ------------------------- SignUp Button -------------------------
+		/**
+		* Ao ser clicado, o button cria uma instância de CommonUser,
+		* chama o userService para verificar os dados inseridos e fazer a  inserção no banco.
+		*  Após validação dos dados o usuário é redirecionado para a tela home do site (src/app/homeUser/HomeUserUI)
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		* @throws IOException Caso haja algum erro relacionado a inserção da imagem de perfil do usuário
+		* @throws InvalidNameException Caso o nome digitado pelo usuário seja inválido
+		* @throws InvalidEmailException Caso o email digitado pelo usuário seja inválido
+		* @throws InvalidAddressException Caso o endereço digitado pelo usuário seja inválido
+		* @throws InvalidCpfException Caso o CPF digitado pelo usuário seja inválido
+		* @throws InvalidPasswordException Caso a senha digitada pelo usuário seja inválida
+		* @throws InvalidBirthDateException Caso a data de nascimento inserida pelo usuário seja inválida
+		*/ 
 		RoundedButtonComponent button = new RoundedButtonComponent("Cadastrar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			
-			/**
-			* Ao ser clicado o button cria uma instância de CommonUser,
-			* chama o userService para verificar os dados inseridos e fazer a  inserção no banco
-			* 
-			*/
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
@@ -339,13 +335,12 @@ public class SignUpView {
         
 		
 		// ------------------------- SignIn Link ------------------------- 
+        /**
+		* Ao ser clicado troca a tela de cadastro para a tela de login (src/app/auth/LogInView.java).
+		* Antes de realizar a troca de tela é feito a captura da localização x e y da tela, para suavização da troca de tela.
+		*/
 		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF; text-decoration: none;'>Já Possui Conta?</a></html>");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
-			
-			/**
-			* Ao ser clicado troca a tela de cadastro para a tela de login (src/app/LogInView.java).
-			* Antes de realizar a troca de tela é feito a captura da localização x e y da tela, para suavização da troca de tela.
-			*/
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Point location = frame.getLocationOnScreen();

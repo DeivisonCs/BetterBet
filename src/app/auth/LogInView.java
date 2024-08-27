@@ -16,13 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextPane;
 
-import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
 import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
-import models.CommonUser;
-import models.User;
 import service.users.UserService;
 
 public class LogInView {
@@ -34,6 +31,13 @@ public class LogInView {
 	private RoundedTextFieldComponent emailField;
 	private JPasswordField passwordField;
 	
+	/**
+	* Interface de login do usuário.
+	* Após o usuário ser validado ele é redirecionado para a tela home do site (src/app/homeUser/HomeUserUI)
+	* 
+	* @param positionX Posição X da tela anterior
+	* @param positionY Posição Y da tela anterior
+	*/
 	public LogInView(int positionX, int positionY) {
 
 		frame = new JFrame();
@@ -122,6 +126,13 @@ public class LogInView {
 		
 		
 		// ------------------------- LogIn Button -------------------------
+		/**
+		* Ao ser clicado, o button verifica as credenciais digitadas pelo usuário,
+		* chama o userService para verificar os dados inseridos e fazer a validação do usuário.
+		* Após validação dos dados o usuário é redirecionado para a tela home do site (src/app/homeUser/HomeUserUI)
+		* 
+		* @throws SQLException Caso haja algum erro nas credenciais do usuário
+		*/
 		RoundedButtonComponent button = new RoundedButtonComponent("Logar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -131,7 +142,6 @@ public class LogInView {
 				
 				try {
 					Integer userId = service.loginUser(email, password);
-//					JOptionPane.showMessageDialog(null, "Bem Vindo " + user.getName());
 					
 					Point location = frame.getLocationOnScreen();
 					int x = location.x;
@@ -139,7 +149,6 @@ public class LogInView {
 					frame.dispose();
 					
 					new HomeUserUI(userId, x, y);
-//					new EditUser(userId);
 				}
 				catch(SQLException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -162,6 +171,9 @@ public class LogInView {
         frame.getContentPane().add(button);
 		
 		// ------------------------- SignUn Link ------------------------- 
+        /**
+		* Ao ser clicado troca a tela de login para a tela de cadastro (src/app/auth/SignUpView.java).
+		*/
 		JLabel lblNewLabel = new JLabel("<html><a href='' style='color: #A3C2FF; text-decoration: none;'>Não Possui Conta?</a></html>");
 		lblNewLabel.addMouseListener(new MouseAdapter() {
 			@Override

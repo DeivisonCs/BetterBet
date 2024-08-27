@@ -1,7 +1,6 @@
 package app.profile;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -13,18 +12,15 @@ import java.time.LocalDateTime;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
-import database.InitDatabase;
 import models.Event;
 import service.event.EventService;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 public class CreateEvent {
 	private String[] sports = {"futebol"};
@@ -34,26 +30,11 @@ public class CreateEvent {
 	
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					InitDatabase.initializeDatabase();
-//					CreateEvent window = new CreateEvent();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
-	 * Create the application.
-	 */
+	* Interface de cadastro de eventos (acessível apenas para usuários administradores).
+	* Após criação do evento o usuário é redirecionado para a tela de criação de partidas (src/app/profile/AddMatch.java)
+	*/
 	public CreateEvent(int userId) {
 		this.userId = userId;
 		initialize();
@@ -80,21 +61,23 @@ public class CreateEvent {
 		frame.getContentPane().add(PageTitle);
 		
 		// ------------------------- Return Button -------------------------        
-		        
-	        ImageUtils returnButton = new ImageUtils();
-	        returnButton.addMouseListener(new MouseAdapter() {
-	        	@Override
-	        	public void mouseClicked(MouseEvent e) {
-	        		frame.dispose();
-	        	}
-	        });
-	        returnButton.setBorderSize(0);
-	        
-	        returnButton.setBorder(null);
-	        returnButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
-	        returnButton.setBounds(24, 24, 30, 30);
-	        frame.getContentPane().add(returnButton);
-			
+		/**
+    	* Fecha a tela atual.
+    	*/
+        ImageUtils returnButton = new ImageUtils();
+        returnButton.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mouseClicked(MouseEvent e) {
+        		frame.dispose();
+        	}
+        });
+        returnButton.setBorderSize(0);
+        
+        returnButton.setBorder(null);
+        returnButton.setImage(new ImageIcon(getClass().getResource("/resources/images/back-arrow.jpg")));
+        returnButton.setBounds(24, 24, 30, 30);
+        frame.getContentPane().add(returnButton);
+		
 		
 		
 		// ------------------------- Name Field -------------------------
@@ -109,13 +92,11 @@ public class CreateEvent {
 		nameField.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
-//				namePlaceholder.setVisible(false);
 				namePlaceholder.setBounds(224, 202, 327, 14);
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(nameField.getText().length() == 0) {
-//					namePlaceholder.setVisible(true);
 					namePlaceholder.setBounds(237, 229, 327, 14);
 				}
 			}
@@ -136,6 +117,13 @@ public class CreateEvent {
 		
 		
 		// ------------------------- Create Button -------------------------
+		/**
+		* Ao ser clicado, o button cria uma instância de Event,
+		* chama o eventService para verificar os dados inseridos e fazer a  inserção no banco.
+		* Após criação do evento, o usuário é redirecionado para a tela de adição de partidas (src/app/profile/AddMatch.java)
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		*/ 
 		RoundedButtonComponent button = new RoundedButtonComponent("Criar Evento", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override

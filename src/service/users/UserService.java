@@ -14,7 +14,6 @@ import exceptions.InvalidEmailException;
 import exceptions.InvalidNameException;
 import exceptions.InvalidPasswordException;
 import middleware.UserMiddleware;
-import models.CommonUser;
 import models.User;
 import security.PasswordHandler;
 
