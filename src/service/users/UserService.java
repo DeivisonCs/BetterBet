@@ -7,8 +7,13 @@ import java.sql.SQLException;
 
 import dao.users.UserDAO;
 import dao.users.UserPostgresDAO;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidBirthDateException;
+import exceptions.InvalidCpfException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import middleware.UserMiddleware;
-import models.CommonUser;
 import models.User;
 import security.PasswordHandler;
 
@@ -26,61 +31,56 @@ public class UserService {
 	}
 
 	/**
-     * Cria um novo usuário após verificar os campos e confirmar a senha.
-     * 
-     * @param newUser O novo usuário a ser criado.
-     * @param confirmPassword A senha de confirmação para validação.
-     * @return Uma string indicando o resultado da validação.
-     * @throws SQLException Se ocorrer um erro de banco de dados ao criar o usuário.
-     * @throws IOException Se ocorrer um erro ao manipular arquivos ou senhas.
-     */
-	public String createUser(User newUser, String confirmPassword) throws SQLException, IOException{
-		
-		String validField = middleware.verifyNewUser(newUser, confirmPassword);
-		
-		if(validField.equals("200")) {
-			try {
-				newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
-				userDb.create(newUser);
-			}
-			catch(SQLException ex) {
-				throw ex;
-			}
-		}
-		
-		
-		return validField;
+	 * Cria um novo usuário após verificar os campos e confirmar a senha.
+	 * 
+	 * @param newUser O novo usuário a ser criado.
+	 * @param confirmPassword A senha de confirmação para validação.
+	 * @return Uma string indicando o resultado da validação.
+	 * @throws SQLException Se ocorrer um erro de banco de dados ao criar o usuário.
+	 * @throws IOException Se ocorrer um erro ao manipular arquivos.
+	 * @throws InvalidNameException Se o nome do usuário for inválido.
+	 * @throws InvalidCpfException Se o CPF do usuário for inválido.
+	 * @throws InvalidAddressException Se o endereço do usuário for inválido.
+	 * @throws InvalidEmailException Se o e-mail do usuário for inválido.
+	 * @throws InvalidBirthDateException Se a data de nascimento do usuário for inválida.
+	 * @throws InvalidPasswordException Se a senha do usuário for inválida.
+	 */
+	public void createUser(User newUser, String confirmPassword) throws SQLException, IOException, InvalidNameException, InvalidCpfException, InvalidAddressException, InvalidEmailException, InvalidBirthDateException, InvalidPasswordException{
+			
+		middleware.verifyNewUser(newUser, confirmPassword);
+		newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
+		userDb.create(newUser);
+
 	}
 	
 
-    /**
-     * Atualiza as informações de um usuário, incluindo a senha e a imagem de perfil.
-     * 
-     * @param user O usuário a ser atualizado.
-     * @param newPassword A nova senha (se houver).
-     * @param confirmPassword A senha de confirmação (se houver).
-     * @param selectedImgFile O arquivo da nova imagem de perfil.
-     * @return Uma string indicando o resultado da validação.
-     * @throws SQLException Se ocorrer um erro ao atualizar o usuário no banco de dados.
-     * @throws FileNotFoundException Se o arquivo da imagem não for encontrado.
-     */
-	public String updateUser(User user, String newPassword, String confirmPassword, File selectedImgFile) throws SQLException, FileNotFoundException{
-		String validField = middleware.updateUser(user, newPassword, confirmPassword);
+	/**
+	 * Atualiza as informações de um usuário, incluindo a senha e a imagem de perfil.
+	 * 
+	 * @param user O usuário a ser atualizado.
+	 * @param newPassword A nova senha (se houver).
+	 * @param confirmPassword A senha de confirmação (se houver).
+	 * @param selectedImgFile O arquivo da nova imagem de perfil.
+	 * @return Uma string indicando o resultado da validação. 
+	 * @throws SQLException Se ocorrer um erro ao atualizar o usuário no banco de dados.
+	 * @throws FileNotFoundException Se o arquivo da imagem não for encontrado.
+	 * @throws InvalidNameException Se o nome do usuário for inválido.
+	 * @throws InvalidEmailException Se o e-mail do usuário for inválido.
+	 * @throws InvalidPasswordException Se a nova senha for inválida.
+	 * @throws InvalidAddressException Se o endereço do usuário for inválido.
+	 * @throws IOException Se ocorrer um erro ao manipular o arquivo da imagem.
+	 */
+	public void updateUser(User user, String newPassword, String confirmPassword, File selectedImgFile) throws SQLException, FileNotFoundException, InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidAddressException{
 		
-		if(validField.equals("200")) {
-			try {
-				if(newPassword != null) {
-					user.setPassword(PasswordHandler.hashPassword(newPassword));
-				}
-					
-				userDb.edit(user, selectedImgFile);
-			}
-			catch(SQLException ex) {
-				throw ex;
-			}
+
+		middleware.updateUser(user, newPassword, confirmPassword);
+		
+		if(newPassword != null) {
+			user.setPassword(PasswordHandler.hashPassword(newPassword));
 		}
-		
-		return validField;
+			
+		userDb.edit(user, selectedImgFile);
+
 	}
 	
 	 /**

@@ -1,21 +1,14 @@
 package app.edit;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +24,10 @@ import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import models.AdminUser;
 import models.CommonUser;
 import models.User;
@@ -43,9 +40,7 @@ public class EditUser{
 	
 	private JFrame frame;
 	private User user;
-	private User userEdited;
 	private UserService userService = new UserService();
-	private ImageUtils imgUtils = new ImageUtils();
 	private File selectedImgFile = null;
 	
 	private ImageIcon profile_img;
@@ -66,7 +61,15 @@ public class EditUser{
 	private JLabel confirmPasswordPlaceholder;
 	private RoundedPasswordFieldComponent confirmPasswordField;
 	
-	
+	/**
+	* Interface de edição de usuário.
+	* Os campos são verificados novamente para garantir a integridade dos dados.
+	* Após validação dos dados o usuário é redirecionado para a tela de perfil(src/app/profile/WindowProfile.java)
+	* 
+	* @param userId Id do usuário para recuperação e atualização dos dados
+	* @param positionX Posição X da tela anterior
+	* @param positionY Posição Y da tela anterior
+	*/
 	public EditUser(Integer userId, int positionX, int positionY) {
 		this.positionX = positionX;
     	this.positionY = positionY;
@@ -127,7 +130,10 @@ public class EditUser{
 		
 		
 		// ------------------------- Return Button -------------------------        
-        
+        /**
+    	* Retorna para a tela de perfil do usuário (src/app/profile/WindowProfile.java). 
+    	* A localização da tela é passada como parâmetro para suavização da troca de tela.
+    	*/
         ImageUtils returnButton = new ImageUtils();
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
@@ -180,8 +186,7 @@ public class EditUser{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				editImage();
-			}
-			
+			}	
 		});
         frame.add(editButton);
 		
@@ -261,6 +266,17 @@ public class EditUser{
 		
 		
 		// ------------------------- Save Button -------------------------
+		/**
+		* Ao ser clicado, o button salva as novas informações do usuário,
+		* chama o userService para verificar os dados inseridos e fazer a  inserção no banco
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		* @throws FileNotFoundException Caso haja algum erro relacionado a inserção da imagem de perfil do usuário
+		* @throws InvalidNameException Caso o nome digitado pelo usuário seja inválido
+		* @throws InvalidEmailException Caso o email digitado pelo usuário seja inválido
+		* @throws InvalidAddressException Caso o endereço digitado pelo usuário seja inválido
+		* @throws InvalidPasswordException Caso a senha digitada pelo usuário seja inválida
+		*/ 
 		RoundedButtonComponent button = new RoundedButtonComponent("Salvar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -279,29 +295,28 @@ public class EditUser{
 				user.setName(nameField.getText());
 				user.setEmail(emailField.getText());
 				user.setPassword(user.getPassword());
-//				user.setProfileImage(profile_img);
 				
 				if(user.getPermission().equals("user")) {
 					((CommonUser)user).setAddress(addressField.getText());
 				}
 				
 				try {
-					String validUser = userService.updateUser(user, password, confirmPassword, selectedImgFile);
+					userService.updateUser(user, password, confirmPassword, selectedImgFile);
 					
-					if(!validUser.equals("200")) {
-						JOptionPane.showMessageDialog(null, validUser);
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
-						Point location = frame.getLocationOnScreen();
-						int x = location.x;
-						int y = location.y;
-						frame.dispose();
-						
-						new WindowProfile(user.getId(), x, y);
-					}
+					JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
+					
+					Point location = frame.getLocationOnScreen();
+					int x = location.x;
+					int y = location.y;
+					frame.dispose();
+					
+					new WindowProfile(user.getId(), x, y);
+					
 				}
 				catch(SQLException | FileNotFoundException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+				catch(InvalidNameException | InvalidEmailException | InvalidAddressException | InvalidPasswordException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
@@ -316,7 +331,10 @@ public class EditUser{
         
 	}
 	
-	
+	/**
+	* Cria a tela de seleção da foto de perfil do usuário, fazendo filtro
+	* dos tipos de arquivos válidos (png, jpg, jpeg)
+	*/
 	private void editImage() {
 		final String[] VALID_EXTENSIONS = {"png", "jpg", "jpeg"};
 		
@@ -327,7 +345,6 @@ public class EditUser{
 		
         int result = fileChooser.showOpenDialog(null);
         
-        
         if (result == JFileChooser.APPROVE_OPTION) {
         	File selectedFile = fileChooser.getSelectedFile();
         	
@@ -336,23 +353,25 @@ public class EditUser{
                 
         		selectedImgFile = selectedFile;
                 updateProfileImage(profile_img);
-                
-                System.out.println("changed: " + profile_img);
         	}
         	else {
         		JOptionPane.showMessageDialog(null, "Por favor, selecione um arquivo de imagem válido (JPG, JPEG, PNG).", "Tipo de arquivo inválido", JOptionPane.ERROR_MESSAGE);
-        	}
-        	
-            
+        	}       
         }
 	}
 	
-	
+	/**
+	* Atualiza a foto mostrada na tela de edição
+	*/
 	private void updateProfileImage(ImageIcon newImage) {
 	    profilePicture.setImage(newImage);
 	    profilePicture.repaint();
 	}
 	
+	/**
+	* Verifica se o arquivo selecionado está dentro da lista de arquivos válidos (png, jpg, jpeg).
+	* A verificação é feita verificando a terminação do nome do arquivo.
+	*/
 	private boolean isValidExtension(String[] validExtensions, String fileName) {
 		for(String extension : validExtensions) {
 			if(fileName.endsWith("." + extension)) {

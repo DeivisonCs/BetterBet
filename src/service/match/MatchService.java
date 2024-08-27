@@ -6,6 +6,7 @@ import java.util.List;
 
 import dao.match.MatchDAO;
 import dao.match.MatchPostgresDAO;
+import exceptions.InvalidMatchException;
 import middleware.MatchMiddleware;
 import models.Bet;
 import models.Match;
@@ -30,19 +31,14 @@ public class MatchService {
 	 * @return Um código de status indicando o resultado da operação. "200" para sucesso, caso contrário, a mensagem de erro.
 	 * @throws SQLException Se ocorrer um erro ao salvar a partida.
 	 */
-	public String save(Match newMatch) throws SQLException{
-		String valid = middleware.verifyNewMatch(newMatch);
-		
-		if(valid.equals("200")) {
-			try {
-				matchDB.create(newMatch);
-			}
-			catch (SQLException ex) {
-				throw new SQLException();
-			}
+	public void save(Match newMatch) throws SQLException, InvalidMatchException{
+		try {
+			matchDB.create(newMatch);
+			middleware.verifyNewMatch(newMatch);
 		}
-		
-		return valid;
+		catch (SQLException ex) {
+			throw new SQLException();
+		}
 	}
 	
 

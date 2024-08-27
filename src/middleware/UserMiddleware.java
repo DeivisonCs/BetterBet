@@ -4,148 +4,122 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+import exceptions.InvalidAddressException;
+import exceptions.InvalidBirthDateException;
+import exceptions.InvalidCpfException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import models.CommonUser;
 import models.User;
 
 public class UserMiddleware {
 	private final String VALIDATED = "200";
 	
-	public String verifyNewUser(User user, String confirmPassword) {
+	public void verifyNewUser(User user, String confirmPassword) throws InvalidNameException, InvalidCpfException, InvalidAddressException, InvalidEmailException, InvalidBirthDateException, InvalidPasswordException {
 		System.out.println("Middleware " + user.toString());
 		
 		// Validação do nome
-		String validName = validName(user.getName());
-		if(!validName.equals(VALIDATED)) {
-			return validName;
-		}
+		validName(user.getName());
 		
 		// Valida CPF
-		String validCpf = validCpf(user.getCpf());
-		if(!validCpf.equals(VALIDATED)) {
-			return validCpf;
-		}
+		validCpf(user.getCpf());
 		
 		//Valida Address
 		if(user.getPermission().equals("user")) {
-			String validAddress = validAddress(((CommonUser) user).getAddress());
-			if(!validAddress.equals(VALIDATED)) {
-				return validAddress;
-			}
+			validAddress(((CommonUser) user).getAddress());
 		}
 		
 		// Valida Email
-		String validEmail = validEmail(user.getEmail());
-		if(!validEmail.equals(VALIDATED)) {
-			return validEmail;
-		}
-		
+		validEmail(user.getEmail());
+
 		// Varifica se é maior de idade
 		if(user.getPermission().equals("user") && !isOlderThan18(((CommonUser)user).getBirthDate())) {
-			return "É necessário mais de 18 anos para criar conta na BetterBet!";
+			throw new InvalidBirthDateException("É necessário mais de 18 anos para criar conta na BetterBet!");
 		}	
 		
 		// Validação senha
-		String validPassword = validPassword(user.getPassword(), confirmPassword);
-		if(!validPassword.equals(VALIDATED)) {
-			return validPassword;
-		}
+		validPassword(user.getPassword(), confirmPassword);
 		
-		return VALIDATED;
 	}
 	
-	public String updateUser(User user, String newPassword, String confirmPassword) {
+	public void updateUser(User user, String newPassword, String confirmPassword) throws InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidAddressException {
 		System.out.println("Update Middleware " + user.toString());
 		
 		// Validação do nome
-		String validName = validName(user.getName());
-		if(!validName.equals(VALIDATED)) {
-			return validName;
-		}
-		
+		validName(user.getName());
+
 		// Valida Email
-		String validEmail = validEmail(user.getEmail());
-		if(!validEmail.equals(VALIDATED)) {
-			return validEmail;
-		}
+		validEmail(user.getEmail());
 		
+		//Valida Endereço
+		if(user.getPermission().equals("user")) {
+			validAddress(((CommonUser) user).getAddress());
+		}
+
 		// Validação senha
 		if(newPassword != null) {
-			String validPassword = validPassword(newPassword, confirmPassword);
-			if(!validPassword.equals(VALIDATED)) {
-				return validPassword;
-			}
+			validPassword(newPassword, confirmPassword);
 		}
-		
-		return VALIDATED;
 	}
 	
 	
-	private String validName(String name) { 
+	private void validName(String name) throws InvalidNameException { 
 		if(name == null || name.equals("")) {
-			return "Nome não pode ser nulo";
+			throw new InvalidNameException("Nome não pode ser nulo");
 		}
 		if(name.length() < 3) {
-			return "Insira um nome válido!";
+			throw new InvalidNameException("Insira um nome válido!");
 		}
 		if(name.chars().anyMatch(Character::isDigit)) {
-			return "Nome não deve conter números!";
+			throw new InvalidNameException("Nome não deve conter números!");
 		}
-		
-		return VALIDATED;
 	}
 	
-	private String validCpf(String cpf) {
+	private void validCpf(String cpf) throws InvalidCpfException {
 		if(cpf == null || cpf.equals("")) {
-			return "CPF não pode ser nulo!";
+			throw new InvalidCpfException("CPF não pode ser nulo!");
 		}
 		if(cpf.length() != 14) {
-			return "Insira um CPF válido!";
+			throw new InvalidCpfException("Insira um CPF válido!");
 		}
 		if(cpf.chars().mapToObj(c -> (char) c).anyMatch(Character::isAlphabetic)) {
-			return "Insira um cpf válido";
+			throw new InvalidCpfException("Insira um cpf válido");
 		}
-		
-		return VALIDATED;
 	}
 	
-	private String validEmail(String email) {
+	private void validEmail(String email) throws InvalidEmailException {
 		if(email == null || email.equals("")) {
-			return "Email não pode ser nulo!";
+			throw new InvalidEmailException("Email não pode ser nulo!");
 		}
 		if(email.contains(" ")) {
-			return "Email não deve conter espaços em branco!";
+			throw new InvalidEmailException("Email não deve conter espaços em branco!");
 		}
-		
-		return VALIDATED;
 	}
 	
-	private String validAddress(String address) {
+	private void validAddress(String address) throws InvalidAddressException {
 		if(address == null || address.equals("")) {
-			return "Endereço não pode ser nulo!";
+			throw new InvalidAddressException("Endereço não pode ser nulo!");
 		}
-		
-		return VALIDATED;
 	}
 	
 	
-	private String validPassword(String password, String confirmPassword) {
+	private void validPassword(String password, String confirmPassword) throws InvalidPasswordException {
 		if(password == null || password.equals("")) {
-			return "Senha não pode ser nula!";
+			throw new InvalidPasswordException("Senha não pode ser nula!");
 		}
 		if(password.length() < 3) {
-			return "Senha deve conter ao menos 3 caracteres!";
+			throw new InvalidPasswordException("Senha deve conter ao menos 3 caracteres!");
 		}
 		if(confirmPassword == null) {
-			return "Confirmar Senha não pode ser nulo!";
+			throw new InvalidPasswordException("Confirmar Senha não pode ser nulo!");
 		}
 		if(!password.equals(confirmPassword)) {
-			return "As senhas não coincidem!";
+			throw new InvalidPasswordException("As senhas não coincidem!");
 		}
 		if(password.contains(" ")) {
-			return "Senha não deve conter espaços em branco!";
+			throw new InvalidPasswordException("Senha não deve conter espaços em branco!");
 		}
-		
-		return VALIDATED;
 	}
 	
 	

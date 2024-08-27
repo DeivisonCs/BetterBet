@@ -1,9 +1,7 @@
 package app.profile;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
@@ -16,13 +14,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import app.homeUser.HomeUserUI;
 import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidBirthDateException;
+import exceptions.InvalidCpfException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import models.AdminUser;
-import models.CommonUser;
 import service.users.UserService;
 
 /**
@@ -32,22 +34,19 @@ public class CreateAdminUser {
 	private int positionX;
 	private int positionY;
 	
-	private int userId;
 	private UserService userService = new UserService();
 	private JFrame frame;
 
-	
-    /**
-     * Cria a aplicação.
-     * 
-     * @param userId Identificador do usuário atual.
-     * @param positionX Posição X da janela na tela.
-     * @param positionY Posição Y da janela na tela.
-     */
+
+	/**
+	* Interface de criação de usuários administradores (acessível apenas para usuários administradores).
+	* 
+	* @param positionX Posição X da tela anterior
+	* @param positionY Posição Y da tela anterior
+	*/
 	public CreateAdminUser(int userId, int positionX, int positionY) {
 		this.positionX = positionX;
     	this.positionY = positionY;
-    	this.userId = userId;
     	
 		initialize();
 	}
@@ -73,7 +72,9 @@ public class CreateAdminUser {
 		
 		
 		// ------------------------- Return Button -------------------------        
-        
+		/**
+    	* Fecha a tela atual.
+    	*/
         ImageUtils returnButton = new ImageUtils();
         returnButton.addMouseListener(new MouseAdapter() {
         	@Override
@@ -218,7 +219,21 @@ public class CreateAdminUser {
 		frame.getContentPane().add(confirmPasswordField);
 		
 		
-		// ------------------------- SignUp Button -------------------------
+		// ------------------------- Create Button -------------------------
+		/**
+		* Ao ser clicado, o button cria uma instância de AdminUser,
+		* chama o userService para verificar os dados inseridos e fazer a  inserção no banco.
+		* 
+		* @throws SQLException Caso haja algum erro no banco
+		* @throws IOException Caso haja algum erro relacionado a inserção da imagem de perfil do usuário
+		* @throws InvalidNameException Caso o nome digitado pelo usuário seja inválido
+		* @throws InvalidEmailException Caso o email digitado pelo usuário seja inválido
+		* @throws InvalidAddressException Caso o endereço digitado pelo usuário seja inválido (Usuário administrador não possui o campo de endereço)
+		* @throws InvalidCpfException Caso o CPF digitado pelo usuário seja inválido
+		* @throws InvalidPasswordException Caso a senha digitada pelo usuário seja inválida
+		* @throws InvalidBirthDateException Caso a data de nascimento inserida pelo usuário seja inválida (Usuário administrador não possui o campo de data de nascimento)
+		*/ 
+
 		RoundedButtonComponent button = new RoundedButtonComponent("Cadastrar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
@@ -233,18 +248,17 @@ public class CreateAdminUser {
 						"admin");
 				
 				try {
-					String validUser = userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
+					userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
 					
-					if(!validUser.equals("200")) {
-						JOptionPane.showMessageDialog(null, validUser);
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Administrador Cadastrado com Sucesso!");
-					}
+					JOptionPane.showMessageDialog(null, "Administrador Cadastrado com Sucesso!");	
 				}
-				catch(SQLException ex) {
+				catch(SQLException | IOException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
-				} catch (IOException ex) {
+				}
+				catch(InvalidNameException | InvalidEmailException | InvalidAddressException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+				catch(InvalidCpfException | InvalidPasswordException | InvalidBirthDateException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}
