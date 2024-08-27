@@ -46,7 +46,7 @@ docker compose up
 Antes de executar a aplicação, configure o arquivo `config.properties` localizado no diretório raiz do projeto. Ele deve conter as seguintes propriedades:
 
 ```properties
-database.url=jdbc:postgresql://localhost:5432/betterbetdb
+database.url=jdbc:postgresql://localhost:5434/betterbetdb
 database.username=seu_usuario
 database.password=sua_senha
 ```
