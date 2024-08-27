@@ -51,7 +51,9 @@ database.username=seu_usuario
 database.password=sua_senha
 ```
 
-Certifique-se de substituir `seu_usuario` e `sua_senha` com as credenciais corretas do PostgreSQL.
+Caso não utilize o docker-compose certifique-se de substituir `seu_usuario` e `sua_senha` com as credenciais corretas do PostgreSQL, e a porta por 5432(ou a que estiver utilizando).
+
+Caso utilize o docker-compose substitua `seu_usuario` e `sua_senha` por `postgres` e `postgres` respectivamente.
 
 ### 3.5 Compilar e executar
 Se estiver utilizando uma IDE como IntelliJ ou Eclipse, importe o projeto como um projeto Java. Caso contrário, compile o código manualmente:
