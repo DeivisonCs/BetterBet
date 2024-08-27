@@ -92,12 +92,12 @@ public class CreateEvent {
 		nameField.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				namePlaceholder.setBounds(224, 202, 327, 14);
+				namePlaceholder.setBounds(224, 225, 327, 14);
 			}
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(nameField.getText().length() == 0) {
-					namePlaceholder.setBounds(237, 229, 327, 14);
+					namePlaceholder.setBounds(231, 251, 327, 14);
 				}
 			}
 		});
