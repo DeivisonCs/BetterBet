@@ -51,7 +51,7 @@ database.username=seu_usuario
 database.password=sua_senha
 ```
 
-Caso nçao utilize o compose certifique-se de substituir `seu_usuario` e `sua_senha` com as credenciais corretas do PostgreSQL, e a porta por 5432(ou a que estiver utilizando).
+Caso não utilize o compose certifique-se de substituir `seu_usuario` e `sua_senha` com as credenciais corretas do PostgreSQL, e a porta por 5432(ou a que estiver utilizando).
 
 Caso utilize o compose supstitua `seu_usuario` e `sua_senha` por `postgres` e `postgres` respectivamente.
 
