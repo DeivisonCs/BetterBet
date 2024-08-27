@@ -16,8 +16,6 @@ import models.User;
 public class UserMiddleware {
 	
 	public void verifyNewUser(User user, String confirmPassword) throws InvalidNameException, InvalidCpfException, InvalidAddressException, InvalidEmailException, InvalidBirthDateException, InvalidPasswordException {
-		System.out.println("Middleware " + user.toString());
-		
 		// Validação do nome
 		validName(user.getName());
 		
@@ -43,7 +41,6 @@ public class UserMiddleware {
 	}
 	
 	public void updateUser(User user, String newPassword, String confirmPassword) throws InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidAddressException {
-		System.out.println("Update Middleware " + user.toString());
 		
 		// Validação do nome
 		validName(user.getName());

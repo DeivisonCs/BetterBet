@@ -380,7 +380,6 @@ public class UserPostgresDAO implements UserDAO {
 			
 			ps.executeUpdate();
 			
-			System.out.println("add image: " + selectedImgFile);
 		}
 		catch(SQLException | FileNotFoundException e){
             e.printStackTrace();

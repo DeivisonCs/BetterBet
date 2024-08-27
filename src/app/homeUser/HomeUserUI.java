@@ -97,7 +97,6 @@ public class HomeUserUI {
      * @param positionY Posição Y da janela
      */
 	public HomeUserUI(Integer userId, int positionX, int positionY) {
-		System.out.println("UserId Home " + userId);
 		
 		this.positionX = positionX;
 		this.positionY = positionY;
@@ -111,11 +110,9 @@ public class HomeUserUI {
 			if(loggedUser.getPermission().equals("user")) {
 				this.user = (CommonUser) loggedUser;
 				verifyTickets(loggedUser);
-				System.out.println("Home user: " + user.toString());
 			}
 			else {			
 				this.user = (AdminUser) loggedUser;
-				System.out.println("Home admin user: " + user.toString());
 			}
 
 		} catch (SQLException e) {

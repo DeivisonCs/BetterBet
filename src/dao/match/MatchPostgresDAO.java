@@ -262,13 +262,11 @@ public class MatchPostgresDAO implements MatchDAO {
 
 	@Override
 	public boolean deleteMatchById() throws SQLException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean editMatch() throws SQLException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -325,7 +323,6 @@ public class MatchPostgresDAO implements MatchDAO {
             ps.executeUpdate();
 
         } catch (SQLException e) {
-        	System.out.println("testando update de odd");
             e.printStackTrace();
             throw e;
         }

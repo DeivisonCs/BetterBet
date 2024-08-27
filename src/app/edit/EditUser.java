@@ -77,14 +77,7 @@ public class EditUser{
 		try {
 			User loggedUser = userService.getUser(userId);
 			
-			if(loggedUser.getPermission().equals("user")) {
-				this.user = (CommonUser) loggedUser;
-				System.out.println("Home user: " + user.toString());
-			}
-			else {			
-				this.user = (AdminUser) loggedUser;
-				System.out.println("Home admin user: " + user.toString());
-			}
+			this.user = loggedUser.getPermission().equals("user")? (CommonUser) loggedUser : (AdminUser) loggedUser;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -159,9 +152,7 @@ public class EditUser{
         		user.getProfileImage() != null?
         		user.getProfileImage() : 
     			new ImageIcon(getClass().getResource("/resources/images/Profile-Icon.jpg"));
-        
-        System.out.println(profile_img);
-        
+             
         profilePicture = new ImageUtils();
         profilePicture.addMouseListener(new MouseAdapter() {
         	@Override
