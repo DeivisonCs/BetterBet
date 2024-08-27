@@ -2,7 +2,6 @@ package app.profile;
 
 //import java.awt.EventQueue;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -10,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 
 import java.awt.Color;
-import java.awt.Dimension;
-
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,16 +20,13 @@ import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import components.TransactionComponent;
-import components.BetComponent;
 
 import app.auth.LogInView;
 import app.edit.EditUser;
 import app.historyView.HistoryView;
 import app.homeUser.HomeUserUI;
-import components.RoundedButton;
 import dao.transaction.TransactionDAO;
 import dao.transaction.TransactionPostgresDAO;
-import models.Bet;
 import models.CommonUser;
 import models.Transaction;
 import models.User;
@@ -48,15 +42,12 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
 
 /**
  * Classe que representa a janela de perfil do usuário.
@@ -73,7 +64,6 @@ public class WindowProfile {
     private ImageIcon profileImg;
     
     private List<Transaction> transactions = new ArrayList<Transaction>();
-    private List<TransactionComponent> transactionComponents = new ArrayList<TransactionComponent>();
     
     private User user;
     private UserService userService = new UserService();

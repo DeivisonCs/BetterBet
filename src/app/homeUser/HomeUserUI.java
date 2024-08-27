@@ -1,7 +1,5 @@
 package app.homeUser;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -13,7 +11,6 @@ import models.Event;
 import models.Match;
 import models.Ticket;
 import models.User;
-import security.Permission;
 import service.event.EventService;
 import service.match.MatchService;
 import service.ticket.TicketService;
@@ -37,8 +34,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 import components.EventComponent;
 import components.MatchComponent;
@@ -48,10 +43,6 @@ import components.RoundedTextFieldComponent;
 import components.ImageUtils;
 import app.betView.BetUI;
 import app.profile.WindowProfile;
-import dao.event.EventDAO;
-import dao.event.EventPostgresDAO;
-import dao.match.MatchDAO;
-import dao.match.MatchPostgresDAO;
 
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
@@ -61,7 +52,6 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;

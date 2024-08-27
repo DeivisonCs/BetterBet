@@ -10,24 +10,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import components.ImageUtils;
-import app.homeUser.HomeUserUI;
 import app.profile.WindowProfile;
-import components.RoundedImagePanel;
 import components.TicketComponent;
-import dao.event.EventDAO;
-import dao.event.EventPostgresDAO;
-import dao.match.MatchDAO;
-import dao.match.MatchPostgresDAO;
-import dao.ticket.TicketDAO;
-import dao.ticket.TicketPostgresDAO;
-import models.Bet;
-import models.CommonUser;
-import models.Match;
 import models.Ticket;
 import models.User;
 import service.event.EventService;
 import service.ticket.TicketService;
-import service.users.CommonUserService;
 import service.users.UserService;
 
 import java.awt.Insets;
@@ -40,7 +28,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.awt.GridBagLayout;
 

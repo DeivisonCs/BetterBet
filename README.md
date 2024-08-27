@@ -20,18 +20,33 @@ git clone https://github.com/DeivisonCs/BetterBet.git
 cd BetterBet
 ```
 
-### 3.3 Configurar o banco de dados
+### 3.3.1 Configurar o banco de dados localmente
 1. Certifique-se de que o PostgreSQL esteja em execução.
-2. Crie o banco de dados chamado `better-bet`:
-   ```sql
-   CREATE DATABASE better-bet;
-   ```
+2. Crie o banco de dados chamado `betterbetdb`:
 
+```sql
+CREATE DATABASE betterbetdb;
+```
+   
+### 3.3.2 Configurar o banco de dados com docker compose
+1. Certifique-se de ter o docker e o docker-compose instalados.
+2. Navegue até a pasta do projeto, caso não esteja nela.
+3. Execute o comando no seu terminal:
+
+```bash
+docker-compose up
+```
+As versões mais recentes do docker dispensam o uso do hífen no comando:
+
+```bash
+docker compose up
+```
+   
 ### 3.4 Configurar o arquivo `config.properties`
 Antes de executar a aplicação, configure o arquivo `config.properties` localizado no diretório raiz do projeto. Ele deve conter as seguintes propriedades:
 
 ```properties
-database.url=jdbc:postgresql://localhost:5432/better-bet
+database.url=jdbc:postgresql://localhost:5432/betterbetdb
 database.username=seu_usuario
 database.password=sua_senha
 ```
@@ -73,7 +88,13 @@ java -cp bin Main
   - **Conta Comum**:
     - Email: `van@gmail.com`
     - Senha: `van123`
-- **Banco de Dados**: As tabelas necessárias são criadas automaticamente no banco de dados `better-bet`, mas é necessário garantir que o banco de dados já exista.
+- **Banco de Dados**: As tabelas necessárias são criadas automaticamente no banco de dados `betterbetdb`, mas é necessário garantir que o banco de dados já exista, seguindo os passos `3.3.1` ou `3.3.2`.
+
+### Diagrama de Classes
+![Diagrama Classes](docs/images/UML-Diagram.png)
+
+### Modelagem Banco de Dados
+![Modelagem do Banco](docs/images/DatabaseDiagram.png)
 
 ## 5. Funcionalidades
 - **Cadastro e Login de Usuários**: Os usuários podem se registrar e fazer login na plataforma.
@@ -96,3 +117,4 @@ java -cp bin Main
 1. Abra a aplicação e faça login ou crie uma nova conta.
 2. Na tela de apostas, escolha o evento desejado e insira o valor a ser apostado.
 3. Visualize o histórico de apostas a qualquer momento na tela dedicada.
+

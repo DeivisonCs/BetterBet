@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,7 +13,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import models.Bet;
-import models.Match;
 
 @SuppressWarnings("serial")
 public class BetComponent extends JPanel{

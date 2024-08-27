@@ -10,17 +10,14 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import components.ImageUtils;
 import database.ConnectionDB;
 import models.AdminUser;
 import models.CommonUser;
@@ -33,10 +30,6 @@ import security.PasswordHandler;
  * Utiliza as tabelas 'users' e 'bet_users' para armazenar informações gerais e específicas de usuários apostadores.
  */
 public class UserPostgresDAO implements UserDAO {
-	
-	// Instância da classe de utilitários para manipulação de imagens
-	private ImageUtils imgUtils = new ImageUtils();
-
 	
 	 /**
      * Cria um novo usuário no banco de dados.

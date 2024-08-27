@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import components.ImageUtils;
 import app.historyView.ShowTicketComponent;
 import models.Ticket;
 import service.bets.BetService;
@@ -26,7 +25,6 @@ import service.bets.BetService;
 public class TicketComponent extends JPanel {
 
     private Ticket ticket;
-    private Color statusBackground;
     private ImageIcon statusImagePath;
     private BetService betService = new BetService();
 

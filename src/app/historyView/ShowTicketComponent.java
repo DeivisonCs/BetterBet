@@ -18,7 +18,6 @@ import javax.swing.ScrollPaneConstants;
 import components.ImageUtils;
 import components.BetComponent;
 import components.RoundedButtonComponent;
-import components.RoundedImagePanel;
 import models.Bet;
 import models.Ticket;
 
