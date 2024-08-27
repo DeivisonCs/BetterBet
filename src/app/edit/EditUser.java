@@ -31,6 +31,10 @@ import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import models.AdminUser;
 import models.CommonUser;
 import models.User;
@@ -286,22 +290,22 @@ public class EditUser{
 				}
 				
 				try {
-					String validUser = userService.updateUser(user, password, confirmPassword, selectedImgFile);
+					userService.updateUser(user, password, confirmPassword, selectedImgFile);
 					
-					if(!validUser.equals("200")) {
-						JOptionPane.showMessageDialog(null, validUser);
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
-						Point location = frame.getLocationOnScreen();
-						int x = location.x;
-						int y = location.y;
-						frame.dispose();
-						
-						new WindowProfile(user.getId(), x, y);
-					}
+					JOptionPane.showMessageDialog(null, "Usuário Atualizado!" );
+					
+					Point location = frame.getLocationOnScreen();
+					int x = location.x;
+					int y = location.y;
+					frame.dispose();
+					
+					new WindowProfile(user.getId(), x, y);
+					
 				}
 				catch(SQLException | FileNotFoundException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+				catch(InvalidNameException | InvalidEmailException | InvalidAddressException | InvalidPasswordException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}

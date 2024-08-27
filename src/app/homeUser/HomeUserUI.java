@@ -16,6 +16,8 @@ import models.User;
 import security.Permission;
 import service.event.EventService;
 import service.match.MatchService;
+import service.ticket.TicketService;
+import service.users.CommonUserService;
 import service.users.UserService;
 
 import java.awt.GridBagConstraints;
@@ -31,6 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;

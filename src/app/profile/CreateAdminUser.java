@@ -21,6 +21,12 @@ import components.ImageUtils;
 import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidBirthDateException;
+import exceptions.InvalidCpfException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import models.AdminUser;
 import models.CommonUser;
 import service.users.UserService;
@@ -241,18 +247,17 @@ public class CreateAdminUser {
 						"admin");
 				
 				try {
-					String validUser = userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
+					userService.createUser(newUser, new String(confirmPasswordField.getPassword()));
 					
-					if(!validUser.equals("200")) {
-						JOptionPane.showMessageDialog(null, validUser);
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Administrador Cadastrado com Sucesso!");
-					}
+					JOptionPane.showMessageDialog(null, "Administrador Cadastrado com Sucesso!");	
 				}
-				catch(SQLException ex) {
+				catch(SQLException | IOException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
-				} catch (IOException ex) {
+				}
+				catch(InvalidNameException | InvalidEmailException | InvalidAddressException ex) {
+					JOptionPane.showMessageDialog(null, ex.getMessage());
+				}
+				catch(InvalidCpfException | InvalidPasswordException | InvalidBirthDateException ex) {
 					JOptionPane.showMessageDialog(null, ex.getMessage());
 				}
 			}

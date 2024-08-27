@@ -7,6 +7,12 @@ import java.sql.SQLException;
 
 import dao.users.UserDAO;
 import dao.users.UserPostgresDAO;
+import exceptions.InvalidAddressException;
+import exceptions.InvalidBirthDateException;
+import exceptions.InvalidCpfException;
+import exceptions.InvalidEmailException;
+import exceptions.InvalidNameException;
+import exceptions.InvalidPasswordException;
 import middleware.UserMiddleware;
 import models.CommonUser;
 import models.User;
@@ -21,41 +27,32 @@ public class UserService {
 		this.middleware = new UserMiddleware();
 	}
 
-	public String createUser(User newUser, String confirmPassword) throws SQLException, IOException{
-		
-		String validField = middleware.verifyNewUser(newUser, confirmPassword);
-		
-		if(validField.equals("200")) {
-			try {
-				newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
-				userDb.create(newUser);
-			}
-			catch(SQLException ex) {
-				throw ex;
-			}
+	public void createUser(User newUser, String confirmPassword) throws SQLException, IOException, InvalidNameException, InvalidCpfException, InvalidAddressException, InvalidEmailException, InvalidBirthDateException, InvalidPasswordException{
+			
+		try {
+			middleware.verifyNewUser(newUser, confirmPassword);
+			newUser.setPassword(PasswordHandler.hashPassword(newUser.getPassword()));
+			userDb.create(newUser);
 		}
-		
-		
-		return validField;
+		catch(SQLException ex) {
+			throw ex;
+		}
 	}
 	
-	public String updateUser(User user, String newPassword, String confirmPassword, File selectedImgFile) throws SQLException, FileNotFoundException{
-		String validField = middleware.updateUser(user, newPassword, confirmPassword);
+	public void updateUser(User user, String newPassword, String confirmPassword, File selectedImgFile) throws SQLException, FileNotFoundException, InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidAddressException{
 		
-		if(validField.equals("200")) {
-			try {
-				if(newPassword != null) {
-					user.setPassword(PasswordHandler.hashPassword(newPassword));
-				}
-					
-				userDb.edit(user, selectedImgFile);
+		try {
+			middleware.updateUser(user, newPassword, confirmPassword);
+			
+			if(newPassword != null) {
+				user.setPassword(PasswordHandler.hashPassword(newPassword));
 			}
-			catch(SQLException ex) {
-				throw ex;
-			}
+				
+			userDb.edit(user, selectedImgFile);
 		}
-		
-		return validField;
+		catch(SQLException ex) {
+			throw ex;
+		}
 	}
 	
 	public Integer loginUser(String email, String password) throws SQLException{
