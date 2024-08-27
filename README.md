@@ -78,6 +78,8 @@ java -cp bin Main
 ## 5. Funcionalidades
 - **Cadastro e Login de Usuários**: Os usuários podem se registrar e fazer login na plataforma.
 - **Gerenciamento de Apostas**: Permite aos usuários fazer apostas em eventos esportivos com diferentes valores.
+- **Cadastro de Partidas**: Permite aos usuários do tipo Admin criar novas partidas.
+- **Cadastro de Eventos**: Permite aos usuários do tipo Admin criar novos eventos.
 - **Histórico de Apostas**: Os usuários podem visualizar o histórico completo de suas apostas.
 
 ## 6. Interface Gráfica (GUI)
