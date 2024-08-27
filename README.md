@@ -1,4 +1,4 @@
- Better Bet
+# Better Bet
 
 ## 1. Visão Geral
 **Better Bet** é uma aplicação de casa de apostas desenvolvida em Java (JDK 21) usando Swing para a interface gráfica e PostgreSQL para o banco de dados. A aplicação permite aos usuários realizar apostas em eventos esportivos e gerenciar suas contas.
