@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import database.InitDatabase;
 import models.Event;
 import models.Match;
@@ -39,26 +39,10 @@ public class FinishMatch {
 	private JComboBox<Match> matchComboBox = new JComboBox<>();
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					InitDatabase.initializeDatabase();
-//					FinishMatch window = new FinishMatch(1);
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 */
+    /**
+     * Construtor da classe. Inicializa a aplicação e carrega eventos e partidas.
+     * @param userId ID do usuário atual
+     */
 	public FinishMatch(int userId) {
 		this.userId = userId;
 		
@@ -77,9 +61,9 @@ public class FinishMatch {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	   /**
+     * Inicializa o conteúdo da janela.
+     */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -159,17 +143,15 @@ public class FinishMatch {
 		
 		
 		// ------------------------- Create Button -------------------------
-		RoundedButton button = new RoundedButton("Finalizar Partida");
+		RoundedButtonComponent button = new RoundedButtonComponent("Finalizar Partida", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 			
@@ -206,6 +188,10 @@ public class FinishMatch {
         frame.getContentPane().add(button);
 	}
 	
+    /**
+     * Atualiza os itens da ComboBox de partidas.
+     * @param matchs Lista de partidas a serem exibidas
+     */
 	private void updateItens(List<Match> matchs) {
 		matchComboBox.removeAllItems();
 		

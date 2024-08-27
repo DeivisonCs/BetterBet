@@ -18,13 +18,18 @@ import javax.swing.JTextPane;
 
 import app.edit.EditUser;
 import app.homeUser.HomeUserUI;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
 import models.CommonUser;
 import models.User;
 import service.users.UserService;
 
+/**
+ * Classe responsável pela interface gráfica de login do usuário.
+ * Esta classe cria e gerencia a janela de login, onde o usuário pode inserir seu email e senha para autenticação.
+ * Inclui a lógica para validar as credenciais do usuário e gerenciar a navegação para a tela inicial ou a página de cadastro.
+ */
 public class LogInView {
 	private UserService service = new UserService();
 	private JFrame frame;
@@ -34,6 +39,14 @@ public class LogInView {
 	private RoundedTextFieldComponent emailField;
 	private JPasswordField passwordField;
 	
+	/**
+	 * Construtor que inicializa a interface gráfica de login.
+	 * Configura o layout e adiciona todos os componentes necessários, como campos de email e senha,
+	 * botões e links para navegação.
+	 *
+	 * @param positionX A posição X da janela na tela.
+	 * @param positionY A posição Y da janela na tela.
+	 */
 	public LogInView(int positionX, int positionY) {
 
 		frame = new JFrame();
@@ -74,7 +87,7 @@ public class LogInView {
 		emailPlaceholder = new JLabel("Email");
 		emailPlaceholder.setForeground(new Color(156, 156, 156));
 		emailPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
-		emailPlaceholder.setBounds(588, 251, 274, 14);
+		emailPlaceholder.setBounds(589, 278, 274, 14);
 		frame.getContentPane().add(emailPlaceholder);
 		
 		emailField = new RoundedTextFieldComponent(20, 20, 20, 10, 10);
@@ -92,14 +105,14 @@ public class LogInView {
 			}
 		});
 		emailField.setColumns(10);
-		emailField.setBounds(574, 243, 288, 31);
+		emailField.setBounds(575, 270, 288, 31);
 		frame.getContentPane().add(emailField);
 		
 		// ------------------------- Password Field -------------------------
 		passwordPlaceholder = new JLabel("Senha");
 		passwordPlaceholder.setForeground(new Color(156, 156, 156));
 		passwordPlaceholder.setFont(new Font("Arial", Font.PLAIN, 14));
-		passwordPlaceholder.setBounds(588, 314, 274, 14);
+		passwordPlaceholder.setBounds(589, 341, 274, 14);
 		frame.getContentPane().add(passwordPlaceholder);
 		
 		passwordField = new RoundedPasswordFieldComponent(20, 20, 20, 10, 10);
@@ -116,13 +129,13 @@ public class LogInView {
 				}
 			}
 		});
-		passwordField.setBounds(574, 306, 288, 31);
+		passwordField.setBounds(575, 333, 288, 31);
 		frame.getContentPane().add(passwordField);
 		
 		
 		
 		// ------------------------- LogIn Button -------------------------
-		RoundedButton button = new RoundedButton("Logar");
+		RoundedButtonComponent button = new RoundedButtonComponent("Logar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -148,17 +161,15 @@ public class LogInView {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 24));
-        button.setBounds(641, 472, 179, 59);
+        button.setBounds(642, 540, 179, 59);
         button.setBackground(new Color(102, 203, 102)); // Example color
         button.setForeground(Color.WHITE);
         frame.getContentPane().add(button);
@@ -182,7 +193,7 @@ public class LogInView {
 			}
 		});
 		lblNewLabel.setForeground(new Color(255, 2, 255));
-		lblNewLabel.setBounds(681, 542, 117, 14);
+		lblNewLabel.setBounds(682, 610, 117, 14);
 		frame.getContentPane().add(lblNewLabel);
 			
 	}

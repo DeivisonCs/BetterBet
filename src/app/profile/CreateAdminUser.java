@@ -18,13 +18,16 @@ import javax.swing.JOptionPane;
 
 import app.homeUser.HomeUserUI;
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 import components.RoundedTextFieldComponent;
 import models.AdminUser;
 import models.CommonUser;
 import service.users.UserService;
 
+/**
+ * Classe responsável pela criação da interface gráfica para o cadastro de um administrador.
+ */
 public class CreateAdminUser {
 	private int positionX;
 	private int positionY;
@@ -33,25 +36,14 @@ public class CreateAdminUser {
 	private UserService userService = new UserService();
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					CreateAdminUser window = new CreateAdminUser();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 */
+	
+    /**
+     * Cria a aplicação.
+     * 
+     * @param userId Identificador do usuário atual.
+     * @param positionX Posição X da janela na tela.
+     * @param positionY Posição Y da janela na tela.
+     */
 	public CreateAdminUser(int userId, int positionX, int positionY) {
 		this.positionX = positionX;
     	this.positionY = positionY;
@@ -61,7 +53,7 @@ public class CreateAdminUser {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa o conteúdo da janela.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -227,7 +219,7 @@ public class CreateAdminUser {
 		
 		
 		// ------------------------- SignUp Button -------------------------
-		RoundedButton button = new RoundedButton("Cadastrar");
+		RoundedButtonComponent button = new RoundedButtonComponent("Cadastrar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -259,12 +251,10 @@ public class CreateAdminUser {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 		});

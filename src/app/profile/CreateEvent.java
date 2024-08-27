@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 import database.InitDatabase;
 import models.Event;
@@ -26,6 +26,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+/**
+ * Classe responsável pela criação da interface gráfica para o cadastro de um evento.
+ */
 public class CreateEvent {
 	private String[] sports = {"futebol"};
 	private int userId;
@@ -34,33 +37,18 @@ public class CreateEvent {
 	
 	private JFrame frame;
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					InitDatabase.initializeDatabase();
-//					CreateEvent window = new CreateEvent();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
-	/**
-	 * Create the application.
-	 */
+    /**
+     * Cria a aplicação.
+     * 
+     * @param userId O ID do usuário que está criando o evento.
+     */
 	public CreateEvent(int userId) {
 		this.userId = userId;
 		initialize();
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa o conteúdo da janela.
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -136,16 +124,14 @@ public class CreateEvent {
 		
 		
 		// ------------------------- Create Button -------------------------
-		RoundedButton button = new RoundedButton("Criar Evento");
+		RoundedButtonComponent button = new RoundedButtonComponent("Criar Evento", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 			@Override

@@ -12,9 +12,18 @@ import java.util.List;
 import database.ConnectionDB;
 import models.Event;
 
-
+/**
+ * Implementação da interface EventDAO para realizar operações com a tabela de eventos no banco de dados.
+ */
 public class EventPostgresDAO implements EventDAO{
 
+	 /**
+     * Cria um novo evento no banco de dados e retorna o objeto Event com o ID gerado.
+     * 
+     * @param newEvent O objeto `Event` a ser inserido.
+     * @return O objeto `Event` com o ID gerado pela inserção.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public Event create (Event newEvent)throws SQLException {
 		String query = "INSERT INTO event (description, sport, date_time) VALUES (?, ?, ?)";
@@ -47,6 +56,12 @@ public class EventPostgresDAO implements EventDAO{
 		
 	}
 	
+	/**
+     * Recupera todos os eventos do banco de dados.
+     * 
+     * @return Uma lista de objetos `Event` representando todos os eventos.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Event> getAllEvents() throws SQLException {
 		String query = "SELECT * FROM event";
@@ -79,6 +94,13 @@ public class EventPostgresDAO implements EventDAO{
 		
 	}
 
+	/**
+     * Recupera eventos do banco de dados com base no esporte especificado.
+     * 
+     * @param sport O esporte para filtrar os eventos.
+     * @return Uma lista de objetos `Event` representando os eventos do esporte especificado.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Event> getEventsBySport(String sport) throws SQLException {
 		String query = "SELECT * FROM EVENT WHERE (sport) LIKE ? ";
@@ -110,6 +132,13 @@ public class EventPostgresDAO implements EventDAO{
         }   
 	}
 	
+	  /**
+     * Recupera eventos do banco de dados com base no nome especificado.
+     * 
+     * @param name O nome para filtrar os eventos.
+     * @return Uma lista de objetos `Event` representando os eventos com o nome especificado.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Event> getEventsByName(String name) throws SQLException {
 		String query = "SELECT * FROM EVENT WHERE LOWER(description) LIKE LOWER(?)";
@@ -142,6 +171,13 @@ public class EventPostgresDAO implements EventDAO{
         }   
 	}
 	
+	/**
+     * Recupera um evento específico pelo ID.
+     * 
+     * @param id O ID do evento a ser recuperado.
+     * @return O objeto `Event` representando o evento com o ID especificado, ou `null` se não for encontrado.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public Event getEventById(int id) throws SQLException {
 		String query = "SELECT * FROM event WHERE event_id=?";
@@ -187,6 +223,13 @@ public class EventPostgresDAO implements EventDAO{
 		return false;
 	}
 
+	 /**
+     * Recupera o nome dos eventos relacionados a um usuário específico com base em suas apostas.
+     * 
+     * @param userId O ID do usuário para filtrar os eventos.
+     * @return Uma lista de descrições de eventos relacionados ao usuário.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<String> userRelatedEvents(Integer userId) throws SQLException {
 		String query = "SELECT DISTINCT E.DESCRIPTION "

@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A classe Ticket representa um bilhete de aposta no sistema.
+ * Um bilhete pode conter várias apostas, ter um valor da odd do time apostado e informações sobre o usuário e o status.
+ */
 public class Ticket {
 
 	private Integer id;
@@ -17,7 +21,19 @@ public class Ticket {
 	private String status;
 	
 	
-	//Construtor para quando traz o ticket do banco
+	 /**
+     * Construtor para criar um bilhete a partir de dados recuperados do banco de dados.
+     * 
+     * @param id Identificador único do bilhete.
+     * @param odd Valor da odd do bilhete.
+     * @param timeStamp Data e hora em que o bilhete foi criado.
+     * @param idUser Identificador do usuário associado ao bilhete.
+     * @param expectedProfit Lucro esperado com base na odd e no valor apostado.
+     * @param amount Valor total apostado.
+     * @param ticketType Tipo do bilhete (SIMPLICE ou MULTIPLA).
+     * @param status Status do bilhete.
+     * @param bets Lista de apostas associadas ao bilhete.
+     */
 	public Ticket(Integer id, float odd, LocalDateTime timeStamp, Integer idUser, float expectedProfit, float amount, String ticketType, String status, List<Bet> bets) {
 		super();
 		this.id = id;
@@ -31,7 +47,16 @@ public class Ticket {
 		this.status = status;
 	}
 	
-	//Construtor usado para inserir o Ticket no banco
+    /**
+     * Construtor usado para criar um bilhete antes de inseri-lo no banco de dados.
+     * 
+     * @param odd Valor da odd do bilhete.
+     * @param idUser Identificador do usuário associado ao bilhete.
+     * @param expectedProfit Lucro esperado com base na odd e no valor apostado.
+     * @param amount Valor total apostado.
+     * @param ticketType Tipo do bilhete (SIMPLICE ou MULTIPLA).
+     * @param status Status do bilhete.
+     */
 	public Ticket(float odd, Integer idUser, float expectedProfit, float amount, String ticketType, String status) {
 		super();
 		this.bets = new ArrayList<Bet>();
@@ -43,7 +68,14 @@ public class Ticket {
 		this.status = status;
 	}
 
-	//Construtor usado para criar o ticket antes do usuario inserir os valores de aposta
+    /**
+     * Construtor usado para criar um bilhete antes do usuário inserir os valores de aposta.
+     * O tipo de bilhete e o valor da odd são calculados com base nas apostas.
+     * 
+     * @param idUser Identificador do usuário associado ao bilhete.
+     * @param status Status do bilhete.
+     * @param bets Lista de apostas associadas ao bilhete.
+     */
 	public Ticket(Integer idUser,String status, List<Bet> bets) {
 		super();
 		this.bets = bets;
@@ -53,6 +85,12 @@ public class Ticket {
 		setTicketType(bets);
 	}
 	
+	
+	  /**
+     * Calcula o valor da odd do bilhete com base nas apostas.
+     * 
+     * @return Valor calculado da odd.
+     */
 	private float calculateOdd() {
 		
 		float finalOdd = 1f;

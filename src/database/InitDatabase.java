@@ -5,6 +5,9 @@ import java.sql.Statement;
 
 import security.PasswordHandler;
 
+/**
+ * Classe responsável por inicializar o banco de dados com as tabelas e dados iniciais.
+ */
 public class InitDatabase {
 
 	private static String dropTables;
@@ -22,8 +25,12 @@ public class InitDatabase {
 	private static String insertTeams;
 	private static String insertMatch;
 	private static String insertTransaction;
+
 	
-	
+
+    /**
+     * Inicializa o banco de dados criando as tabelas e inserindo os dados iniciais.
+     */
 	public static void initializeDatabase() {
 
 		try(Statement statement = ConnectionDB.getInstance().getConnection().createStatement()){
@@ -44,11 +51,16 @@ public class InitDatabase {
 			statement.execute(insertTeams);
 			statement.execute(insertMatch);
 			statement.execute(insertTransaction);
+
+
 		}catch(SQLException ex) {
 			ex.printStackTrace();
 		}
 	}
 	
+    /**
+     * Adiciona as consultas SQL para criar e popular as tabelas do banco de dados.
+     */
 	private static void addQueries() {
 		InitDatabase.dropTables = 
 			    "DROP TABLE IF EXISTS bet CASCADE;"
@@ -181,6 +193,7 @@ public class InitDatabase {
 				+ "	user_id INT NOT NULL,"
 				+ "	type_transaction VARCHAR(10) NOT NULL,"
 				+ "	value_transaction FLOAT NOT NULL,"
+				+ " date_transaction TIMESTAMP NOT NULL,"
 				+ " "
 				+ "	CONSTRAINT pk_transaction PRIMARY KEY (transaction_id),"
 				+ " "
@@ -296,13 +309,15 @@ public class InitDatabase {
 				+ " 2.75, 2.85, 3.05, 'pendente', 0, 0, '2024-05-19 17:12:00',1,1,1);";
 		
 		InitDatabase.insertTransaction = 
-				"INSERT INTO transactions (user_id, type_transaction, value_transaction) VALUES"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0),"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0),"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0),"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0),"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0),"
-				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0);";
+				"INSERT INTO transactions (user_id, type_transaction, value_transaction, date_transaction) VALUES"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 10.0, '2024-05-19 18:12:00'),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 50.0, '2024-05-12 17:12:00'),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 5.0, '2024-05-10 11:12:00'),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 30.0, '2024-05-21 17:26:00'),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Deposito', 10.0, '2024-05-22 14:12:00'),"
+				+ "((SELECT user_id FROM USERS WHERE name = 'Vanessa'), 'Saque', 25.0, '2024-05-20 16:12:00');";
+
+
 	}
 	
 }

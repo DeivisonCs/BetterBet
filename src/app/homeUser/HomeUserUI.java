@@ -16,6 +16,8 @@ import models.User;
 import security.Permission;
 import service.event.EventService;
 import service.match.MatchService;
+import service.ticket.TicketService;
+import service.users.CommonUserService;
 import service.users.UserService;
 
 import java.awt.GridBagConstraints;
@@ -31,6 +33,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.awt.Color;
 import javax.swing.JScrollPane;
@@ -42,7 +45,7 @@ import components.MatchComponent;
 import components.RoundedButtonComponent;
 import components.RoundedTextFieldComponent;
 
-import app.ImageUtils;
+import components.ImageUtils;
 import app.betView.BetUI;
 import app.profile.WindowProfile;
 import dao.event.EventDAO;
@@ -65,7 +68,11 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 
-
+/**
+ * A classe HomeUserUI representa a interface do usuário para a tela inicial do usuário.
+ * Ela gerencia a exibição de partidas, eventos e informações do usuário na interface gráfica.
+ * Ela é se materializa de forma diferente a depender do tipo de usuário(Admin, Comum)
+ */
 public class HomeUserUI {
 	private int positionX;
 	private int positionY;
@@ -92,9 +99,13 @@ public class HomeUserUI {
 	private MatchService matchService = new MatchService();
 	private EventService eventService = new EventService();
 	
-	/**
-	 * Create the application.
-	 */
+    /**
+     * Construtor da classe HomeUserUI.
+     * 
+     * @param userId ID do usuário
+     * @param positionX Posição X da janela
+     * @param positionY Posição Y da janela
+     */
 	public HomeUserUI(Integer userId, int positionX, int positionY) {
 		System.out.println("UserId Home " + userId);
 		
@@ -109,6 +120,7 @@ public class HomeUserUI {
 			
 			if(loggedUser.getPermission().equals("user")) {
 				this.user = (CommonUser) loggedUser;
+				verifyTickets(loggedUser);
 				System.out.println("Home user: " + user.toString());
 			}
 			else {			
@@ -127,10 +139,10 @@ public class HomeUserUI {
 		updateEvents();
 		
 	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
+    /**
+     * Inicializa o conteúdo da janela.
+     */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setVisible(true);
@@ -330,7 +342,9 @@ public class HomeUserUI {
 	}
 	
 	
-	//Adiciona as partidas no gridbaglayout
+    /**
+     * Atualiza a lista de partidas na interface gráfica.
+     */
 	public void updateMatches() {
 		gamesPanel.removeAll();
 		
@@ -383,7 +397,9 @@ public class HomeUserUI {
         gamesPanel.repaint();
 	}
 	
-	//Adiciona os eventos no gridbagLayout
+    /**
+     * Atualiza a lista de eventos na interface gráfica.
+     */
 	public void updateEvents() {
 	    eventsPanel.removeAll();
 
@@ -440,7 +456,17 @@ public class HomeUserUI {
 	}
 	
 	
-	//No momento da atualização das partidas ao clicar em um evento, verifica se a partida daquele evento ja esta selecionada e a mantém selecionada.
+    /**
+     * Verifica se uma partida já está selecionada na lista de partidas selecionadas, para não alterá-la
+     * em caso de atualização da lista(ao selecionar um evento por exemplo)
+     * com base no ID do evento, nome das equipes A e B.
+     * 
+     * @param event_id ID do evento associado à partida
+     * @param team_a Nome da equipe A
+     * @param team_b Nome da equipe B
+     * @return Um Optional contendo o índice da partida selecionada se ela já estiver na lista,
+     *         ou Optional.empty() se não estiver.
+     */
 	private Optional<Integer> positionIfExistsSelectedMatchComponent(Integer event_id, String team_a, String team_b) {
 		if(!selectedMatches.isEmpty()) {
 			for (MatchComponent component : selectedMatches) {
@@ -454,6 +480,86 @@ public class HomeUserUI {
 		return Optional.empty();
 	}
 	
+    /**
+     * Verifica os tickets pendentes do usuário, e atualiza seus status e o saldo do usuario, caso a(s) partida(s)
+     * da aposta já tenham sido finalizadas.
+     * 
+     * @param user Usuário a ser verificado
+     */
+	private void verifyTickets(User userToVerify) throws SQLException {
+		TicketService ticketService = new TicketService();
+		List<Ticket> tickets = ticketService.getTicketsByUser(userToVerify.getId());
+		AtomicBoolean pendingBet = new AtomicBoolean(false);
+		CommonUserService commonUserService = new CommonUserService();
+		
+		tickets.forEach(ticket -> {
+			
+			if(ticket.getStatus().equals("PENDENTE")) {
+				
+				pendingBet.set(false);
+				//verifica se todas as partidas da bet foram finalizadas
+				ticket.getBets().forEach(bet->{
+					if(!bet.getMatch().getStatus().equals("finalizado")) {
+						pendingBet.set(true);
+						return;
+					}
+				});
+				if(pendingBet.get()) {
+					return;
+				}
+				
+				AtomicBoolean youWon = new AtomicBoolean(true);
+				//verifica se aerrou algum palpite
+				ticket.getBets().forEach(bet->{
+					if(bet.getSelectedBet().equals("TEAM_A")) {
+						if(bet.getMatch().getScoreTeamA() <= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("TEAM_B")) {
+						if(bet.getMatch().getScoreTeamA() >= bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}else if(bet.getSelectedBet().equals("DRAW")) {
+						if(bet.getMatch().getScoreTeamA() != bet.getMatch().getScoreTeamB()) {
+							youWon.set(false);
+						}
+					}
+				});
+				
+				if(youWon.get()) {
+					ticket.setStatus("GANHOU");
+					
+					CommonUser commonUser = (CommonUser)userToVerify;
+
+					try {
+						ticketService.updateStatus(ticket);
+						commonUserService.increaseBalance(commonUser, ticket.getExpectedProfit());
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);	
+					} catch (Exception e) {
+						throw new RuntimeException("Erro ao atualizar saldo do usuário: " + userToVerify.getId(), e);	
+						
+					}
+					
+					
+				}else {
+					ticket.setStatus("PERDEU");
+					try {
+						ticketService.updateStatus(ticket);
+					} catch (SQLException e) {
+						throw new RuntimeException("Erro ao atualizar status do ticket: " + ticket.getId(), e);
+					}
+				}
+			}
+			
+			ticket.getBets().clear();
+			
+		});
+		tickets.clear();
+		
+	}
+	
+	//Getters e Setters
 	public User getUser() {
 		return this.user;
 	}

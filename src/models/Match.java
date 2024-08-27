@@ -2,6 +2,10 @@ package models;
 
 import java.time.LocalDateTime;
 
+/**
+ * A classe Match representa uma partida entre dois times no sistema.
+ * Ela contém informações sobre os times, as odds, os valores das apostas e o status da partida.
+ */
 public class Match {
 
 	
@@ -26,7 +30,24 @@ public class Match {
 	private LocalDateTime date;
 	
 		
-	
+	 /**
+     * Construtor da classe Match que inicializa todos os atributos.
+     * 
+     * @param id Identificador único da partida.
+     * @param idEvent Identificador do evento associado à partida.
+     * @param teamA Time A.
+     * @param scoreTeamA Pontuação do Time A.
+     * @param oddTeamA Odd para a vitória do Time A.
+     * @param oddDraw Odd para o empate.
+     * @param teamB Time B.
+     * @param scoreTeamB Pontuação do Time B.
+     * @param oddTeamB Odd para a vitória do Time B.
+     * @param status Status atual da partida.
+     * @param date Data e hora da partida.
+     * @param betAmountTeamA Valor apostado no Time A.
+     * @param betAmountTeamB Valor apostado no Time B.
+     * @param betAmountDraw Valor apostado no empate.
+     */
 	public Match(Integer id, Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
 			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
@@ -46,7 +67,23 @@ public class Match {
 		this.betAmountDraw = betAmountDraw;
 	}
 	
-	
+	 /**
+     * Construtor da classe Match sem o atributo utilizado para criação da partida.
+     * 
+     * @param idEvent Identificador do evento associado à partida.
+     * @param teamA Time A.
+     * @param scoreTeamA Pontuação do Time A.
+     * @param oddTeamA Odd para a vitória do Time A.
+     * @param oddDraw Odd para o empate.
+     * @param teamB Time B.
+     * @param scoreTeamB Pontuação do Time B.
+     * @param oddTeamB Odd para a vitória do Time B.
+     * @param status Status atual da partida.
+     * @param date Data e hora da partida.
+     * @param betAmountTeamA Valor apostado no Time A.
+     * @param betAmountTeamB Valor apostado no Time B.
+     * @param betAmountDraw Valor apostado no empate.
+     */
 	public Match(Integer idEvent, Team teamA, Integer scoreTeamA, float oddTeamA, float oddDraw, Team teamB,
 			Integer scoreTeamB, float oddTeamB, String status, LocalDateTime date, float betAmountTeamA, float betAmountTeamB, float betAmountDraw) {
 		super();
@@ -65,7 +102,9 @@ public class Match {
 		this.betAmountDraw = betAmountDraw;
 	}
 
-
+    /**
+     * Calcula as odds com base nos valores apostados e na margem de lucro.
+     */
 	public void calculateOdd() {
 		
 		float profit = 0.8f;
@@ -88,10 +127,9 @@ public class Match {
 			this.oddDraw = (totalAmountWithProfit / betAmountDraw);
 		}
 		
-		
-
 	}
 	
+	//Getters e Setters
 
 	public Integer getId() {
 		return id;

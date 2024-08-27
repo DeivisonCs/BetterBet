@@ -24,7 +24,7 @@ import components.RoundedTextFieldComponent;
 import database.InitDatabase;
 import models.CommonUser;
 import components.ImageUtils;
-import components.RoundedButton;
+import components.RoundedButtonComponent;
 import components.RoundedPasswordFieldComponent;
 
 import java.awt.event.MouseAdapter;
@@ -34,6 +34,9 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import service.users.CommonUserService;
 
+/**
+ * Classe que representa a tela de cadastro de novos usuários.
+ */
 public class SignUpView {
 	private CommonUserService userService = new CommonUserService();
 	public SimpleDateFormat formatedDate = new SimpleDateFormat("yyyy/MM/dd");
@@ -59,19 +62,19 @@ public class SignUpView {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InitDatabase.initializeDatabase();
-					SignUpView window = new SignUpView();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					InitDatabase.initializeDatabase();
+//					SignUpView window = new SignUpView();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
@@ -289,7 +292,7 @@ public class SignUpView {
 		
 		
 		// ------------------------- SignUp Button -------------------------
-		RoundedButton button = new RoundedButton("Cadastrar");
+		RoundedButtonComponent button = new RoundedButtonComponent("Cadastrar", new Color(255, 215, 0), new Color(102, 203, 102));
 		button.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -334,12 +337,10 @@ public class SignUpView {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				button.setBackground(new Color(255, 215, 0));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 19));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				button.setBackground(new Color(102, 203, 102));
 				button.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			}
 		});

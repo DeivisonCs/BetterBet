@@ -12,11 +12,21 @@ import database.ConnectionDB;
 import models.Bet;
 import models.Match;
 
+/**
+ * Implementação da interface BetDAO para realizar operações com a tabela de apostas no banco de dados.
+ */
 public class BetPostgresDAO implements BetDAO{
 
 	
 	MatchDAO matchDao = new MatchPostgresDAO();
-	
+
+    /**
+     * Recupera todas as apostas associadas a um ticket específico.
+     * 
+     * @param ticketId O ID do ticket para filtrar as apostas.
+     * @return Uma lista de objetos `Bet` representando as apostas associadas ao ticket.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public List<Bet> getBetsByTicket(Integer ticketId) throws SQLException {
 	    String query = "SELECT * FROM BET WHERE TICKET_ID =?";
@@ -49,6 +59,13 @@ public class BetPostgresDAO implements BetDAO{
 	    }
 	}
 
+	 /**
+     * Cria uma nova aposta no banco de dados e retorna o ID gerado.
+     * 
+     * @param bet O objeto `Bet` a ser inserido.
+     * @return O ID da aposta recém-criada.
+     * @throws SQLException Se houver um erro ao acessar o banco de dados.
+     */
 	@Override
 	public int createBet(Bet bet) throws SQLException {
 		String query = "INSERT INTO BET (ticket_id, selected_bet, match_id, odd_draw, odd_team_A, odd_team_B) VALUES (?, ?, ?, ?, ?, ?)";
