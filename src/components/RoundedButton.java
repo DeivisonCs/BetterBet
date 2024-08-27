@@ -3,10 +3,11 @@ package components;
 import javax.swing.*;
 import java.awt.*;
 
+@SuppressWarnings("serial")
 public class RoundedButton extends JButton {
-	private static final long serialVersionUID = 1L;
-    private static final int ARC_WIDTH = 20;   // Largura Arco da Borda
-    private static final int ARC_HEIGHT = 20;  // Altura Arco da Borda (ambas devem ter o mesmo valor)
+	
+    private int ARC_WIDTH = 20;   // Largura Arco da Borda
+    private int ARC_HEIGHT = 20;  // Altura Arco da Borda (ambas devem ter o mesmo valor)
 
     public RoundedButton(String text) {
         super(text);
@@ -16,6 +17,15 @@ public class RoundedButton extends JButton {
         setBorderPainted(false); // Remove borda padrão
     }
 
+    public RoundedButton(String text, int arc_width, int arc_height) {
+        super(text);
+        this.ARC_WIDTH = arc_width;
+        this.ARC_HEIGHT = arc_height;
+        setFocusPainted(false);
+        setOpaque(false); 
+        setContentAreaFilled(false);
+        setBorderPainted(false); // Remove borda padrão
+    }
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D graphics = (Graphics2D) g.create();
