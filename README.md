@@ -55,12 +55,13 @@ java -cp bin Main
 
 ### Pacotes
 - **Pacote `app`**: Contém as classes com as interfaces gráficas.
+- **Pacote `components`**: Contém componentes de tela utilizados nas interfaces gráficas.
 - **Pacote `dao`**: Contém as classes de acesso a dados.
 - **Pacote `database`**: Contém as classes relacionadas ao banco de dados.
 - **Pacote `exceptions`**: Contém classes para tratamento de exceções.
 - **Pacote `middleware`**: Contém classes para a lógica intermediária entre a GUI e o banco de dados.
 - **Pacote `models`**: Contém as classes que representam os modelos de dados.
-- **Pacote `resources`**: Contém as imagens e outros recursos da aplicação.
+- **Pacote `resources`**: Contém as imagens da aplicação.
 - **Pacote `security`**: Contém a parte de segurança relacionada à encriptação de senhas.
 - **Pacote `services`**: Contém serviços e lógica de negócio.
 
