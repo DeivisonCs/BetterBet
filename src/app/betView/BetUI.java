@@ -236,9 +236,7 @@ public class BetUI {
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;  
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 0, 10, 0);
 	    
 	    for (Bet bet : ticket.getBets()) {

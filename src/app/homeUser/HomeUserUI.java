@@ -350,12 +350,9 @@ public class HomeUserUI {
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		
 	        gbc.gridx = 0;
 	        gbc.gridy = 0;
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.anchor = GridBagConstraints.NORTH;  
-	        gbc.weightx = 1.0;
 	        gbc.insets.bottom = 10;
 	        gbc.insets.top = 5;
         
@@ -406,9 +403,7 @@ public class HomeUserUI {
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.gridx = 0;
 	    gbc.gridy = 0;
-	    gbc.fill = GridBagConstraints.HORIZONTAL;
 	    gbc.anchor = GridBagConstraints.NORTH;
-	    gbc.weightx = 1.0;
 	    gbc.insets = new Insets(5, 5, 5, 5);
 
 	    for (Event event : events) {
