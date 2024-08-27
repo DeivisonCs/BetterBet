@@ -14,7 +14,6 @@ import models.CommonUser;
 import models.User;
 
 public class UserMiddleware {
-	private final String VALIDATED = "200";
 	
 	public void verifyNewUser(User user, String confirmPassword) throws InvalidNameException, InvalidCpfException, InvalidAddressException, InvalidEmailException, InvalidBirthDateException, InvalidPasswordException {
 		System.out.println("Middleware " + user.toString());
