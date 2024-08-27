@@ -112,21 +112,28 @@ public class Match {
 		float totalAmountWithProfit = totalAmount * profit;
 		
 		if(betAmountTeamA * profit > 1) {
-			this.oddTeamA = (totalAmountWithProfit / (betAmountTeamA * profit));
+			this.oddTeamA = oddCeiling(totalAmountWithProfit / (betAmountTeamA * profit));
 		}else {
-			this.oddTeamA = (totalAmountWithProfit / betAmountTeamA);
+			this.oddTeamA = oddCeiling(totalAmountWithProfit / betAmountTeamA);
 		}
 		if(betAmountTeamB * profit > 1) {
-			this.oddTeamB = (totalAmountWithProfit / (betAmountTeamB * profit));
+			this.oddTeamB = oddCeiling(totalAmountWithProfit / (betAmountTeamB * profit));
 		}else {
-			this.oddTeamB = (totalAmountWithProfit / betAmountTeamB);
+			this.oddTeamB = oddCeiling(totalAmountWithProfit / betAmountTeamB);
 		}
 		if(betAmountDraw * profit  > 1) {
-			this.oddDraw = (totalAmountWithProfit / (betAmountDraw * profit));
+			this.oddDraw = oddCeiling(totalAmountWithProfit / (betAmountDraw * profit));
 		}else {
-			this.oddDraw = (totalAmountWithProfit / betAmountDraw);
+			this.oddDraw = oddCeiling(totalAmountWithProfit / betAmountDraw);
 		}
 		
+	}
+
+	private float oddCeiling(float odd){
+			if(odd<=12f){
+				return odd;
+			}
+			return 12f;
 	}
 	
 	//Getters e Setters
