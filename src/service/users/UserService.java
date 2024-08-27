@@ -22,8 +22,8 @@ import security.PasswordHandler;
  * como criação, atualização, login e recuperação de usuários.
  */
 public class UserService {
-	private UserDAO userDb;
-	private UserMiddleware middleware;
+	protected UserDAO userDb;
+	protected UserMiddleware middleware;
 	
 	public UserService() {
 		this.userDb = new UserPostgresDAO();

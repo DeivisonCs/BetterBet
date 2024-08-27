@@ -16,15 +16,8 @@ import models.CommonUser;
  */
 public class CommonUserService extends UserService{
 	
-	private UserMiddleware middleware;
-	
-	private UserDAO userDao;
-	
-	
 	public CommonUserService() {
 		super();
-		this.userDao = new UserPostgresDAO();
-		this.middleware = new UserMiddleware();
 	}
 	
 	  /**
@@ -47,7 +40,7 @@ public class CommonUserService extends UserService{
 			}
 			
 			float newBalance = user.getBalance() - betAmount;
-			userDao.updateBalance(user, newBalance);
+			userDb.updateBalance(user, newBalance);
 
 	}
 	
@@ -63,7 +56,7 @@ public class CommonUserService extends UserService{
 		
 		float newBalance = user.getBalance() + expectedProfit;
 		
-		userDao.updateBalance(user, newBalance);
+		userDb.updateBalance(user, newBalance);
 		user.setBalance(user.getBalance()+ expectedProfit);
 
 	}
