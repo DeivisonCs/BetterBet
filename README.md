@@ -56,16 +56,10 @@ Caso não utilize o docker-compose certifique-se de substituir `seu_usuario` e `
 Caso utilize o docker-compose substitua `seu_usuario` e `sua_senha` por `postgres` e `postgres` respectivamente.
 
 ### 3.5 Compilar e executar
-Se estiver utilizando uma IDE como IntelliJ ou Eclipse, importe o projeto como um projeto Java. Caso contrário, compile o código manualmente:
+Se estiver utilizando uma IDE como IntelliJ ou Eclipse, importe o projeto como um projeto Java. Caso contrário dê duplo clique no .bat na raiz do projeto, ele irá compilar e executar a aplicação:
 
 ```bash
-javac -d bin src/*.java
-```
-
-Execute a aplicação:
-
-```bash
-java -cp bin Main
+betterBet_build_and_run.bat
 ```
 
 ## 4. Estrutura do Projeto
