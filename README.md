@@ -80,9 +80,14 @@ java -cp bin Main
 - **Histórico de Apostas**: Os usuários podem visualizar o histórico completo de suas apostas.
 
 ## 6. Interface Gráfica (GUI)
-- **Janela Principal**: Tela inicial que permite o login e registro de usuários.
+- **Janela de Login**: Tela que permite o login de um usuário cadastrado.
+- **Janela de Cadastro**: Tela que permite o registro de novos usuários.
 - **Tela de Apostas**: Interface para selecionar eventos e realizar apostas.
+- **Tela de Perfil**: Exibe as informações do usuário e permite fazer transações.
 - **Tela de Histórico**: Exibe as apostas anteriores do usuário.
+- **Tela de Cadastro de Partida**: Interface para cadastro de novas partidas.
+- **Tela de Eventos**: Interface para cadastro de novos eventos(campeonatos, ligas, etc).
+- **Tela de Cadastro de Admin**: Interface para cadastro de novos administradores.
 
 ## 7. Como Usar
 1. Abra a aplicação e faça login ou crie uma nova conta.
